@@ -94,6 +94,7 @@ export class AuthService {
   /**
    * 获取当前用户信息
    */
+  
   static getCurrentUser(): UserInfo | null {
     const userInfo = localStorage.getItem('userInfo');
     return userInfo ? JSON.parse(userInfo) : null;

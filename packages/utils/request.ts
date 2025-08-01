@@ -33,6 +33,7 @@ const getApiBaseUrl = () => {
 const request: AxiosInstance = axios.create({
   baseURL: getApiBaseUrl(),
   timeout: 10000,
+  withCredentials: true, // 允许携带cookie
   headers: {
     'Content-Type': 'application/json',
   },

@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, message, Typography, Select } from 'antd';
-import { UserOutlined, LockOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Toast, Selector, Card } from 'antd-mobile';
+import { UserOutline, LockOutline, PhoneFill } from 'antd-mobile-icons';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthService, RegisterParams, UserRole } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import type { RegisterParams, UserRole } from '../../services/auth.service';
 
-const { Title, Text } = Typography;
-const { Option } = Select;
+const roleOptions = [
+  { label: '老人', value: 'elderly' },
+  { label: '家属', value: 'family' },
+  { label: '护工', value: 'nurse' },
+];
 
 const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -13,143 +17,140 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
+    if (!selectedRole) {
+      Toast.show({ icon: 'fail', content: '请选择用户角色' });
+      return;
+    }
     try {
       setLoading(true);
-
       const registerParams: RegisterParams = {
         role: selectedRole,
         username: values.username,
         password: values.password,
         phone: values.phone,
       };
-
       const response = await AuthService.register(registerParams);
-
       if (response.code === 200) {
-        // 保存用户信息
         AuthService.saveUserInfo(response.data.token, response.data.user);
-
-        message.success('注册成功');
-
-        // 根据角色重定向到对应的应用
-        const roleRedirectMap: Record<UserRole, string> = {
-          elderly: '/elderly-app',
-          family: '/family-app',
-          nurse: '/nurse-app',
-          admin: '/admin-panel'
-        };
-
-        const redirectPath = roleRedirectMap[selectedRole] || '/login';
-        window.location.href = redirectPath;
+        Toast.show({ icon: 'success', content: '注册成功' });
+        setTimeout(() => {
+          navigate('/login');
+        }, 800);
       }
     } catch (error) {
-      message.error('注册失败，请检查输入信息');
+      Toast.show({ icon: 'fail', content: '注册失败，请检查输入信息' });
     } finally {
       setLoading(false);
     }
   };
 
-  // 只包含用户端角色，移除管理员
-  const roleOptions = [
-    { value: 'elderly', label: '老人', icon: '👴', desc: '享受养老服务' },
-    { value: 'family', label: '家属', icon: '👨‍👩‍👧‍👦', desc: '关注老人健康' },
-    { value: 'nurse', label: '护工', icon: '👩‍⚕️', desc: '提供护理服务' }
-  ];
-
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-    }}>
-      <Card style={{ width: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
-        <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <Title level={2} style={{ color: '#1890ff' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: 0,
+      }}
+    >
+      <Card
+        style={{
+          width: '100%',
+          maxWidth: 400,
+          margin: '0 auto',
+          borderRadius: 18,
+          boxShadow: '0 6px 24px rgba(0,0,0,0.10)',
+          padding: '32px 18px 18px 18px',
+          border: 'none',
+        }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: 18 }}>
+          <div style={{ fontSize: 28, color: '#1890ff', fontWeight: 800, letterSpacing: 2, lineHeight: 1.1, marginTop: 20 }}>
             智慧养老平台
-          </Title>
-          <Text type="secondary">用户注册</Text>
+          </div>
+          <div style={{ color: '#888', marginTop: 4, fontSize: 16 }}>用户注册</div>
         </div>
-
+        {/* 角色选择区自定义按钮组 */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7f8fa', borderRadius: 10, padding: '0 10px', height: 48, marginBottom: 18, width: 311.33, marginLeft: 'auto', marginRight: 'auto' }}>
+          <span style={{ fontSize: 16, marginRight: 8, minWidth: 36, fontWeight: 18 }}>角色</span>
+          <div style={{ display: 'flex', flex: 1, gap: 8 }}>
+            {roleOptions.map(option => (
+              <span
+                key={option.value}
+                onClick={() => setSelectedRole(option.value as UserRole)}
+                style={{
+                  padding: '6px 18px',
+                  borderRadius: 8,
+                  background: selectedRole === option.value ? '#e6f0ff' : 'transparent',
+                  color: selectedRole === option.value ? '#1677ff' : '#333',
+                  fontWeight: selectedRole === option.value ? 600 : 400,
+                  border: selectedRole === option.value ? '1.5px solid #1677ff' : '1.5px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {option.label}
+              </span>
+            ))}
+          </div>
+        </div>
         <Form
-          name="register"
-          onFinish={onFinish}
-          autoComplete="off"
-          size="large"
           layout="vertical"
+          onFinish={onFinish}
+          style={{ marginTop: 0 }}
+          footer={
+            <Button
+              block
+              color="primary"
+              size="large"
+              loading={loading}
+              type="submit"
+              style={{
+                borderRadius: 24,
+                fontWeight: 600,
+                fontSize: 18,
+                marginTop: 10,
+                boxShadow: '0 2px 8px rgba(24,144,255,0.12)',
+              }}
+            >
+              注册
+            </Button>
+          }
+          initialValues={{}}
         >
           <Form.Item
-            label="选择角色"
-            name="role"
-            rules={[
-              { required: true, message: '请选择用户角色' }
-            ]}
-          >
-            <Select
-              value={selectedRole}
-              onChange={setSelectedRole}
-              placeholder="请选择用户角色"
-              style={{ width: '100%' }}
-            >
-              {roleOptions.map(option => (
-                <Option key={option.value} value={option.value}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span style={{ marginRight: 8, fontSize: '16px' }}>{option.icon}</span>
-                    <div style={{ display: 'flex', alignItems: 'center',gap:10 }}>
-                      <div style={{ fontWeight: 'bold' }}>{option.label}</div>
-                      <div style={{ fontSize: '12px', color: '#999' }}>{option.desc}</div>
-                    </div>
-                  </div>
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="用户名"
             name="username"
-            rules={[
-              { required: true, message: '请输入用户名' },
-              { min: 2, message: '用户名至少2位' }
-            ]}
+            rules={[{ required: true, message: '请输入用户名' }, { min: 2, message: '用户名至少2位' }]}
+            style={{ marginBottom: 18 }}
           >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="请输入用户名"
-            />
+            <div style={{ display: 'flex', alignItems: 'center', background: '#f7f8fa', borderRadius: 10, padding: '0 10px', height: 48 }}>
+              <UserOutline style={{ fontSize: 20, marginRight: 8 }} />
+              <Input placeholder="请输入用户名" clearable style={{ background: 'transparent', border: 'none', flex: 1, height: 44 }} />
+            </div>
           </Form.Item>
-
           <Form.Item
-            label="手机号"
             name="phone"
-            rules={[
-              { required: true, message: '请输入手机号' },
-              { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }
-            ]}
+            rules={[{ required: true, message: '请输入手机号' }, { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }]}
+            style={{ marginBottom: 18 }}
           >
-            <Input
-              prefix={<PhoneOutlined />}
-              placeholder="请输入手机号"
-            />
+            <div style={{ display: 'flex', alignItems: 'center', background: '#f7f8fa', borderRadius: 10, padding: '0 10px', height: 48 }}>
+              <PhoneFill style={{ fontSize: 20, marginRight: 8 }} />
+              <Input placeholder="请输入手机号" clearable style={{ background: 'transparent', border: 'none', flex: 1, height: 44 }} />
+            </div>
           </Form.Item>
-
           <Form.Item
-            label="密码"
             name="password"
-            rules={[
-              { required: true, message: '请输入密码' },
-              { min: 6, message: '密码至少6位' }
-            ]}
+            rules={[{ required: true, message: '请输入密码' }, { min: 6, message: '密码至少6位' }]}
+            style={{ marginBottom: 18 }}
           >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="请输入密码"
-            />
+            <div style={{ display: 'flex', alignItems: 'center', background: '#f7f8fa', borderRadius: 10, padding: '0 10px', height: 48 }}>
+              <LockOutline style={{ fontSize: 20, marginRight: 8 }} />
+              <Input type="password" placeholder="请输入密码" clearable style={{ background: 'transparent', border: 'none', flex: 1, height: 44 }} />
+            </div>
           </Form.Item>
-
           <Form.Item
-            label="确认密码"
             name="confirmPassword"
             dependencies={['password']}
             rules={[
@@ -163,33 +164,20 @@ const Register: React.FC = () => {
                 },
               }),
             ]}
+            style={{ marginBottom: 18 }}
           >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="请确认密码"
-            />
+            <div style={{ display: 'flex', alignItems: 'center', background: '#f7f8fa', borderRadius: 10, padding: '0 10px', height: 48 }}>
+              <LockOutline style={{ fontSize: 20, marginRight: 8 }} />
+              <Input type="password" placeholder="请确认密码" clearable style={{ background: 'transparent', border: 'none', flex: 1, height: 44 }} />
+            </div>
           </Form.Item>
-
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              style={{ width: '100%' }}
-            >
-              注册
-            </Button>
-          </Form.Item>
-
-          <div style={{ textAlign: 'center' }}>
-            <Text type="secondary">
-              已有账号？{' '}
-              <Link to="/login" style={{ color: '#1890ff' }}>
-                立即登录
-              </Link>
-            </Text>
-          </div>
         </Form>
+        <div style={{ textAlign: 'center', marginTop: 18 }}>
+          <span style={{ color: '#888' }}>已有账号？</span>{' '}
+          <Link to="/login" style={{ color: '#1890ff', fontWeight: 500 }}>
+            立即登录
+          </Link>
+        </div>
       </Card>
     </div>
   );

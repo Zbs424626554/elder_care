@@ -1,24 +1,15 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const MONGO_URI = 'mongodb+srv://424626554:Zbs424626554@zbs.ngrjull.mongodb.net/smart-aging';
 
 export const connectDB = async () => {
+  const uri = process.env.MONGO_URI;
+  if (!uri) {
+    throw new Error('MONGO_URI 未配置');
+  }
   try {
-    await mongoose.connect(MONGO_URI);
-    console.log('MongoDB Connected Successfully');
-
-    // 创建索引
-    await createIndexes();
-  } catch (err) {
-    console.error('MongoDB connection error:', err);
+    await mongoose.connect(uri);
+    console.log('MongoDB 连接成功');
+  } catch (error) {
+    console.error('MongoDB 连接失败:', error);
     process.exit(1);
   }
-};
-
-const createIndexes = async () => {
-  // 这里会在模型创建后自动创建索引
-  console.log('Indexes created successfully');
 };

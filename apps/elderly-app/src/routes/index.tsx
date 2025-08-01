@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthService } from '../services/auth.service';
 import { PrivateRoute } from '../components/PrivateRoute';
 import { Login, Register } from '@smart-aging/packages';
-
 // 老人端页面
 import Layout from '../pages/Layout';
 import Home from '../pages/Home';
@@ -22,21 +21,12 @@ const RootRedirect: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // 检查是否是老人角色
-  if (currentRole !== 'elderly') {
-    // 如果不是老人角色，重定向到对应的应用
-    const roleRedirectMap: Record<string, string> = {
-      family: '/family-app',
-      nurse: '/nurse-app',
-      admin: '/admin-panel'
-    };
-
-    const redirectPath = roleRedirectMap[currentRole || ''] || '/login';
-    window.location.href = redirectPath;
-    return null;
+  if (currentRole === 'elderly') {
+    return <Navigate to="/home" replace />;
   }
 
-  return <Navigate to="/home" replace />;
+  // 其他角色或异常情况，统一跳转登录页
+  return <Navigate to="/login" replace />;
 };
 
 // 老人端路由组件

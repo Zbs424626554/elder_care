@@ -28,9 +28,9 @@ const RootRedirect: React.FC = () => {
   if (currentRole !== 'admin') {
     // 如果不是管理员角色，重定向到对应的应用
     const roleRedirectMap: Record<string, string> = {
-      elderly: '/elderly-app',
-      family: '/family-app',
-      nurse: '/nurse-app'
+      elderly: 'http://localhost:5174',
+      family: 'http://localhost:5173',
+      nurse: 'http://localhost:5175'
     };
 
     const redirectPath = roleRedirectMap[currentRole || ''] || '/login';

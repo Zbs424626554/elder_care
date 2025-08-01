@@ -8,5 +8,8 @@ export * from './services/auth.service';
 export * from './components/PrivateRoute';
 
 // 导出认证页面
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+
 export { default as Login } from './pages/auth/Login';
 export { default as Register } from './pages/auth/Register'; 

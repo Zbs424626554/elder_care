@@ -22,21 +22,12 @@ const RootRedirect: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // 检查是否是护工角色
-  if (currentRole !== 'nurse') {
-    // 如果不是护工角色，重定向到对应的应用
-    const roleRedirectMap: Record<string, string> = {
-      elderly: '/elderly-app',
-      family: '/family-app',
-      admin: '/admin-panel'
-    };
-
-    const redirectPath = roleRedirectMap[currentRole || ''] || '/login';
-    window.location.href = redirectPath;
-    return null;
+  if (currentRole === 'nurse') {
+    return <Navigate to="/home" replace />;
   }
 
-  return <Navigate to="/home" replace />;
+  // 其他角色或异常情况，统一跳转登录页
+  return <Navigate to="/login" replace />;
 };
 
 // 护工端路由组件

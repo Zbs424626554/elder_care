@@ -31,16 +31,18 @@
     }
   },
   "dependencies": {
-    "axios": "^1.11.0",
-    "antd": "^5.20.1",
     "@ant-design/icons": "^5.5.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.7.1"
+    "antd": "^5.20.1",
+    "antd-mobile": "^5.39.0",
+    "antd-mobile-icons": "^0.3.0",
+    "axios": "^1.11.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1"
   },
   "devDependencies": {
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
     "typescript": "~5.8.3"
   }
 }

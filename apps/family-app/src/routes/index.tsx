@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthService } from '../services/auth.service';
 import { PrivateRoute } from '../components/PrivateRoute';
+import { Login, Register } from '@smart-aging/packages';
 
 // 家属端页面
 import Layout from '../pages/Layout';
@@ -15,30 +16,17 @@ import Warnings from '../pages/Warnings';
 
 // 根路由重定向组件
 const RootRedirect: React.FC = () => {
-  const isLoggedIn = AuthService.isLoggedIn();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const currentRole = AuthService.getCurrentRole();
 
-  if (!isLoggedIn) {
-    // 重定向到统一登录应用
-    window.location.href = 'http://localhost:5173/login';
-    return null;
-  }
+  useEffect(() => {
+    AuthService.isLoggedIn().then(setIsLoggedIn);
+  }, []);
 
-  // 检查是否是家属角色
-  if (currentRole !== 'family') {
-    // 如果不是家属角色，重定向到对应的应用
-    const roleRedirectMap: Record<string, string> = {
-      elderly: 'http://localhost:5174',
-      nurse: 'http://localhost:5174',
-      admin: 'http://localhost:5176'
-    };
-
-    const redirectPath = roleRedirectMap[currentRole || ''] || 'http://localhost:5173/login';
-    window.location.href = redirectPath;
-    return null;
-  }
-
-  return <Navigate to="/home" replace />;
+  if (isLoggedIn === null) return null; // loading
+  if (!isLoggedIn) return <Navigate to="/login" replace />;
+  if (currentRole === 'family') return <Navigate to="/home" replace />;
+  return <Navigate to="/login" replace />;
 };
 
 // 家属端路由组件
@@ -46,6 +34,9 @@ const FamilyRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 公共路由 - 使用共享的认证页面 */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         {/* 根路径重定向 */}
         <Route path="/" element={<RootRedirect />} />
 

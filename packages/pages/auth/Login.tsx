@@ -10,32 +10,28 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const onFinish = async (values: LoginParams) => {
+  const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      const response = await AuthService.login(values);
-
-      if (response.code === 200) {
-        // 保存用户信息
-        AuthService.saveUserInfo(response.data.token, response.data.user);
-
-        message.success('登录成功');
-
-        // 根据角色重定向到对应的应用
-        const roleRedirectMap: Record<string, string> = {
-          elderly: '/elderly-app',
-          family: '/family-app',
-          nurse: '/nurse-app',
-          admin: '/admin-panel'
-        };
-
-        const redirectPath = roleRedirectMap[response.data.user.role] || '/login';
-        
-        // 使用window.location进行跨应用跳转
-        window.location.href = redirectPath;
-      }
+      const loginParams = {
+        username: values.username,
+        password: values.password,
+      };
+      const response = await AuthService.login(loginParams);
+      message.success('登录成功');
+      const role = response.data.user.role;
+      console.log(role)
+      const roleRedirectMap: Record<string, string> = {
+        elderly: 'http://localhost:5174/home',
+        family: 'http://localhost:5175/home',
+        nurse: 'http://localhost:5173/home',
+        admin: 'http://localhost:5176/home'
+      };
+      setTimeout(() => {
+        window.location.href = roleRedirectMap[role] || '/home';
+      }, 500);
     } catch (error) {
-      message.error('登录失败，请检查手机号和密码');
+      // 不要再弹 message.error，拦截器已经弹了
     } finally {
       setLoading(false);
     }
@@ -64,15 +60,15 @@ const Login: React.FC = () => {
           size="large"
         >
           <Form.Item
-            name="phone"
+            name="username"
             rules={[
-              { required: true, message: '请输入手机号' },
-              { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }
+              { required: true, message: '请输入用户名' },
+              { min: 2, message: '用户名至少2位' }
             ]}
           >
             <Input
               prefix={<UserOutlined />}
-              placeholder="请输入手机号"
+              placeholder="请输入用户名"
             />
           </Form.Item>
 

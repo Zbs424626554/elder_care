@@ -1,4 +1,4 @@
-import { http } from '../utils/request';
+import type { RegisterParams, UserRole } from '../../services/auth.service';
 import type { ApiResponse } from '../utils/request';
 
 // 用户角色类型
@@ -78,10 +78,15 @@ export class AuthService {
   }
 
   /**
-   * 检查是否已登录
+   * 检查是否已登录（通过请求 /auth/profile 判断）
    */
-  static isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+  static async isLoggedIn(): Promise<boolean> {
+    try {
+      const res = await http.get('/auth/profile');
+      return res.code === 200;
+    } catch {
+      return false;
+    }
   }
 
   /**
