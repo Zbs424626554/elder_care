@@ -34,11 +34,13 @@
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.{css,scss,less}": [
       "stylelint --fix"
     ]
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
   }
 }

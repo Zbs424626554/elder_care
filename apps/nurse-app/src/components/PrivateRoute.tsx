@@ -31,15 +31,22 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     const hasPermission = requiredRoles.includes(currentRole);
 
     if (!hasPermission) {
-      // 根据角色重定向到对应的首页
+      // 根据角色重定向到对应的应用
       const roleRedirectMap: Record<UserRole, string> = {
-        elderly: '/elderly-app',
-        family: '/family-app',
-        nurse: '/home',
-        admin: '/admin-panel'
+        elderly: 'http://localhost:5174',
+        family: 'http://localhost:5173',
+        nurse: 'http://localhost:5175',
+        admin: 'http://localhost:5176'
       };
 
       const redirectPath = roleRedirectMap[currentRole] || '/login';
+
+      // 如果是跨应用重定向，使用window.location
+      if (redirectPath.startsWith('http')) {
+        window.location.href = redirectPath;
+        return null;
+      }
+
       return <Navigate to={redirectPath} replace />;
     }
   }
