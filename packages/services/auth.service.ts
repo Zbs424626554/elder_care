@@ -18,7 +18,8 @@ export interface UserInfo {
 
 // 登录请求参数
 export interface LoginParams {
-  phone: string;
+  username?: string;
+  phone?: string;
   password: string;
 }
 

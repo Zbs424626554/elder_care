@@ -1,90 +1,73 @@
-# API 接口文档
+# API详细文档
 
-## 统一接口返回格式
+本文件详细说明智慧养老综合服务平台各端主要API接口的路径、方法、参数、返回值、权限。
 
-所有接口返回如下格式：
+## 1. 登录注册
+### 1.1 用户注册
+- 接口：`POST /api/auth/register`
+- 参数：username, password, phone, role（elderly/family/nurse）
+- 返回：code, data: { user, token }
+- 权限：公开
 
-```json
-{
-  "code": 200,
-  "message": "操作成功",
-  "data": { ... }
-}
-```
-- code: 200 表示成功，其他为业务错误码
-- message: 业务提示信息
-- data: 业务数据
+### 1.2 用户登录
+- 接口：`POST /api/auth/login`
+- 参数：username/phone, password
+- 返回：code, data: { user, token }
+- 权限：公开
 
----
+### 1.3 获取用户信息
+- 接口：`GET /api/auth/profile`
+- 返回：用户详细信息
+- 权限：登录后
 
-## 用户注册
+## 2. 订单相关
+### 2.1 创建订单
+- 接口：`POST /api/order/create`
+- 参数：详见数据库设计
+- 权限：老人/家属端
 
-- URL: `/api/auth/register`
-- Method: POST
-- 请求参数:
-  - username: string
-  - password: string
-  - phone: string
-  - role: "elderly" | "family" | "nurse" | "admin"
-- 响应:
-  ```json
-  {
-    "code": 200,
-    "message": "注册成功",
-    "data": {
-      "user": { ... }
-    }
-  }
-  ```
+### 2.2 订单列表
+- 接口：`GET /api/order/list`
+- 参数：role, userId, status, page, pageSize
+- 权限：所有端
 
----
+### 2.3 订单详情
+- 接口：`GET /api/order/detail/:id`
+- 权限：相关用户
 
-## 用户登录
+## 3. 健康数据
+### 3.1 添加健康记录
+- 接口：`POST /api/health/add`
+- 参数：elderlyId, recordType, value, measuredAt, recordedBy
+- 权限：家属/护工端
 
-- URL: `/api/auth/login`
-- Method: POST
-- 请求参数:
-  - username: string
-  - password: string
-- 响应:
-  ```json
-  {
-    "code": 200,
-    "message": "登录成功",
-    "data": {
-      "token": "...",
-      "user": { ... }
-    }
-  }
-  ```
-- 说明: 登录成功后，token 以 Cookie 形式返回，前端自动携带。
+### 3.2 查询健康记录
+- 接口：`GET /api/health/list?elderlyId=xxx`
+- 权限：老人/家属/护工
 
----
+## 4. 紧急呼叫
+- 接口：`POST /api/emergency/call`
+- 参数：userId, location, audioClip
+- 权限：老人端
 
-## 获取当前用户信息
+## 5. 支付相关
+- 接口：`POST /api/payment/pay`
+- 参数：orderId, amount, payMethod
+- 权限：家属端
+- 接口：`POST /api/payment/withdraw`
+- 参数：nurseId, amount
+- 权限：护工端
 
-- URL: `/api/auth/profile`
-- Method: GET
-- 需携带 Cookie
-- 响应:
-  ```json
-  {
-    "code": 200,
-    "message": "获取成功",
-    "data": {
-      "user": { ... }
-    }
-  }
-  ```
+## 6. 后台管理接口（仅 admin 角色）
+- 用户管理：`GET /api/admin/user/list` `POST /api/admin/user/audit`
+- 订单管理：`GET /api/admin/order/list`
+- 服务内容管理：`GET /api/admin/service/list`
+- 评价投诉管理：`GET /api/admin/review/list` `GET /api/admin/support/list`
+- 数据统计：`GET /api/admin/statistics`
+- 内容管理：`POST /api/admin/announcement`
+- 客服工单：`GET /api/admin/support/list`
+- 基础配置：`POST /api/admin/config`
 
 ---
 
-## 错误码说明
-
-- 200: 成功
-- 400: 参数错误
-- 401: 未授权/未登录
-- 403: 权限不足
-- 404: 用户不存在
-- 409: 用户名或手机号已存在
-- 500: 服务器内部错误 
+详细数据库结构请参考 `database-design.md`。 
