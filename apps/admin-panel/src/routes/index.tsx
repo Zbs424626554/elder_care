@@ -4,8 +4,8 @@ import { AuthService } from '@smart-aging/services';
 import { PrivateRoute } from '@smart-aging/components';
 
 // 公共页面
-import Login from '../pages/auth/Login';
-import Register from '../pages/auth/Register';
+// import Login from '../pages/auth/Login';
+// import Register from '../pages/auth/Register';
 
 // 管理后台页面
 import Layout from '../pages/Layout';
@@ -24,18 +24,12 @@ const RootRedirect: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // 检查是否是管理员角色
+  // 只允许admin访问后台
   if (currentRole !== 'admin') {
-    // 如果不是管理员角色，重定向到对应的应用
-    const roleRedirectMap: Record<string, string> = {
-      elderly: 'http://localhost:5174',
-      family: 'http://localhost:5173',
-      nurse: 'http://localhost:5175'
-    };
-
-    const redirectPath = roleRedirectMap[currentRole || ''] || '/login';
-    window.location.href = redirectPath;
-    return null;
+    // 你可以选择直接登出并跳转到登录页，或者显示无权限提示
+    AuthService.logout(); // 如果有登出方法
+    return <Navigate to="/login" replace />;
+    // 或者 return <div>无权限访问</div>;
   }
 
   return <Navigate to="/dashboard" replace />;
@@ -47,8 +41,8 @@ const AdminRouter: React.FC = () => {
     <BrowserRouter>
       <Routes>
         {/* 公共路由 */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} /> */}
 
         {/* 根路径重定向 */}
         <Route path="/" element={<RootRedirect />} />

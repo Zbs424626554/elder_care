@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, message, Typography } from 'antd';
+import { Form, Input, Button, message, Typography, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthService, LoginParams } from '../../services/auth.service';
@@ -13,24 +13,38 @@ const Login: React.FC = () => {
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      const loginParams = {
+      // 服务器支持 username 或 phone 登录，这里使用 username
+      const loginParams: LoginParams = {
         username: values.username,
         password: values.password,
       };
       const response = await AuthService.login(loginParams);
+      console.log('登录响应:', response);
+
+      // 保存用户信息到本地存储
+      AuthService.saveUserInfo(response.data.token, response.data.user);
+
       message.success('登录成功');
       const role = response.data.user.role;
-      console.log(role)
+      console.log('用户角色:', role);
+
       const roleRedirectMap: Record<string, string> = {
-        elderly: 'http://localhost:5174/home',
-        family: 'http://localhost:5175/home',
-        nurse: 'http://localhost:5173/home',
-        admin: 'http://localhost:5176/home'
+        elderly: 'http://localhost:5173/home',
+        family: 'http://localhost:5174/home',
+        nurse: 'http://localhost:5175/home',
       };
-      setTimeout(() => {
-        window.location.href = roleRedirectMap[role] || '/home';
-      }, 500);
+
+      const redirectUrl = roleRedirectMap[role];
+      if (redirectUrl) {
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 1000); // 增加延迟时间，让用户看到成功消息
+      } else {
+        console.error('未知的用户角色:', role);
+        message.error('用户角色无效');
+      }
     } catch (error) {
+      console.error('登录失败:', error);
       // 不要再弹 message.error，拦截器已经弹了
     } finally {
       setLoading(false);
@@ -68,7 +82,7 @@ const Login: React.FC = () => {
           >
             <Input
               prefix={<UserOutlined />}
-              placeholder="请输入用户名"
+              placeholder="请输入用户名或手机号"
             />
           </Form.Item>
 
