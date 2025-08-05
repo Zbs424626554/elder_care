@@ -4,10 +4,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
 import authRoutes from './routes/auth.routes';
-
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 const app = express();
+app.use(cookieParser());
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -18,6 +20,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(morgan('dev')); 
 
 // 连接数据库
 connectDB();
