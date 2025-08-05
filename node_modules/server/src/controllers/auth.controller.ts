@@ -79,17 +79,23 @@ export class AuthController {
   // 获取当前用户信息（需登录）
   static async getProfile(req: Request, res: Response) {
     try {
-      const userId = (req as any).userId || req.body.userId;
-      if (!userId) {
-        return res.status(401).json({ message: '未登录' });
-      }
+      const userId = (req as any).userId;
       const user = await User.findById(userId).select('-password');
+
       if (!user) {
         return res.status(404).json({ message: '用户不存在' });
       }
-      return res.json({ user });
+      return res.json({
+        code: 200,
+        message: '获取成功',
+        data: { user }
+      });
     } catch (error) {
-      return res.status(500).json({ message: '获取用户信息失败', error });
+      const errorMessage = error instanceof Error ? error.message : '未知错误';
+      return res.status(500).json({
+        message: '获取用户信息失败',
+        error: errorMessage
+      });
     }
   }
 } 
