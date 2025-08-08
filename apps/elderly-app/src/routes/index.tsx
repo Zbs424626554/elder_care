@@ -1,16 +1,16 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthService } from '../services/auth.service';
-import { PrivateRoute } from '../components/PrivateRoute';
-import { Login, Register } from '@smart-aging/packages';
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthService } from "../services/auth.service";
+import { PrivateRoute } from "../components/PrivateRoute";
+import { Login, Register } from "@smart-aging/packages";
 // 老人端页面
-import Layout from '../pages/Layout';
-import Home from '../pages/Home';
-import Profile from '../pages/Profile';
-import Health from '../pages/Health';
-import Nurses from '../pages/Nurses';
-import Orders from '../pages/Orders';
-import Emergency from '../pages/Emergency';
+import Layout from "../pages/Layout";
+import Home from "../pages/Home";
+import Order from "../pages/Order";
+import My from "../pages/My";
+import Message from "../pages/Message";
+import Heath from "../pages/Heath";
+import Chat from "../pages/Chat";
 
 // 根路由重定向组件
 const RootRedirect: React.FC = () => {
@@ -21,7 +21,7 @@ const RootRedirect: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  if (currentRole === 'elderly') {
+  if (currentRole === "elderly") {
     return <Navigate to="/home" replace />;
   }
 
@@ -45,18 +45,18 @@ const ElderlyRouter: React.FC = () => {
         <Route
           path="/home"
           element={
-            <PrivateRoute requiredRoles={['elderly']}>
+            <PrivateRoute requiredRoles={["elderly"]}>
               <Layout />
             </PrivateRoute>
           }
         >
           <Route index element={<Home />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="health" element={<Health />} />
-          <Route path="nurses" element={<Nurses />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="emergency" element={<Emergency />} />
+          <Route path="order" element={<Order />} />
+          <Route path="message" element={<Message />} />
+          <Route path="my" element={<My />} />
+          <Route path="health" element={<Heath />} />
         </Route>
+        <Route path="chat/:id" element={<Chat />} />
 
         {/* 404页面 */}
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -65,4 +65,4 @@ const ElderlyRouter: React.FC = () => {
   );
 };
 
-export default ElderlyRouter; 
+export default ElderlyRouter;

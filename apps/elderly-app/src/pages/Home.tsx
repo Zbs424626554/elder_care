@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, Typography } from 'antd';
-import { AuthService } from '../services/auth.service';
+import React from "react";
+import { Card, Typography } from "antd";
+import { AuthService } from "../services/auth.service";
 
 const { Title } = Typography;
 
@@ -18,4 +18,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home; 
+export default Home;

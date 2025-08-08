@@ -1,7 +1,7 @@
-import jwt, { SignOptions } from 'jsonwebtoken';
+import jwt, { SignOptions } from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 export function generateToken(payload: object) {
   // 这里加 as any 解决类型报错

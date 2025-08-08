@@ -1,6 +1,6 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { AuthService, UserRole } from '../services/auth.service';
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { AuthService, UserRole } from "../services/auth.service";
 
 // 路由守卫属性接口
 interface PrivateRouteProps {
@@ -13,7 +13,7 @@ interface PrivateRouteProps {
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   children,
   requiredRoles = [],
-  redirectTo = '/login'
+  redirectTo = "/login",
 }) => {
   const location = useLocation();
   const isLoggedIn = AuthService.isLoggedIn();
@@ -32,16 +32,16 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     if (!hasPermission) {
       // 根据角色重定向到对应的应用
       const roleRedirectMap: Record<UserRole, string> = {
-        elderly: 'http://localhost:5174',
-        family: 'http://localhost:5173',
-        nurse: 'http://localhost:5175',
-        admin: 'http://localhost:5176'
+        elderly: "http://localhost:5174",
+        family: "http://localhost:5173",
+        nurse: "http://localhost:5175",
+        admin: "http://localhost:5176",
       };
 
-      const redirectPath = roleRedirectMap[currentRole] || '/login';
+      const redirectPath = roleRedirectMap[currentRole] || "/login";
 
       // 如果是跨应用重定向，使用window.location
-      if (redirectPath.startsWith('http')) {
+      if (redirectPath.startsWith("http")) {
         window.location.href = redirectPath;
         return null;
       }
@@ -57,7 +57,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
 export const RoleRoute: React.FC<PrivateRouteProps> = ({
   children,
   requiredRoles,
-  redirectTo
+  redirectTo,
 }) => {
   return (
     <PrivateRoute requiredRoles={requiredRoles} redirectTo={redirectTo}>
@@ -67,21 +67,29 @@ export const RoleRoute: React.FC<PrivateRouteProps> = ({
 };
 
 // 老人端路由守卫
-export const ElderlyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <RoleRoute requiredRoles={['elderly']}>{children}</RoleRoute>;
+export const ElderlyRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return <RoleRoute requiredRoles={["elderly"]}>{children}</RoleRoute>;
 };
 
 // 家属端路由守卫
-export const FamilyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <RoleRoute requiredRoles={['family']}>{children}</RoleRoute>;
+export const FamilyRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return <RoleRoute requiredRoles={["family"]}>{children}</RoleRoute>;
 };
 
 // 护工端路由守卫
-export const NurseRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <RoleRoute requiredRoles={['nurse']}>{children}</RoleRoute>;
+export const NurseRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return <RoleRoute requiredRoles={["nurse"]}>{children}</RoleRoute>;
 };
 
 // 管理员路由守卫
-export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <RoleRoute requiredRoles={['admin']}>{children}</RoleRoute>;
-}; 
+export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return <RoleRoute requiredRoles={["admin"]}>{children}</RoleRoute>;
+};

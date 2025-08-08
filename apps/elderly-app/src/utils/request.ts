@@ -1,6 +1,6 @@
-import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { message } from 'antd';
+import axios from "axios";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { message } from "antd";
 
 // 响应数据接口
 export interface ApiResponse<T = any> {
@@ -18,16 +18,19 @@ export interface RequestConfig extends AxiosRequestConfig {
 // 获取API基础URL
 const getApiBaseUrl = () => {
   // 在浏览器环境中，使用import.meta.env（Vite）或window.location
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     // 开发环境
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      return 'http://localhost:3001/api';
+    if (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
+    ) {
+      return "http://localhost:3001/api";
     }
     // 生产环境
-    return '/api';
+    return "/api";
   }
   // 服务端环境
-  return process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api';
+  return process.env.REACT_APP_API_BASE_URL || "http://localhost:3001/api";
 };
 
 // 创建axios实例
@@ -35,7 +38,7 @@ const request: AxiosInstance = axios.create({
   baseURL: getApiBaseUrl(),
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -43,15 +46,15 @@ const request: AxiosInstance = axios.create({
 request.interceptors.request.use(
   (config) => {
     // 添加token到请求头
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
     // 添加用户角色信息
-    const userRole = localStorage.getItem('userRole');
+    const userRole = localStorage.getItem("userRole");
     if (userRole) {
-      config.headers['X-User-Role'] = userRole;
+      config.headers["X-User-Role"] = userRole;
     }
 
     return config;
@@ -72,25 +75,25 @@ request.interceptors.response.use(
       switch (data.code) {
         case 401:
           // 未授权，清除token并跳转到登录页
-          localStorage.removeItem('token');
-          localStorage.removeItem('userRole');
-          localStorage.removeItem('userInfo');
-          window.location.href = '/login';
+          localStorage.removeItem("token");
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("userInfo");
+          window.location.href = "/login";
           break;
         case 403:
           // 权限不足
-          message.error('权限不足，无法访问该功能');
+          message.error("权限不足，无法访问该功能");
           break;
         case 404:
-          message.error('请求的资源不存在');
+          message.error("请求的资源不存在");
           break;
         case 500:
-          message.error('服务器内部错误');
+          message.error("服务器内部错误");
           break;
         default:
-          message.error(data.message || '请求失败');
+          message.error(data.message || "请求失败");
       }
-      return Promise.reject(new Error(data.message || '请求失败'));
+      return Promise.reject(new Error(data.message || "请求失败"));
     }
 
     return data;
@@ -102,28 +105,28 @@ request.interceptors.response.use(
 
       switch (status) {
         case 401:
-          message.error('登录已过期，请重新登录');
-          localStorage.removeItem('token');
-          localStorage.removeItem('userRole');
-          localStorage.removeItem('userInfo');
-          window.location.href = '/login';
+          message.error("登录已过期，请重新登录");
+          localStorage.removeItem("token");
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("userInfo");
+          window.location.href = "/login";
           break;
         case 403:
-          message.error('权限不足');
+          message.error("权限不足");
           break;
         case 404:
-          message.error('请求的资源不存在');
+          message.error("请求的资源不存在");
           break;
         case 500:
-          message.error('服务器内部错误');
+          message.error("服务器内部错误");
           break;
         default:
-          message.error(data?.message || '请求失败');
+          message.error(data?.message || "请求失败");
       }
     } else if (error.request) {
-      message.error('网络连接失败，请检查网络设置');
+      message.error("网络连接失败，请检查网络设置");
     } else {
-      message.error('请求配置错误');
+      message.error("请求配置错误");
     }
 
     return Promise.reject(error);
@@ -132,26 +135,44 @@ request.interceptors.response.use(
 
 // 封装请求方法
 export const http = {
-  get: <T = any>(url: string, config?: RequestConfig): Promise<ApiResponse<T>> => {
+  get: <T = any>(
+    url: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> => {
     return request.get(url, config);
   },
 
-  post: <T = any>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> => {
+  post: <T = any>(
+    url: string,
+    data?: any,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> => {
     return request.post(url, data, config);
   },
 
-  put: <T = any>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> => {
+  put: <T = any>(
+    url: string,
+    data?: any,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> => {
     return request.put(url, data, config);
   },
 
-  patch: <T = any>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> => {
+  patch: <T = any>(
+    url: string,
+    data?: any,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> => {
     return request.patch(url, data, config);
   },
 
-  delete: <T = any>(url: string, config?: RequestConfig): Promise<ApiResponse<T>> => {
+  delete: <T = any>(
+    url: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> => {
     return request.delete(url, config);
   },
 };
 
 // 导出axios实例
-export default request; 
+export default request;

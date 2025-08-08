@@ -1,8 +1,9 @@
-import { http } from '../utils/request';
-import type { ApiResponse } from '../utils/request';
+import { http } from "../utils/request";
+import type { ApiResponse } from "../utils/request";
+import { clearAllCookies } from "../utils/cookie";
 
 // 用户角色类型
-export type UserRole = 'elderly' | 'family' | 'nurse' | 'admin';
+export type UserRole = "elderly" | "family" | "nurse" | "admin";
 
 // 用户信息接口
 export interface UserInfo {
@@ -42,61 +43,74 @@ export class AuthService {
   /**
    * 用户注册
    */
-  static async register(params: RegisterParams): Promise<ApiResponse<LoginResponse>> {
-    return http.post('/auth/register', params);
+  static async register(
+    params: RegisterParams
+  ): Promise<ApiResponse<LoginResponse>> {
+    return http.post("/auth/register", params);
   }
 
   /**
    * 用户登录
    */
   static async login(params: LoginParams): Promise<ApiResponse<LoginResponse>> {
-    return http.post('/auth/login', params);
+    return http.post("/auth/login", params);
   }
 
   /**
    * 获取用户信息
    */
   static async getProfile(): Promise<ApiResponse<UserInfo>> {
-    return http.get('/auth/profile');
+    return http.get("/auth/profile");
   }
 
   /**
    * 更新用户信息
    */
-  static async updateProfile(data: Partial<UserInfo>): Promise<ApiResponse<UserInfo>> {
-    return http.put('/auth/profile', data);
+  static async updateProfile(
+    data: Partial<UserInfo>
+  ): Promise<ApiResponse<UserInfo>> {
+    return http.put("/auth/profile", data);
   }
 
   /**
    * 退出登录
    */
   static logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userInfo');
-    window.location.href = '/login';
+    // 清除localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userInfo");
+
+    // 清除所有cookie
+    clearAllCookies();
+
+    // 清除sessionStorage（如果有的话）
+    sessionStorage.clear();
+
+    // 跳转到登录页
+    window.location.href = "/login";
   }
 
   /**
    * 检查是否已登录
    */
   static isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem("token");
   }
 
   /**
    * 获取当前用户角色
    */
   static getCurrentRole(): UserRole | null {
-    return localStorage.getItem('userRole') as UserRole | null;
+    return localStorage.getItem("userRole") as UserRole | null;
   }
 
   /**
    * 获取当前用户信息
    */
-  
+
   static getCurrentUser(): UserInfo | null {
-    const userInfo = localStorage.getItem('userInfo');
+    const userInfo = localStorage.getItem("userInfo");
     return userInfo ? JSON.parse(userInfo) : null;
   }
 
@@ -104,8 +118,8 @@ export class AuthService {
    * 保存用户信息到本地存储
    */
   static saveUserInfo(token: string, user: UserInfo): void {
-    localStorage.setItem('token', token);
-    localStorage.setItem('userRole', user.role);
-    localStorage.setItem('userInfo', JSON.stringify(user));
+    localStorage.setItem("token", token);
+    localStorage.setItem("userRole", user.role);
+    localStorage.setItem("userInfo", JSON.stringify(user));
   }
-} 
+}
