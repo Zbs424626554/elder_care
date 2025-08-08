@@ -30,7 +30,7 @@ const RootRedirect: React.FC = () => {
 };
 
 // 家属端路由组件
-const FamilyRouter: React.FC = () => {
+const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
@@ -49,11 +49,16 @@ const FamilyRouter: React.FC = () => {
             </PrivateRoute>
           }
         >
+          {/* 首页 - 默认路由 */}
           <Route index element={<Home />} />
-          <Route path="profile" element={<Profile />} />
+
+          {/* 主要标签页路由 */}
           <Route path="elderly" element={<Elderly />} />
           <Route path="health" element={<Health />} />
           <Route path="nurses" element={<Nurses />} />
+          <Route path="profile" element={<Profile />} />
+
+          {/* 通过首页链接访问的页面 */}
           <Route path="orders" element={<Orders />} />
           <Route path="warnings" element={<Warnings />} />
         </Route>
@@ -65,4 +70,4 @@ const FamilyRouter: React.FC = () => {
   );
 };
 
-export default FamilyRouter; 
+export default AppRouter; 
