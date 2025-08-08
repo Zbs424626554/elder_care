@@ -14,40 +14,40 @@ export interface IEmergencyAlert extends Document {
 }
 
 const emergencyAlertSchema = new Schema({
-  userId: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'User', 
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
-  triggerTime: { 
-    type: Date, 
+  triggerTime: {
+    type: Date,
     default: Date.now
   },
   location: {
-    type: { 
-      type: String, 
-      default: 'Point'
+    type: {
+      type: String
     },
     coordinates: {
-      type: [Number]
+      type: [Number],
+      default: undefined
     }
   },
-  audioClip: { 
+  audioClip: {
     type: String
   },
-  aiAnalysis: { 
+  aiAnalysis: {
     type: String
   },
-  status: { 
-    type: String, 
+  status: {
+    type: String,
     enum: ['pending', 'handled', 'falseAlarm'],
     default: 'pending'
   },
-  handledBy: { 
-    type: Schema.Types.ObjectId, 
+  handledBy: {
+    type: Schema.Types.ObjectId,
     ref: 'User'
   }
-}, { 
+}, {
   timestamps: true,
   collection: 'emergency_alerts'
 });
