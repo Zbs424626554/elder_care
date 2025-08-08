@@ -6,11 +6,10 @@ import { Login, Register } from '@smart-aging/packages';
 // 老人端页面
 import Layout from '../pages/Layout';
 import Home from '../pages/Home';
-import Profile from '../pages/Profile';
-import Health from '../pages/Health';
-import Nurses from '../pages/Nurses';
-import Orders from '../pages/Orders';
 import Emergency from '../pages/Emergency';
+import Orders from '../pages/Orders';
+import Nurses from '../pages/Nurses';
+import Profile from '../pages/Profile';
 
 // 根路由重定向组件
 const RootRedirect: React.FC = () => {
@@ -50,12 +49,11 @@ const ElderlyRouter: React.FC = () => {
             </PrivateRoute>
           }
         >
-          <Route index element={<Home />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="health" element={<Health />} />
-          <Route path="nurses" element={<Nurses />} />
+          <Route index element={<Emergency />} />
+          <Route path="call" element={<Emergency />} />
           <Route path="orders" element={<Orders />} />
-          <Route path="emergency" element={<Emergency />} />
+          <Route path="messages" element={<Nurses />} />
+          <Route path="mine" element={<Profile />} />
         </Route>
 
         {/* 404页面 */}

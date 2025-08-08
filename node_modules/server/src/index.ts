@@ -1,14 +1,21 @@
 // server/src/index.ts
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
 import authRoutes from './routes/auth.routes';
+import emergencyRoutes from './routes/emergency.routes';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import { initSocket } from './config/socket';
+
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const io = initSocket(server);
+
 app.use(cookieParser());
 app.use(cors({
   origin: [
@@ -19,16 +26,15 @@ app.use(cors({
   ],
   credentials: true
 }));
-app.use(express.json());
-app.use(morgan('dev')); 
+app.use(express.json({ limit: '10mb' }));
+app.use(morgan('dev'));
 
-// 连接数据库
 connectDB();
 
-// 路由
 app.use('/api/auth', authRoutes);
+app.use('/api/emergency', emergencyRoutes(io));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

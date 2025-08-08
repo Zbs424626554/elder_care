@@ -68,10 +68,10 @@ const Layout: React.FC = () => {
   return (
     <AntLayout style={{ minHeight: '100vh' }}>
       <Sider>
-        <div style={{ 
-          height: 64, 
-          display: 'flex', 
-          alignItems: 'center', 
+        <div style={{
+          height: 64,
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'center',
           color: 'white',
           fontSize: 18,
@@ -88,8 +88,8 @@ const Layout: React.FC = () => {
         />
       </Sider>
       <AntLayout>
-        <Header style={{ 
-          padding: '0 16px', 
+        <Header style={{
+          padding: '0 16px',
           background: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -100,7 +100,7 @@ const Layout: React.FC = () => {
             退出登录
           </Button>
         </Header>
-        <Content style={{ 
+        <Content style={{
           margin: '16px',
           padding: '24px',
           background: '#fff',
