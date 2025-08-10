@@ -13,3 +13,6 @@ import Register from './pages/auth/Register';
 
 export { default as Login } from './pages/auth/Login';
 export { default as Register } from './pages/auth/Register'; 
+
+// 导出主路由组件
+export { default as MainRouter } from './routes/MainRouter';

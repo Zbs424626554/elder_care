@@ -15,7 +15,7 @@ const Layout: React.FC = () => {
   const tabs = [
     { key: '/home/call', title: '呼叫', icon: <AppOutline /> },
     { key: '/home/orders', title: '订单', icon: <UnorderedListOutline /> },
-    { key: '/home/messages', title: '消息', icon: <MessageOutline /> },
+    { key: '/home/message', title: '消息', icon: <MessageOutline /> },
     { key: '/home/mine', title: '我的', icon: <UserOutline /> },
   ];
 

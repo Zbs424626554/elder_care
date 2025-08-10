@@ -1,14 +1,19 @@
 import React from 'react';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
-import AppRouter from './routes';
+import {BrowserRouter} from 'react-router-dom'
+
+// import AppRouter from './routes';
+import NurseRoutes from './routes/NurseRoutes';
 import './App.css';
 
 const App: React.FC = () => {
   return (
+    <BrowserRouter>
     <ConfigProvider locale={zhCN}>
-      <AppRouter />
+      <NurseRoutes />
     </ConfigProvider>
+    </BrowserRouter>
   );
 };
 
