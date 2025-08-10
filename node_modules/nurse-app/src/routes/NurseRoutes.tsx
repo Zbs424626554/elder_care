@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthService } from '../services/auth.service';
 import { PrivateRoute } from '../components/PrivateRoute';
 import { Login, Register } from '@smart-aging/packages';
@@ -12,6 +12,9 @@ import Certification from '../pages/Certification';
 import Orders from '../pages/Orders';
 import Income from '../pages/Income';
 import Schedule from '../pages/Schedule';
+
+import Message from '../pages/Message';
+import Health from '../pages/Health';
 
 // 根路由重定向组件
 const RootRedirect: React.FC = () => {
@@ -33,34 +36,37 @@ const RootRedirect: React.FC = () => {
 // 护工端路由组件
 const NurseRoutes: React.FC = () => {
   return (
-      <Routes>
-        {/* 公共路由 - 使用共享的认证页面 */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <Routes>
+      {/* 公共路由 - 使用共享的认证页面 */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-        {/* 根路径重定向 */}
-        <Route path="/" element={<RootRedirect />} />
+      {/* 根路径重定向 */}
+      <Route path="/" element={<RootRedirect />} />
 
-        {/* 护工端路由 */}
-        <Route
-          path="/home"
-          element={
-            <PrivateRoute requiredRoles={['nurse']}>
-              <Layout />
-            </PrivateRoute>
-          }
-        >
-          <Route index element={<Home />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="certification" element={<Certification />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="income" element={<Income />} />
-          <Route path="schedule" element={<Schedule />} />
-        </Route>
+      {/* 护工端路由 */}
+      <Route
+        path="/home"
+        element={
+          <PrivateRoute requiredRoles={['nurse']}>
+            <Layout />
+          </PrivateRoute>
+        }
+      >
+        <Route index element={<Home />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="certification" element={<Certification />} />
+        <Route path="orders" element={<Orders />} />
+        <Route path="income" element={<Income />} />
+        <Route path="schedule" element={<Schedule />} />
 
-        {/* 404页面 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+        <Route path="message" element={<Message />} />
+        <Route path="health" element={<Health />} />
+      </Route>
+
+      {/* 404页面 */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 
