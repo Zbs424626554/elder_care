@@ -1,21 +1,12 @@
 import React from 'react';
-import { Card, Typography } from 'antd';
-import { AuthService } from '../services/auth.service';
-
-const { Title } = Typography;
+import { Empty } from 'antd-mobile';
 
 const Home: React.FC = () => {
-  const currentUser = AuthService.getCurrentUser();
-
   return (
-    <div>
-      <Title level={2}>老人端首页</Title>
-      <Card>
-        <p>欢迎，{currentUser?.realname || currentUser?.username}</p>
-        <p>这里是老人端的首页，具体功能待开发...</p>
-      </Card>
+    <div style={{ padding: 16 }}>
+      <Empty description="首页（占位）" />
     </div>
   );
 };
 
-export default Home; 
+export default Home;

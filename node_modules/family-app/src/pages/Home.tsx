@@ -11,6 +11,7 @@ import {
 } from 'antd-mobile-icons';
 import styles from './Home.module.css';
 
+
 const Home: React.FC = () => {
   const handleFunctionClick = (type: string) => {
     console.log('点击功能:', type);
@@ -19,6 +20,14 @@ const Home: React.FC = () => {
   const handleQuickAction = (action: string) => {
     console.log('快捷操作:', action);
   };
+
+  const quickActions = [
+    { icon: '📞', title: '紧急呼叫', color: '#ff4d4f' },
+    { icon: '❤️', title: '健康监测', color: '#52c41a' },
+    { icon: '👩‍⚕️', title: '护工服务', color: '#1890ff' },
+    { icon: '📋', title: '订单管理', color: '#722ed1' },
+    { icon: '⚠️', title: '健康预警', color: '#fa8c16' },
+  ];
 
   return (
     <div className={styles.home}>
