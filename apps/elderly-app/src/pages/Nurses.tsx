@@ -1,17 +1,12 @@
 import React from 'react';
-import { Card, Typography } from 'antd';
-
-const { Title } = Typography;
+import { Empty } from 'antd-mobile';
 
 const Nurses: React.FC = () => {
   return (
-    <div>
-      <Title level={2}>护工列表</Title>
-      <Card>
-        <p>护工列表页面，具体功能待开发...</p>
-      </Card>
+    <div style={{ padding: 16 }}>
+      <Empty description="消息（占位）" />
     </div>
   );
 };
 
-export default Nurses; 
+export default Nurses;

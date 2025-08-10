@@ -1,5 +1,5 @@
-import type { RegisterParams, UserRole } from '../../services/auth.service';
 import type { ApiResponse } from '../utils/request';
+import { http } from '../utils/request';
 
 // 用户角色类型
 export type UserRole = 'elderly' | 'family' | 'nurse' | 'admin';

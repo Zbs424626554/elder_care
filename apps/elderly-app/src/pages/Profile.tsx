@@ -1,17 +1,12 @@
 import React from 'react';
-import { Card, Typography } from 'antd';
-
-const { Title } = Typography;
+import { Empty } from 'antd-mobile';
 
 const Profile: React.FC = () => {
   return (
-    <div>
-      <Title level={2}>个人信息</Title>
-      <Card>
-        <p>个人信息页面，具体功能待开发...</p>
-      </Card>
+    <div style={{ padding: 16 }}>
+      <Empty description="我的（占位）" />
     </div>
   );
 };
 
-export default Profile; 
+export default Profile;
