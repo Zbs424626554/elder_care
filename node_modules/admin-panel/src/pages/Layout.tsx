@@ -1,71 +1,110 @@
-import React from 'react';
-import { Layout as AntLayout, Menu, Button } from 'antd';
+import React, { useState, useMemo } from 'react';
+import { Layout as AntLayout, Menu, Button, message } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { usePermissions } from '../hooks/usePermissions';
+import { AuthService } from '../services/AuthService';
 import {
   DashboardOutlined,
   UserOutlined,
   FileTextOutlined,
   SettingOutlined,
   LogoutOutlined,
+  MessageOutlined,
+  SafetyOutlined,
+  AccountBookOutlined,
+  ToolOutlined,
+  ExclamationCircleOutlined,
+  FundOutlined,
+  KeyOutlined
 } from '@ant-design/icons';
-import { AuthService } from '@smart-aging/services';
 
 const { Header, Sider, Content } = AntLayout;
 
-const Layout: React.FC = () => {
+// 菜单图标映射
+const menuIconMap: Record<string, React.ReactNode> = {
+  '/dashboard': <DashboardOutlined />,
+  '/dashboard/users': <UserOutlined />,
+  '/dashboard/permissions': <KeyOutlined />,
+  '/dashboard/approve': <SafetyOutlined />,
+  '/dashboard/orders': <FileTextOutlined />,
+  '/dashboard/payments': <AccountBookOutlined />,
+  '/dashboard/services': <ToolOutlined />,
+  '/dashboard/disputes': <ExclamationCircleOutlined />,
+  '/dashboard/reviews-complaints': <MessageOutlined />,
+  '/dashboard/data-summary': <FundOutlined />,
+  '/dashboard/settings': <SettingOutlined />,
+  '/dashboard/announcements': <MessageOutlined />,
+  '/dashboard/support-tickets': <MessageOutlined />,
+  '/dashboard/config': <ToolOutlined />,
+};
+
+const Layout: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentUser = AuthService.getCurrentUser();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { permissions, role, loading } = usePermissions();
 
-  const menuItems = [
-    {
-      key: '/dashboard',
-      icon: <DashboardOutlined />,
-      label: '仪表盘',
-    },
-    {
-      key: '/dashboard/users',
-      icon: <UserOutlined />,
-      label: '用户管理',
-    },
-    {
-      key: '/dashboard/orders',
-      icon: <FileTextOutlined />,
-      label: '订单管理',
-    },
-    {
-      key: '/dashboard/services',
-      icon: <SettingOutlined />,
-      label: '服务管理',
-    },
-    {
-      key: '/dashboard/settings',
-      icon: <SettingOutlined />,
-      label: '系统设置',
-    },
-  ];
+  // 根据用户角色和权限过滤菜单
+  const menuItems = useMemo(() => {
+    // 导航来源：根据角色默认页面 + 用户 pagePermissions 白名单过滤
+    const items = permissions.map(p => ({
+      key: p.key,
+      icon: menuIconMap[p.key] || <FileTextOutlined />,
+      label: p.label,
+    }));
+    if (!items.find(i => i.key === '/dashboard')) {
+      items.unshift({ key: '/dashboard', icon: menuIconMap['/dashboard'], label: '仪表盘' });
+    }
+    return items;
+  }, [permissions]);
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);
   };
 
   const handleLogout = () => {
-    AuthService.logout();
+    // 防止重复点击
+    if (isLoggingOut) return;
+    
+    try {
+      setIsLoggingOut(true);
+      message.loading('正在退出登录...', 0.5);
+      
+      // 调用登出逻辑
+      if (onLogout) {
+        onLogout();
+      } else {
+        // 后备：直接通过 AuthService 登出
+        AuthService.logout().finally(() => navigate('/login'));
+      }
+      
+      // 显示成功消息
+      message.success('退出成功');
+    } catch (error) {
+      console.error('退出登录失败:', error);
+      message.error('退出失败，请重试');
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
     <AntLayout style={{ minHeight: '100vh' }}>
-      <Sider>
-        <div style={{
-          height: 64,
-          display: 'flex',
-          alignItems: 'center',
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="0"
+        theme="dark"
+      >
+        <div style={{ 
+          height: '64px', 
+          display: 'flex', 
+          alignItems: 'center', 
           justifyContent: 'center',
           color: 'white',
-          fontSize: 18,
+          fontSize: '18px',
           fontWeight: 'bold'
         }}>
-          管理后台
+          智慧养老管理系统
         </div>
         <Menu
           theme="dark"
@@ -76,26 +115,27 @@ const Layout: React.FC = () => {
         />
       </Sider>
       <AntLayout>
-        <Header style={{
-          padding: '0 16px',
-          background: '#fff',
-          display: 'flex',
+        <Header style={{ 
+          padding: '0 24px', 
+          background: '#fff', 
+          display: 'flex', 
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'flex-end'
         }}>
-          <div>欢迎，{currentUser?.realname || currentUser?.username}</div>
-          <Button onClick={handleLogout} icon={<LogoutOutlined />}>
+          <Button
+            type="primary"
+            danger
+            icon={<LogoutOutlined />}
+            onClick={handleLogout}
+            loading={isLoggingOut}
+          >
             退出登录
           </Button>
         </Header>
-        <Content style={{
-          margin: '16px',
-          padding: '24px',
-          background: '#fff',
-          borderRadius: '8px',
-          minHeight: 'calc(100vh - 112px)'
-        }}>
-          <Outlet />
+        <Content style={{ margin: '24px 16px 0' }}>
+          <div style={{ padding: 24, minHeight: 360, background: '#fff' }}>
+            <Outlet />
+          </div>
         </Content>
       </AntLayout>
     </AntLayout>
