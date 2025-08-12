@@ -13,7 +13,7 @@ export interface IHealthWarning extends Document {
 const healthWarningSchema = new Schema({
   elderlyId: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'UserAdmin',
     required: true
   },
   metric: {

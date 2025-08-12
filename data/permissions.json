@@ -1,0 +1,60 @@
+[
+  {
+    "_id": {"$oid": "71d5ec9af682fbd12a893b01"},
+    "roleId": "admin",
+    "roleName": "管理员",
+    "permissions": [
+      "user_manage",
+      "user_audit",
+      "order_manage",
+      "order_intervene",
+      "service_manage",
+      "review_manage",
+      "complaint_manage",
+      "support_manage",
+      "statistics_view",
+      "content_manage",
+      "system_config"
+    ],
+    "description": "系统管理员，拥有所有权限",
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-01-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "71d5ec9af682fbd12a893b04"},
+    "roleId": "nurse",
+    "roleName": "护工",
+    "permissions": [
+      "profile_view",
+      "profile_edit",
+      "certification_manage",
+      "order_view",
+      "order_accept",
+      "health_add",
+      "payment_withdraw",
+      "review_appeal",
+      "support_create"
+    ],
+    "description": "护工用户，可以接单、提供服务、记录健康数据等",
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-01-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "71d5ec9af682fbd12a893b05"},
+    "roleId": "customer_service",
+    "roleName": "客服",
+    "permissions": [
+      "user_view",
+      "order_view",
+      "order_intervene",
+      "review_view",
+      "complaint_view",
+      "complaint_process",
+      "support_manage",
+      "content_view"
+    ],
+    "description": "客服人员，可以处理用户投诉、工单等",
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-01-01T00:00:00Z"}
+  }
+] 

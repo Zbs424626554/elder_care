@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { User } from '../models/user.model';
-import { generateToken } from '../utils/jwt';
+import { UserAdmin } from '../models/usersadmin.model';
+import { generateTokens } from '../utils/jwt';
 
 export class AuthController {
   // 注册
@@ -8,18 +8,18 @@ export class AuthController {
     try {
       const { username, password, phone, role, realname } = req.body;
       if (!username || !password || !phone || !role) {
-        return res.json({ code: 400, message: '缺少必要参数', data: null });
+        return res.fail(400, '缺少必要参数');
       }
       // 角色校验
       const validRoles = ['elderly', 'family', 'nurse'];
       if (!validRoles.includes(role)) {
-        return res.json({ code: 400, message: '角色不合法', data: null });
+        return res.fail(400, '角色不合法');
       }
-      const exist = await User.findOne({ $or: [{ username }, { phone }] });
+      const exist = await UserAdmin.findOne({ $or: [{ username }, { phone }] });
       if (exist) {
-        return res.json({ code: 409, message: '用户名或手机号已存在', data: null });
+        return res.fail(409, '用户名或手机号已存在');
       }
-      const user = await User.create({ username, password, phone, role, realname });
+      const user = await UserAdmin.create({ username, password, phone, role, realname });
       const userInfo = {
         _id: user._id,
         username: user.username,
@@ -30,49 +30,99 @@ export class AuthController {
         status: user.status,
         createdTime: user.createdTime
       };
-      return res.json({ code: 200, message: '注册成功', data: { user: userInfo } });
+      return res.success({ user: userInfo }, '注册成功');
     } catch (error) {
-      return res.json({ code: 500, message: '注册失败', data: null });
+      return res.error('注册失败', error);
     }
   }
 
   // 登录
   static async login(req: Request, res: Response) {
     try {
+      console.log('登录请求数据:', req.body);
       const { username, phone, password } = req.body;
       if ((!username && !phone) || !password) {
-        return res.json({ code: 400, message: '缺少用户名或手机号或密码', data: null });
+        return res.fail(400, '缺少用户名或手机号或密码');
       }
-      // 支持用户名或手机号登录
-      const user = await User.findOne({ $or: [{ username }, { phone }] });
+      
+      // 支持用户名或手机号登录（过滤掉未提供的字段，避免 undefined 影响匹配）
+      const orConditions: any[] = [];
+      if (username) orConditions.push({ username });
+      if (phone) orConditions.push({ phone });
+      const query = orConditions.length > 1
+        ? { $or: orConditions }
+        : (orConditions[0] || { _id: null });
+      console.log('查询条件:', query);
+
+      const user = await UserAdmin.findOne(query);
+      console.log('查询到的用户:', user);
+      
       if (!user) {
-        return res.json({ code: 404, message: '用户不存在', data: null });
+        return res.fail(404, '用户不存在');
       }
+      
       const isMatch = await user.comparePassword(password);
+      console.log('密码匹配结果:', isMatch);
+      
       if (!isMatch) {
-        return res.json({ code: 401, message: '密码错误', data: null });
+        // 开发环境兼容：若密码不匹配，且用户为 admin 且密码为 123456，则允许快速登录
+        if (process.env.NODE_ENV === 'development' && username === 'admin' && password === '123456') {
+          console.log('开发环境快速登录: admin/123456');
+        } else {
+          return res.fail(401, '密码错误');
+        }
       }
-      const token = generateToken({ id: user._id, role: user.role });
+      
+      // 检查用户状态
+      if (user.status !== 'active') {
+        return res.fail(403, `账号状态异常: ${user.status}`);
+      }
+      
+      // 生成双令牌
+      const { accessToken, refreshToken } = generateTokens({ 
+        id: user._id, 
+        role: user.role 
+      });
+      
       const userInfo = {
         _id: user._id,
         username: user.username,
         phone: user.phone,
         role: user.role,
+        adminRole: user.adminRole,
         realname: user.realname,
         avatar: user.avatar,
         status: user.status,
-        createdTime: user.createdTime
+        createdTime: user.createdTime,
+        pagePermissions: user.pagePermissions
       };
-      // 设置token到cookie
-      res.cookie('token', token, {
+      
+      // 更新最后登录时间
+      await UserAdmin.findByIdAndUpdate(user._id, { lastLogin: new Date() });
+      
+      // 设置令牌到cookie
+      res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        domain: 'localhost',
+        secure: false, // 开发环境设置为false
         sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 60 * 60 * 1000 // 1小时
       });
-      return res.json({ code: 200, message: '登录成功', data: { token, user: userInfo } });
+      
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: false, // 开发环境设置为false
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7天
+      });
+      
+      return res.success({ 
+        accessToken, 
+        refreshToken, 
+        user: userInfo 
+      }, '登录成功');
     } catch (error) {
-      return res.json({ code: 500, message: '登录失败', data: null });
+      console.error('登录失败:', error);
+      return res.error('登录失败', error);
     }
   }
 
@@ -81,15 +131,28 @@ export class AuthController {
     try {
       const userId = (req as any).userId || req.body.userId;
       if (!userId) {
-        return res.status(401).json({ message: '未登录' });
+        return res.fail(401, '未登录');
       }
-      const user = await User.findById(userId).select('-password');
+      const user = await UserAdmin.findById(userId).select('-password');
       if (!user) {
-        return res.status(404).json({ message: '用户不存在' });
+        return res.fail(404, '用户不存在');
       }
-      return res.json({ user });
+      return res.success({ user }, '获取用户信息成功');
     } catch (error) {
-      return res.status(500).json({ message: '获取用户信息失败', error });
+      return res.error('获取用户信息失败', error);
+    }
+  }
+  
+  // 退出登录
+  static async logout(req: Request, res: Response) {
+    try {
+      // 清除cookie中的令牌
+      res.clearCookie('accessToken');
+      res.clearCookie('refreshToken');
+      
+      return res.success(null, '退出成功');
+    } catch (error) {
+      return res.error('退出失败', error);
     }
   }
 } 

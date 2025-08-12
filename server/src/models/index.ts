@@ -1,29 +1,89 @@
-// 用户相关模型
-export { User } from './user.model';
-export { ElderlyProfile } from './elderly.model';
-export { FamilyProfile } from './family.model';
-export { NurseProfile } from './nurse.model';
+// 导出所有模型
+import { UserAdmin, IUserAdmin } from './usersadmin.model';
+import { ServiceType, IServiceType } from './service.model';
+import { Order, IOrder } from './order.model';
+import { PaymentTransaction, IPaymentTransaction, Withdrawal, IWithdrawal } from './payment.model';
+import { SupportTicket, ISupportTicket } from './support.model';
+import { DailyStatistics, IDailyStatistics, MonthlyStatistics, IMonthlyStatistics } from './statistics.model';
+import { Config, IConfig } from './config.model';
+import { SystemConfig, ISystemConfig } from './systemConfig.model';
+import { Announcement, IAnnouncement } from './announcement.model';
+import { Review } from './review.model';
+import { Complaint } from './complaint.model';
+import { Certification } from './certification.model';
+import { Notification } from './notification.model';
+import { Role, IRole } from './role.model';
 
-// 服务与订单模型
-export { ServiceType } from './service.model';
-export { Order } from './order.model';
+// 导出所有模型
+export {
+  // 用户相关
+  UserAdmin,
+  IUserAdmin,
+  
+  // 服务相关
+  ServiceType,
+  IServiceType,
+  
+  // 订单相关
+  Order,
+  IOrder,
+  
+  // 支付相关
+  PaymentTransaction,
+  IPaymentTransaction,
+  Withdrawal,
+  IWithdrawal,
+  
+  // 工单相关
+  SupportTicket,
+  ISupportTicket,
+  
+  // 统计相关
+  DailyStatistics,
+  IDailyStatistics,
+  MonthlyStatistics,
+  IMonthlyStatistics,
+  
+  // 配置相关
+  Config,
+  IConfig,
+  SystemConfig,
+  ISystemConfig,
+  
+  // 公告相关
+  Announcement,
+  IAnnouncement,
+  
+  // 角色权限相关
+  Role,
+  IRole,
+  
+  // 其他模型
+  Review,
+  Complaint,
+  Certification,
+  Notification
+};
 
-// 健康与安全模型
-export { HealthRecord } from './health.model';
-export { EmergencyAlert } from './emergency.model';
+// 初始化数据库连接
+import mongoose from 'mongoose';
 
-// 支付与评价模型
-export { Review } from './review.model';
-export { PaymentTransaction } from './payment.model';
+export const connectDB = async (uri: string): Promise<void> => {
+  try {
+    await mongoose.connect(uri);
+    console.log('MongoDB连接成功');
+  } catch (error) {
+    console.error('MongoDB连接失败:', error);
+    process.exit(1);
+  }
+};
 
-// 通知与客服模型
-export { Notification } from './notification.model';
-export { SupportTicket } from './support.model';
-
-// 系统管理模型
-export { Certification } from './certification.model';
-export { RolePermission } from './role.model';
-
-// AI模块模型
-export { ServiceRecommendation } from './recommendation.model';
-export { HealthWarning } from './warning.model'; 
+// 关闭数据库连接
+export const closeDB = async (): Promise<void> => {
+  try {
+    await mongoose.connection.close();
+    console.log('MongoDB连接已关闭');
+  } catch (error) {
+    console.error('关闭MongoDB连接失败:', error);
+  }
+}; 

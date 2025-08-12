@@ -3,8 +3,15 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
-import authRoutes from './routes/auth.routes';
+import apiRouter from './routes/index';
+import morgan from 'morgan';
+import { responseMiddleware } from './middleware/response.middleware';
+import cookieParser from 'cookie-parser';
+import { generateTokens } from './utils/jwt';
 
+// 设置环境变量
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+process.env.PORT = process.env.PORT || '3001';
 dotenv.config();
 
 const app = express();
@@ -18,14 +25,108 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(cookieParser());
+// 生产或测试环境可通过 LOG_HTTP=false 关闭 morgan 输出
+if (process.env.LOG_HTTP !== 'false') {
+  app.use(morgan('dev'));
+}
+app.use(responseMiddleware);
+
+// 统一未匹配路由的 404 JSON 响应（需放在业务路由之前或之后？我们放在之后、错误处理中间件之前）
+// 输出服务器启动信息
+// if (process.env.NODE_ENV !== 'test') {
+//   console.log('=== 服务器启动 ===');
+//   console.log('环境:', process.env.NODE_ENV);
+//   console.log('端口:', process.env.PORT);
+//   console.log('时间:', new Date().toISOString());
+//   console.log('=================');
+// }
 
 // 连接数据库
 connectDB();
 
-// 路由
-app.use('/api/auth', authRoutes);
+// 统一 API 路由聚合
+app.use('/', apiRouter);
 
-const PORT = process.env.PORT || 5000;
+// API根路径
+app.get('/api', (req, res) => {
+  res.success({
+    message: '智慧养老综合服务平台API',
+    version: '1.0.0',
+    status: 'running'
+  });
+});
+
+// 测试登录路由
+app.post('/api/test-login', (req, res) => {
+  // console.log('收到测试登录请求:', req.body);
+  const { username, password } = req.body;
+  
+  if (!username || !password) {
+    return res.fail(400, '缺少用户名或密码');
+  }
+  
+  // 测试账号快速验证
+  if (username === 'system' && password === '123456') {
+    const tokens = generateTokens({ id: 'test-id', role: 'admin' });
+    res.cookie('accessToken', tokens.accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 1000
+    });
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+    return res.success({
+      user: {
+        _id: 'test-id',
+        username: 'system',
+        role: 'admin_super',
+        adminRole: 'system_admin',
+        status: 'active'
+      },
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken
+    }, '测试登录成功');
+  }
+  
+  return res.fail(401, '测试登录失败');
+});
+
+// 未命中任何 /api 路由时，返回 404 JSON
+app.use('/api', (req, res) => {
+  return res.fail(404, '接口不存在');
+});
+
+// 全局错误处理，统一返回 JSON，并在终端打印状态码
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const status = err?.status || err?.statusCode || 500;
+  const message = err?.message || '服务器内部错误';
+  const path = req.originalUrl || req.url;
+  // 标准化日志输出行，便于在终端检索状态码
+  console.error(`[HTTP ${status}] ${req.method} ${path} - ${message}`);
+  if (process.env.NODE_ENV !== 'production' && err?.stack) {
+    console.error(err.stack);
+  }
+
+  if (res.headersSent) {
+    return;
+  }
+  return res.status(status).json({
+    code: status,
+    status: 'error',
+    message,
+    data: null,
+    timestamp: new Date().toISOString()
+  });
+});
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`服务器运行在端口 ${PORT}`);
 });

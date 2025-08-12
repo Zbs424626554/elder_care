@@ -1,0 +1,107 @@
+[
+  {
+    "_id": "w001",
+    "userId": "60d5ec9af682fbd12a8936a1",
+    "userName": "张护工",
+    "userRole": "nurse",
+    "amount": 1500.00,
+    "currency": "CNY",
+    "status": "pending",
+    "requestTime": "2024-01-15T10:30:00Z",
+    "bankInfo": {
+      "bankName": "中国工商银行",
+      "accountNumber": "6222021234567890123",
+      "accountName": "张护工"
+    },
+    "notes": "本月工资提现",
+    "adminReviewer": null,
+    "reviewTime": null,
+    "reviewNotes": null,
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  },
+  {
+    "_id": "w002",
+    "userId": "60d5ec9af682fbd12a8936a2",
+    "userName": "李护工",
+    "userRole": "nurse",
+    "amount": 2200.00,
+    "currency": "CNY",
+    "status": "approved",
+    "requestTime": "2024-01-14T14:20:00Z",
+    "bankInfo": {
+      "bankName": "中国建设银行",
+      "accountNumber": "6227001234567890123",
+      "accountName": "李护工"
+    },
+    "notes": "服务费提现",
+    "adminReviewer": "admin001",
+    "reviewTime": "2024-01-14T16:00:00Z",
+    "reviewNotes": "审核通过，已转账",
+    "createdAt": "2024-01-14T14:20:00Z",
+    "updatedAt": "2024-01-14T16:00:00Z"
+  },
+  {
+    "_id": "w003",
+    "userId": "60d5ec9af682fbd12a8936a3",
+    "userName": "王护工",
+    "userRole": "nurse",
+    "amount": 800.00,
+    "currency": "CNY",
+    "status": "rejected",
+    "requestTime": "2024-01-13T09:15:00Z",
+    "bankInfo": {
+      "bankName": "中国农业银行",
+      "accountNumber": "6228481234567890123",
+      "accountName": "王护工"
+    },
+    "notes": "小费提现",
+    "adminReviewer": "admin001",
+    "reviewTime": "2024-01-13T11:30:00Z",
+    "reviewNotes": "金额过小，建议累积后再提现",
+    "createdAt": "2024-01-13T09:15:00Z",
+    "updatedAt": "2024-01-13T11:30:00Z"
+  },
+  {
+    "_id": "w004",
+    "userId": "60d5ec9af682fbd12a8936a4",
+    "userName": "赵护工",
+    "userRole": "nurse",
+    "amount": 3000.00,
+    "currency": "CNY",
+    "status": "pending",
+    "requestTime": "2024-01-16T08:45:00Z",
+    "bankInfo": {
+      "bankName": "招商银行",
+      "accountNumber": "6225881234567890123",
+      "accountName": "赵护工"
+    },
+    "notes": "紧急用钱，请尽快处理",
+    "adminReviewer": null,
+    "reviewTime": null,
+    "reviewNotes": null,
+    "createdAt": "2024-01-16T08:45:00Z",
+    "updatedAt": "2024-01-16T08:45:00Z"
+  },
+  {
+    "_id": "w005",
+    "userId": "60d5ec9af682fbd12a8936a5",
+    "userName": "孙护工",
+    "userRole": "nurse",
+    "amount": 1800.00,
+    "currency": "CNY",
+    "status": "approved",
+    "requestTime": "2024-01-12T16:30:00Z",
+    "bankInfo": {
+      "bankName": "交通银行",
+      "accountNumber": "6222601234567890123",
+      "accountName": "孙护工"
+    },
+    "notes": "正常提现",
+    "adminReviewer": "admin002",
+    "reviewTime": "2024-01-12T18:00:00Z",
+    "reviewNotes": "审核通过",
+    "createdAt": "2024-01-12T16:30:00Z",
+    "updatedAt": "2024-01-12T18:00:00Z"
+  }
+]

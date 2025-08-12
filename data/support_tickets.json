@@ -1,0 +1,104 @@
+[
+  {
+    "_id": {"$oid": "65d5ec9af682fbd12a8936f1"},
+    "ticketNo": "TKT20230608001",
+    "userId": {"$oid": "60d5ec9af682fbd12a8936a2"},
+    "userName": "张护工",
+    "type": "account",
+    "title": "无法修改个人信息",
+    "content": "我尝试修改个人信息，但系统提示错误，请帮助解决",
+    "status": "open",
+    "priority": "medium",
+    "createdAt": {"$date": "2023-06-08T10:00:00Z"},
+    "updatedAt": {"$date": "2023-06-08T10:00:00Z"},
+    "assignedTo": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "replies": [
+      {
+        "replyId": {"$oid": "66d5ec9af682fbd12a8937a1"},
+        "content": "您好，请问您是在哪个页面修改信息时遇到的错误？能否提供具体的错误信息？",
+        "replyBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+        "replyByName": "系统管理员",
+        "replyTime": {"$date": "2023-06-08T14:00:00Z"},
+        "attachments": []
+      },
+      {
+        "replyId": {"$oid": "66d5ec9af682fbd12a8937a2"},
+        "content": "我是在个人中心的基本资料页面，点击保存时提示'网络错误，请稍后重试'",
+        "replyBy": {"$oid": "60d5ec9af682fbd12a8936a2"},
+        "replyByName": "张护工",
+        "replyTime": {"$date": "2023-06-08T15:00:00Z"},
+        "attachments": ["error_screenshot.jpg"]
+      }
+    ],
+    "attachments": []
+  },
+  {
+    "_id": {"$oid": "65d5ec9af682fbd12a8936f2"},
+    "ticketNo": "TKT20230605001",
+    "userId": {"$oid": "60d5ec9af682fbd12a8936a5"},
+    "userName": "李护工",
+    "type": "payment",
+    "title": "提现问题",
+    "content": "我申请了提现，但是已经3天了还没有到账，请查询",
+    "status": "closed",
+    "priority": "high",
+    "createdAt": {"$date": "2023-06-05T09:00:00Z"},
+    "updatedAt": {"$date": "2023-06-07T16:00:00Z"},
+    "assignedTo": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "replies": [
+      {
+        "replyId": {"$oid": "66d5ec9af682fbd12a8937a3"},
+        "content": "您好，我们已经查询到您的提现申请，提现将在1-3个工作日内到账，请耐心等待",
+        "replyBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+        "replyByName": "系统管理员",
+        "replyTime": {"$date": "2023-06-05T11:00:00Z"},
+        "attachments": []
+      },
+      {
+        "replyId": {"$oid": "66d5ec9af682fbd12a8937a4"},
+        "content": "好的，谢谢",
+        "replyBy": {"$oid": "60d5ec9af682fbd12a8936a5"},
+        "replyByName": "李护工",
+        "replyTime": {"$date": "2023-06-05T11:30:00Z"},
+        "attachments": []
+      },
+      {
+        "replyId": {"$oid": "66d5ec9af682fbd12a8937a5"},
+        "content": "您的提现已经处理完成，请查收",
+        "replyBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+        "replyByName": "系统管理员",
+        "replyTime": {"$date": "2023-06-07T15:00:00Z"},
+        "attachments": []
+      }
+    ],
+    "attachments": ["withdraw_application.jpg"],
+    "resolution": "提现已处理完成",
+    "closedAt": {"$date": "2023-06-07T16:00:00Z"},
+    "closedBy": {"$oid": "60d5ec9af682fbd12a8936a1"}
+  },
+  {
+    "_id": {"$oid": "65d5ec9af682fbd12a8936f3"},
+    "ticketNo": "TKT20230610001",
+    "userId": {"$oid": "60d5ec9af682fbd12a8936a2"},
+    "userName": "张护工",
+    "type": "service",
+    "title": "无法接单",
+    "content": "今天尝试接单时，系统一直显示加载中，无法看到可接的订单",
+    "status": "processing",
+    "priority": "high",
+    "createdAt": {"$date": "2023-06-10T08:00:00Z"},
+    "updatedAt": {"$date": "2023-06-10T09:00:00Z"},
+    "assignedTo": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "replies": [
+      {
+        "replyId": {"$oid": "66d5ec9af682fbd12a8937a6"},
+        "content": "您好，我们正在排查系统问题，请稍等",
+        "replyBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+        "replyByName": "系统管理员",
+        "replyTime": {"$date": "2023-06-10T09:00:00Z"},
+        "attachments": []
+      }
+    ],
+    "attachments": ["loading_screenshot.jpg"]
+  }
+] 

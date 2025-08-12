@@ -1,0 +1,130 @@
+[
+  {
+    "_id": {"$oid": "69d5ec9af682fbd12a893901"},
+    "statisticType": "revenue",
+    "timeRange": "daily",
+    "date": {"$date": "2023-06-01T00:00:00Z"},
+    "data": {
+      "totalRevenue": 1580.5,
+      "orderCount": 12,
+      "serviceFee": 79.02,
+      "refundAmount": 200,
+      "netRevenue": 1380.5
+    },
+    "createdAt": {"$date": "2023-06-02T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-02T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "69d5ec9af682fbd12a893902"},
+    "statisticType": "revenue",
+    "timeRange": "daily",
+    "date": {"$date": "2023-06-02T00:00:00Z"},
+    "data": {
+      "totalRevenue": 2100.0,
+      "orderCount": 15,
+      "serviceFee": 105.0,
+      "refundAmount": 0,
+      "netRevenue": 2100.0
+    },
+    "createdAt": {"$date": "2023-06-03T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-03T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "69d5ec9af682fbd12a893903"},
+    "statisticType": "user_growth",
+    "timeRange": "monthly",
+    "date": {"$date": "2023-05-01T00:00:00Z"},
+    "data": {
+      "newUsers": {
+        "elderly": 25,
+        "family": 32,
+        "nurse": 18
+      },
+      "activeUsers": {
+        "elderly": 120,
+        "family": 145,
+        "nurse": 85
+      },
+      "totalUsers": {
+        "elderly": 350,
+        "family": 420,
+        "nurse": 180
+      }
+    },
+    "createdAt": {"$date": "2023-06-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "69d5ec9af682fbd12a893904"},
+    "statisticType": "service_usage",
+    "timeRange": "weekly",
+    "date": {"$date": "2023-05-29T00:00:00Z"},
+    "data": {
+      "serviceUsage": [
+        {
+          "serviceId": {"$oid": "61d5ec9af682fbd12a8936b1"},
+          "serviceName": "日常生活照料",
+          "orderCount": 45,
+          "totalRevenue": 3600.0
+        },
+        {
+          "serviceId": {"$oid": "61d5ec9af682fbd12a8936b2"},
+          "serviceName": "康复护理",
+          "orderCount": 28,
+          "totalRevenue": 3360.0
+        },
+        {
+          "serviceId": {"$oid": "61d5ec9af682fbd12a8936b3"},
+          "serviceName": "上门陪诊",
+          "orderCount": 15,
+          "totalRevenue": 3000.0
+        },
+        {
+          "serviceId": {"$oid": "61d5ec9af682fbd12a8936b4"},
+          "serviceName": "心理慰藉",
+          "orderCount": 10,
+          "totalRevenue": 1000.0
+        },
+        {
+          "serviceId": {"$oid": "61d5ec9af682fbd12a8936b5"},
+          "serviceName": "居家清洁",
+          "orderCount": 20,
+          "totalRevenue": 3000.0
+        }
+      ],
+      "totalOrderCount": 118,
+      "totalRevenue": 13960.0
+    },
+    "createdAt": {"$date": "2023-06-05T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-05T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "69d5ec9af682fbd12a893905"},
+    "statisticType": "nurse_performance",
+    "timeRange": "monthly",
+    "date": {"$date": "2023-05-01T00:00:00Z"},
+    "data": {
+      "topPerformers": [
+        {
+          "nurseId": {"$oid": "60d5ec9af682fbd12a8936a2"},
+          "nurseName": "张护工",
+          "orderCount": 35,
+          "totalRevenue": 4200.0,
+          "averageRating": 4.8
+        },
+        {
+          "nurseId": {"$oid": "60d5ec9af682fbd12a8936a5"},
+          "nurseName": "李护工",
+          "orderCount": 28,
+          "totalRevenue": 3360.0,
+          "averageRating": 4.5
+        }
+      ],
+      "averageOrdersPerNurse": 18.5,
+      "averageRevenuePerNurse": 2220.0,
+      "averageRating": 4.3
+    },
+    "createdAt": {"$date": "2023-06-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-01T00:00:00Z"}
+  }
+]

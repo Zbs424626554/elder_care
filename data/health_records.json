@@ -1,0 +1,120 @@
+[
+  {
+    "_id": "70d5ec9af682fbd12a8936a01",
+    "userId": "60d5ec9af682fbd12a8936a1",
+    "userName": "系统管理员",
+    "recordType": "blood_pressure",
+    "recordTime": "2023-06-01T08:00:00Z",
+    "data": {
+      "systolic": 135,
+      "diastolic": 85,
+      "pulse": 72
+    },
+    "notes": "早餐前测量",
+    "recordedBy": "60d5ec9af682fbd12a8936a1",
+    "recordedByName": "系统管理员",
+    "createdAt": "2023-06-01T08:05:00Z",
+    "updatedAt": "2023-06-01T08:05:00Z"
+  },
+  {
+    "_id": "70d5ec9af682fbd12a8936a02",
+    "userId": "60d5ec9af682fbd12a8936a1",
+    "userName": "系统管理员",
+    "recordType": "blood_pressure",
+    "recordTime": "2023-06-01T20:00:00Z",
+    "data": {
+      "systolic": 140,
+      "diastolic": 88,
+      "pulse": 75
+    },
+    "notes": "晚餐后测量",
+    "recordedBy": "60d5ec9af682fbd12a8936a1",
+    "recordedByName": "系统管理员",
+    "createdAt": "2023-06-01T20:05:00Z",
+    "updatedAt": "2023-06-01T20:05:00Z"
+  },
+  {
+    "_id": "70d5ec9af682fbd12a8936a03",
+    "userId": "60d5ec9af682fbd12a8936a1",
+    "userName": "系统管理员",
+    "recordType": "blood_glucose",
+    "recordTime": "2023-06-02T07:30:00Z",
+    "data": {
+      "glucose": 6.2,
+      "unit": "mmol/L",
+      "measureType": "fasting"
+    },
+    "notes": "空腹测量",
+    "recordedBy": "60d5ec9af682fbd12a8936a1",
+    "recordedByName": "系统管理员",
+    "createdAt": "2023-06-02T07:35:00Z",
+    "updatedAt": "2023-06-02T07:35:00Z"
+  },
+  {
+    "_id": "70d5ec9af682fbd12a8936a04",
+    "userId": "60d5ec9af682fbd12a8936a1",
+    "userName": "系统管理员",
+    "recordType": "blood_glucose",
+    "recordTime": "2023-06-02T12:30:00Z",
+    "data": {
+      "glucose": 8.5,
+      "unit": "mmol/L",
+      "measureType": "postprandial"
+    },
+    "notes": "午餐后2小时测量",
+    "recordedBy": "60d5ec9af682fbd12a8936a2",
+    "recordedByName": "张护工",
+    "createdAt": "2023-06-02T12:35:00Z",
+    "updatedAt": "2023-06-02T12:35:00Z"
+  },
+  {
+    "_id": "70d5ec9af682fbd12a8936a05",
+    "userId": "60d5ec9af682fbd12a8936a1",
+    "userName": "系统管理员",
+    "recordType": "weight",
+    "recordTime": "2023-06-03T08:00:00Z",
+    "data": {
+      "weight": 65.5,
+      "unit": "kg"
+    },
+    "notes": "早晨空腹称重",
+    "recordedBy": "60d5ec9af682fbd12a8936a1",
+    "recordedByName": "系统管理员",
+    "createdAt": "2023-06-03T08:05:00Z",
+    "updatedAt": "2023-06-03T08:05:00Z"
+  },
+  {
+    "_id": "70d5ec9af682fbd12a8936a06",
+    "userId": "60d5ec9af682fbd12a8936a1",
+    "userName": "系统管理员",
+    "recordType": "medication",
+    "recordTime": "2023-06-03T08:30:00Z",
+    "data": {
+      "medicationName": "降压药",
+      "dosage": "5mg",
+      "taken": true
+    },
+    "notes": "早餐后服用",
+    "recordedBy": "60d5ec9af682fbd12a8936a2",
+    "recordedByName": "张护工",
+    "createdAt": "2023-06-03T08:35:00Z",
+    "updatedAt": "2023-06-03T08:35:00Z"
+  },
+  {
+    "_id": "70d5ec9af682fbd12a8936a07",
+    "userId": "60d5ec9af682fbd12a8936a1",
+    "userName": "系统管理员",
+    "recordType": "medication",
+    "recordTime": "2023-06-03T19:30:00Z",
+    "data": {
+      "medicationName": "降压药",
+      "dosage": "5mg",
+      "taken": true
+    },
+    "notes": "晚餐后服用",
+    "recordedBy": "60d5ec9af682fbd12a8936a1",
+    "recordedByName": "系统管理员",
+    "createdAt": "2023-06-03T19:35:00Z",
+    "updatedAt": "2023-06-03T19:35:00Z"
+  }
+] 

@@ -1,46 +1,24 @@
 {
-  "name": "smart-aging",
+  "name": "elder-care-system",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "智慧养老综合服务平台",
+  "main": "import_data.js",
   "scripts": {
-    "start:server": "cd server && ts-node-dev src/index.ts",
+    "import": "node import_data.js",
+    "dev:server": "cd server && npm run dev",
+    "start:server": "cd server && npm run start:server",
+    "build:server": "cd server && npm run build",
+    "dev:admin": "cd apps/admin-panel && npm run dev",
     "dev:elderly": "cd apps/elderly-app && npm run dev",
     "dev:family": "cd apps/family-app && npm run dev",
     "dev:nurse": "cd apps/nurse-app && npm run dev",
-    "dev:admin": "cd apps/admin-panel && npm run dev",
-    "lint": "eslint . --ext .ts,.tsx,.vue --fix",
-    "prepare": "husky install",
-    "install:all": "npm install && npm run install:workspaces",
-    "install:workspaces": "cd packages && npm install && cd ../apps/elderly-app && npm install && cd ../family-app && npm install && cd ../nurse-app && npm install && cd ../admin-panel && npm install && cd ../../server && npm install"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "private": true,
-  "workspaces": [
-    "packages",
-    "apps/*",
-    "server"
-  ],
-  "devDependencies": {
-    "eslint": "^9.32.0",
-    "husky": "^8.0.0",
-    "lint-staged": "^16.1.2",
-    "prettier": "^3.6.2",
-    "stylelint": "^16.23.0",
-    "stylelint-config-standard": "^39.0.0"
-  },
-  "lint-staged": {
-    "*.{js,ts,jsx,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{css,scss,less}": [
-      "stylelint --fix"
-    ]
+    "start:all": "concurrently \"npm run dev:server\" \"npm run dev:admin\"",
+    "install:all": "npm install && cd server && npm install && cd ../apps/admin-panel && npm install"
   },
   "dependencies": {
-    "jsonwebtoken": "^9.0.2"
+    "mongodb": "^5.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }

@@ -6,7 +6,17 @@ export interface IReview extends Document {
   revieweeId: mongoose.Types.ObjectId;
   rating: number;
   content: string;
+  hasAppeal: boolean;
+  appealContent?: string;
+  appealStatus?: AppealStatus;
+  appealResolution?: string;
   createdAt: Date;
+}
+
+export enum AppealStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected'
 }
 
 const reviewSchema = new Schema({
@@ -35,6 +45,20 @@ const reviewSchema = new Schema({
     type: String,
     required: true
   },
+  hasAppeal: {
+    type: Boolean,
+    default: false
+  },
+  appealContent: {
+    type: String
+  },
+  appealStatus: {
+    type: String,
+    enum: Object.values(AppealStatus)
+  },
+  appealResolution: {
+    type: String
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -49,5 +73,7 @@ reviewSchema.index({ reviewerId: 1 });
 reviewSchema.index({ revieweeId: 1 });
 reviewSchema.index({ rating: -1 });
 reviewSchema.index({ createdAt: -1 });
+reviewSchema.index({ hasAppeal: 1 });
+reviewSchema.index({ appealStatus: 1 });
 
 export const Review = mongoose.model<IReview>('Review', reviewSchema); 

@@ -1,0 +1,82 @@
+[
+  {
+    "_id": {"$oid": "68d5ec9af682fbd12a893801"},
+    "configKey": "service_fee_rate",
+    "configValue": "0.05",
+    "configType": "payment",
+    "description": "平台服务费率",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-01-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "68d5ec9af682fbd12a893802"},
+    "configKey": "withdraw_min_amount",
+    "configValue": "100",
+    "configType": "payment",
+    "description": "最低提现金额",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-03-15T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "68d5ec9af682fbd12a893803"},
+    "configKey": "order_auto_cancel_time",
+    "configValue": "30",
+    "configType": "order",
+    "description": "订单自动取消时间（分钟）",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-01-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "68d5ec9af682fbd12a893804"},
+    "configKey": "order_auto_complete_time",
+    "configValue": "24",
+    "configType": "order",
+    "description": "订单自动完成时间（小时）",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-01-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "68d5ec9af682fbd12a893805"},
+    "configKey": "review_auto_publish_time",
+    "configValue": "24",
+    "configType": "review",
+    "description": "评价自动发布时间（小时）",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-01-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "68d5ec9af682fbd12a893806"},
+    "configKey": "support_work_time",
+    "configValue": "9:00-18:00",
+    "configType": "support",
+    "description": "客服工作时间",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-15T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "68d5ec9af682fbd12a893807"},
+    "configKey": "emergency_contact",
+    "configValue": "13800138000",
+    "configType": "support",
+    "description": "紧急联系电话",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-01-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "68d5ec9af682fbd12a893808"},
+    "configKey": "app_version",
+    "configValue": "1.2.0",
+    "configType": "system",
+    "description": "APP当前版本",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-01-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-01T00:00:00Z"}
+  }
+] 

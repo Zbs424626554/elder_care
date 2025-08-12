@@ -63,7 +63,7 @@ request.interceptors.request.use(
 
 // 响应拦截器
 request.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse>) => {
+  (response: AxiosResponse<ApiResponse>): Promise<any> => {
     const { data } = response;
 
     // 处理业务错误
@@ -93,32 +93,70 @@ request.interceptors.response.use(
       return Promise.reject(new Error(data.message || '请求失败'));
     }
 
-    return data;
+    return Promise.resolve(data);
   },
-  (error) => {
+  async (error) => {
+    // 从服务器响应中尽量提取 message
+    const extractServerMessage = async (): Promise<string | null> => {
+      try {
+        const resp = error.response;
+        if (!resp) return null;
+        const data = resp.data;
+        if (!data) return null;
+        if (typeof data === 'string') {
+          try {
+            const parsed = JSON.parse(data);
+            return parsed?.message || parsed?.error || parsed?.msg || null;
+          } catch {
+            return data;
+          }
+        }
+        if (data instanceof Blob) {
+          const text = await data.text();
+          try {
+            const parsed = JSON.parse(text);
+            return parsed?.message || parsed?.error || parsed?.msg || null;
+          } catch {
+            return text || null;
+          }
+        }
+        if (typeof data === 'object') {
+          return data.message || data.error || data.msg || null;
+        }
+        return null;
+      } catch {
+        return null;
+      }
+    };
+
     // 处理网络错误
     if (error.response) {
-      const { status, data } = error.response;
+      const { status } = error.response;
+      const serverMsg = await extractServerMessage();
 
       switch (status) {
         case 401:
-          message.error('登录已过期，请重新登录');
+          message.error(serverMsg || '登录已过期，请重新登录');
           localStorage.removeItem('token');
           localStorage.removeItem('userRole');
           localStorage.removeItem('userInfo');
           window.location.href = '/login';
           break;
         case 403:
-          message.error('权限不足');
+          message.error(serverMsg || '权限不足');
           break;
         case 404:
-          message.error('请求的资源不存在');
+          message.error(serverMsg || '请求的资源不存在');
           break;
         case 500:
-          message.error('服务器内部错误');
+          message.error(serverMsg || '服务器内部错误');
           break;
         default:
-          message.error(data?.message || '请求失败');
+          if (serverMsg) {
+            message.error(serverMsg);
+          } else {
+            message.error('请求失败');
+          }
       }
     } else if (error.request) {
       message.error('网络连接失败，请检查网络设置');

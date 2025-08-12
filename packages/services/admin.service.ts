@@ -7,16 +7,46 @@ export interface StatisticsData {
     elderlyUsers: number;
     familyUsers: number;
     nurseUsers: number;
+    adminUsers: number;
     activeUsers: number;
+    newUsersToday: number;
+    newUsersThisWeek: number;
+    newUsersThisMonth: number;
   };
   orderStats: {
     totalOrders: number;
     pendingOrders: number;
+    processingOrders: number;
     completedOrders: number;
+    cancelledOrders: number;
+    disputedOrders: number;
     totalRevenue: number;
+    averageOrderValue: number;
+    orderCountToday: number;
+    orderCountThisWeek: number;
+    orderCountThisMonth: number;
+    revenueToday: number;
+    revenueThisWeek: number;
+    revenueThisMonth: number;
   };
   serviceStats: {
-    popularServices: any[];
+    popularServices: Array<{
+      id: string;
+      name: string;
+      count: number;
+      revenue: number;
+    }>;
+    serviceCategories: Array<{
+      category: string;
+      count: number;
+    }>;
+  };
+  performanceStats: {
+    avgResponseTime: number;
+    nurseAcceptanceRate: number;
+    complaintRate: number;
+    avgRating: number;
+    resolvedComplaintsRate: number;
   };
 }
 
@@ -156,17 +186,56 @@ export class AdminService {
   }
 
   /**
+   * 获取评价列表
+   */
+  static async getReviews(params?: {
+    page?: number;
+    limit?: number;
+    rating?: number;
+    hasAppeal?: boolean;
+    appealStatus?: string;
+  }): Promise<ApiResponse<{ reviews: any[]; total: number; page: number; limit: number }>> {
+    return http.get('/api/reviews', { params });
+  }
+
+  /**
+   * 获取评价详情
+   */
+  static async getReviewDetail(reviewId: string): Promise<ApiResponse<any>> {
+    return http.get(`/api/reviews/${reviewId}`);
+  }
+
+  /**
    * 处理评价申诉
    */
   static async handleReviewAppeal(reviewId: string, action: string, reason?: string): Promise<ApiResponse<{ reviewId: string; action: string }>> {
-    return http.patch(`/admin/reviews/${reviewId}/appeal`, { action, reason });
+    return http.put(`/api/reviews/${reviewId}/appeal`, { appealStatus: action, appealResolution: reason });
+  }
+
+  /**
+   * 获取投诉列表
+   */
+  static async getComplaints(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    type?: string;
+  }): Promise<ApiResponse<{ complaints: any[]; total: number; page: number; limit: number }>> {
+    return http.get('/api/complaints', { params });
+  }
+
+  /**
+   * 获取投诉详情
+   */
+  static async getComplaintDetail(complaintId: string): Promise<ApiResponse<any>> {
+    return http.get(`/api/complaints/${complaintId}`);
   }
 
   /**
    * 处理投诉
    */
   static async handleComplaint(complaintId: string, action: string, response?: string): Promise<ApiResponse<{ complaintId: string; action: string }>> {
-    return http.patch(`/admin/complaints/${complaintId}`, { action, response });
+    return http.put(`/api/complaints/${complaintId}/status`, { status: action, resolutionNotes: response });
   }
 
   /**
@@ -235,5 +304,48 @@ export class AdminService {
     notificationSettings: any;
   }): Promise<ApiResponse<any>> {
     return http.put('/admin/config', data);
+  }
+
+  /**
+   * 导出统计数据
+   */
+  static async exportStatistics(params?: { 
+    startDate?: string; 
+    endDate?: string; 
+    format?: 'csv' | 'excel' | 'pdf' 
+  }): Promise<any> {
+    return http.get('/admin/statistics/export', { 
+      params, 
+      responseType: 'blob',
+    });
+  }
+
+  /**
+   * 导出用户数据
+   */
+  static async exportUsers(params?: { 
+    role?: string;
+    status?: boolean;
+    format?: 'csv' | 'excel' | 'pdf'
+  }): Promise<any> {
+    return http.get('/admin/users/export', { 
+      params, 
+      responseType: 'blob',
+    });
+  }
+
+  /**
+   * 导出订单数据
+   */
+  static async exportOrders(params?: {
+    status?: string;
+    startDate?: string;
+    endDate?: string;
+    format?: 'csv' | 'excel' | 'pdf'
+  }): Promise<any> {
+    return http.get('/admin/orders/export', { 
+      params, 
+      responseType: 'blob',
+    });
   }
 } 

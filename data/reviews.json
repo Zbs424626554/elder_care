@@ -1,0 +1,104 @@
+[
+  {
+    "orderId": {"$oid": "64b7e5f0a1a2b3c4d5e6f001"},
+    "reviewerId": {"$oid": "64b7e5f0a1a2b3c4d5e6f101"},
+    "revieweeId": {"$oid": "64b7e5f0a1a2b3c4d5e6f201"},
+    "rating": 5,
+    "content": "服务很专业，沟通顺畅。",
+    "hasAppeal": false,
+    "createdAt": {"$date": "2023-05-25T08:00:00Z"}
+  },
+  {
+    "orderId": {"$oid": "64b7e5f0a1a2b3c4d5e6f002"},
+    "reviewerId": {"$oid": "64b7e5f0a1a2b3c4d5e6f102"},
+    "revieweeId": {"$oid": "64b7e5f0a1a2b3c4d5e6f202"},
+    "rating": 4,
+    "content": "整体不错，准时到达。",
+    "hasAppeal": false,
+    "createdAt": {"$date": "2023-05-26T09:30:00Z"}
+  },
+  {
+    "orderId": {"$oid": "64b7e5f0a1a2b3c4d5e6f003"},
+    "reviewerId": {"$oid": "64b7e5f0a1a2b3c4d5e6f103"},
+    "revieweeId": {"$oid": "64b7e5f0a1a2b3c4d5e6f203"},
+    "rating": 2,
+    "content": "有些环节不到位，已反馈。",
+    "hasAppeal": true,
+    "appealContent": "评分不公平，实际已按流程完成。",
+    "appealStatus": "pending",
+    "createdAt": {"$date": "2023-05-27T10:15:00Z"}
+  },
+  {
+    "orderId": {"$oid": "64b7e5f0a1a2b3c4d5e6f004"},
+    "reviewerId": {"$oid": "64b7e5f0a1a2b3c4d5e6f104"},
+    "revieweeId": {"$oid": "64b7e5f0a1a2b3c4d5e6f204"},
+    "rating": 3,
+    "content": "服务基本满意。",
+    "hasAppeal": false,
+    "createdAt": {"$date": "2023-05-28T11:45:00Z"}
+  },
+  {
+    "orderId": {"$oid": "64b7e5f0a1a2b3c4d5e6f005"},
+    "reviewerId": {"$oid": "64b7e5f0a1a2b3c4d5e6f105"},
+    "revieweeId": {"$oid": "64b7e5f0a1a2b3c4d5e6f205"},
+    "rating": 1,
+    "content": "体验不好，期望改进。",
+    "hasAppeal": true,
+    "appealContent": "订单沟通误会，申请复核。",
+    "appealStatus": "pending",
+    "createdAt": {"$date": "2023-05-29T13:20:00Z"}
+  },
+
+  {
+    "_id": {"$oid": "63d5ec9af682fbd12a8936d1"},
+    "orderId": {"$oid": "62d5ec9af682fbd12a8936c1"},
+    "orderNo": "ORD20230601001",
+    "serviceId": {"$oid": "61d5ec9af682fbd12a8936b1"},
+    "serviceName": "日常生活照料",
+    "userId": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "userName": "系统管理员",
+    "nurseId": {"$oid": "60d5ec9af682fbd12a8936a2"},
+    "nurseName": "张护工",
+    "rating": 5,
+    "comment": "服务非常好，态度亲切，很专业",
+    "createdAt": {"$date": "2023-06-01T15:00:00Z"},
+    "status": "published",
+    "response": "感谢您的好评，我们会继续努力提供优质服务",
+    "responseTime": {"$date": "2023-06-02T09:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "63d5ec9af682fbd12a8936d2"},
+    "orderId": {"$oid": "62d5ec9af682fbd12a8936c4"},
+    "orderNo": "ORD20230525001",
+    "serviceId": {"$oid": "61d5ec9af682fbd12a8936b5"},
+    "serviceName": "居家清洁",
+    "userId": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "userName": "系统管理员",
+    "nurseId": {"$oid": "60d5ec9af682fbd12a8936a2"},
+    "nurseName": "张护工",
+    "rating": 4,
+    "comment": "清洁很彻底，但是有些地方没有打扫到",
+    "createdAt": {"$date": "2023-05-26T10:00:00Z"},
+    "status": "published",
+    "response": "感谢您的反馈，我们会注意改进",
+    "responseTime": {"$date": "2023-05-27T11:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "63d5ec9af682fbd12a8936d3"},
+    "orderId": {"$oid": "62d5ec9af682fbd12a8936c2"},
+    "orderNo": "ORD20230605001",
+    "serviceId": {"$oid": "61d5ec9af682fbd12a8936b2"},
+    "serviceName": "康复护理",
+    "userId": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "userName": "系统管理员",
+    "nurseId": {"$oid": "60d5ec9af682fbd12a8936a2"},
+    "nurseName": "张护工",
+    "rating": 3,
+    "comment": "服务态度一般，康复效果不明显",
+    "createdAt": {"$date": "2023-06-06T16:00:00Z"},
+    "status": "under_review",
+    "response": null,
+    "responseTime": null,
+    "appealReason": "客户期望过高，康复需要长期过程，非一次服务可见效"
+  }
+] 

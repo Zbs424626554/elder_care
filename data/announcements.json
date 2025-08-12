@@ -1,0 +1,58 @@
+[
+  {
+    "_id": {"$oid": "67d5ec9af682fbd12a893701"},
+    "title": "系统维护通知",
+    "content": "尊敬的用户，我们将于2023年6月15日凌晨2:00-4:00进行系统维护，期间系统将暂停服务，请提前安排好您的使用时间。给您带来的不便，敬请谅解。",
+    "targetRole": ["all"],
+    "importance": "high",
+    "status": "published",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-06-10T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-10T00:00:00Z"},
+    "publishAt": {"$date": "2023-06-10T00:00:00Z"},
+    "expireAt": {"$date": "2023-06-16T00:00:00Z"},
+    "viewCount": 156
+  },
+  {
+    "_id": {"$oid": "67d5ec9af682fbd12a893702"},
+    "title": "端午节放假通知",
+    "content": "尊敬的用户，端午节期间（6月22日-6月24日）客服工作时间调整为9:00-17:00，紧急服务不受影响。祝大家端午节快乐！",
+    "targetRole": ["all"],
+    "importance": "medium",
+    "status": "published",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-06-15T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-15T00:00:00Z"},
+    "publishAt": {"$date": "2023-06-15T00:00:00Z"},
+    "expireAt": {"$date": "2023-06-25T00:00:00Z"},
+    "viewCount": 98
+  },
+  {
+    "_id": {"$oid": "67d5ec9af682fbd12a893703"},
+    "title": "护工培训通知",
+    "content": "各位护工朋友，我们将于6月20日举办专业技能培训，参与培训并通过考核的护工将获得技能认证，有助于提高接单率和收入。请有意向的护工在6月18日前报名。",
+    "targetRole": ["nurse"],
+    "importance": "medium",
+    "status": "published",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-06-12T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-12T00:00:00Z"},
+    "publishAt": {"$date": "2023-06-12T00:00:00Z"},
+    "expireAt": {"$date": "2023-06-19T00:00:00Z"},
+    "viewCount": 45
+  },
+  {
+    "_id": {"$oid": "67d5ec9af682fbd12a893704"},
+    "title": "APP新功能上线",
+    "content": "尊敬的用户，我们的APP新增了健康数据记录功能，可以方便地记录和查看健康指标，欢迎使用！",
+    "targetRole": ["admin"],
+    "importance": "low",
+    "status": "draft",
+    "createdBy": {"$oid": "60d5ec9af682fbd12a8936a1"},
+    "createdAt": {"$date": "2023-06-18T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-18T00:00:00Z"},
+    "publishAt": null,
+    "expireAt": null,
+    "viewCount": 0
+  }
+] 

@@ -1,0 +1,74 @@
+[
+  {
+    "_id": {"$oid": "61d5ec9af682fbd12a8936b1"},
+    "name": "日常生活照料",
+    "description": "提供日常生活照料服务，包括洗漱、穿衣、进食等基本生活照料",
+    "price": 80,
+    "priceUnit": "小时",
+    "category": "生活照料",
+    "requirements": ["有照料经验", "有耐心"],
+    "status": "active",
+    "createdAt": {"$date": "2023-01-05T00:00:00Z"},
+    "updatedAt": {"$date": "2023-05-10T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "61d5ec9af682fbd12a8936b2"},
+    "name": "康复护理",
+    "description": "提供专业康复训练和护理服务，帮助老人恢复身体机能",
+    "price": 120,
+    "priceUnit": "小时",
+    "category": "医疗护理",
+    "requirements": ["持有护理证书", "3年以上经验"],
+    "status": "active",
+    "createdAt": {"$date": "2023-01-10T00:00:00Z"},
+    "updatedAt": {"$date": "2023-05-15T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "61d5ec9af682fbd12a8936b3"},
+    "name": "上门陪诊",
+    "description": "陪同老人前往医院就诊，包括挂号、排队、取药等全程服务",
+    "price": 200,
+    "priceUnit": "次",
+    "category": "医疗护理",
+    "requirements": ["熟悉医院流程", "有陪诊经验"],
+    "status": "active",
+    "createdAt": {"$date": "2023-02-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-05-20T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "61d5ec9af682fbd12a8936b4"},
+    "name": "心理慰藉",
+    "description": "提供心理咨询和情感陪伴服务，缓解老人孤独感和焦虑情绪",
+    "price": 100,
+    "priceUnit": "小时",
+    "category": "精神关怀",
+    "requirements": ["心理学相关背景", "良好沟通能力"],
+    "status": "active",
+    "createdAt": {"$date": "2023-02-15T00:00:00Z"},
+    "updatedAt": {"$date": "2023-05-25T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "61d5ec9af682fbd12a8936b5"},
+    "name": "居家清洁",
+    "description": "提供家居清洁、整理、消毒等服务，保持居家环境整洁卫生",
+    "price": 150,
+    "priceUnit": "次",
+    "category": "家政服务",
+    "requirements": ["熟练使用清洁工具", "注重细节"],
+    "status": "active",
+    "createdAt": {"$date": "2023-03-01T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-01T00:00:00Z"}
+  },
+  {
+    "_id": {"$oid": "61d5ec9af682fbd12a8936b6"},
+    "name": "老年人营养餐制作",
+    "description": "根据老年人营养需求，制作营养均衡、易于消化的餐食",
+    "price": 180,
+    "priceUnit": "天",
+    "category": "饮食服务",
+    "requirements": ["营养学知识", "烹饪技能"],
+    "status": "active",
+    "createdAt": {"$date": "2023-03-15T00:00:00Z"},
+    "updatedAt": {"$date": "2023-06-05T00:00:00Z"}
+  }
+] 
