@@ -1,0 +1,276 @@
+.warnings {
+  padding: 0;
+  padding-top: 35px;
+  padding-bottom: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: calc(100vh - 124px);
+  /* 减去导航栏(44px) + 底部Tab(60px) + 安全区的高度 */
+  /* 确保在开发环境中也能正确显示 */
+  position: relative;
+  z-index: 1;
+}
+
+/* 预警统计 */
+.warningStats {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  margin-bottom: 20px !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.statsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.statsTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.statsIcon {
+  font-size: 20px;
+  color: #ff6b6b;
+}
+
+.statsContent {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.statItem {
+  text-align: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.statItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.statNumber {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 预警列表 */
+.warningsList {
+  padding: 0 16px;
+}
+
+.warningCard {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  margin-bottom: 16px !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+}
+
+.warningCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.warningCard.unread {
+  border-left: 4px solid #ff6b6b;
+}
+
+.warningCard.read {
+  opacity: 0.8;
+}
+
+.warningCard.handled {
+  opacity: 0.6;
+  background: #f8f9fa !important;
+}
+
+/* 预警头部 */
+.warningHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.warningInfo {
+  flex: 1;
+}
+
+.warningTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.warningTime {
+  font-size: 12px;
+  color: #666;
+}
+
+.warningTags {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.warningTags .adm-tag {
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+}
+
+/* 预警内容 */
+.warningContent {
+  margin-bottom: 16px;
+}
+
+.warningDescription {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.elderlyInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.elderlyAvatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.elderlyName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.warningLocation {
+  font-size: 12px;
+  color: #666;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* 预警操作 */
+.warningActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  border-radius: 8px !important;
+  height: 32px !important;
+  font-size: 12px !important;
+  padding: 0 12px !important;
+}
+
+/* 空状态 */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.emptyText {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.emptyDesc {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .warningStats {
+    padding: 16px !important;
+  }
+
+  .statsContent {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .warningCard {
+    padding: 16px !important;
+  }
+
+  .warningHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .warningTags {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .warningActions {
+    justify-content: space-between;
+  }
+
+  .actionBtn {
+    flex: 1;
+    margin: 0 2px;
+  }
+}
+
+/* 开发环境特殊处理 */
+@media screen and (max-height: 800px) {
+  .warnings {
+    padding-top: 10px;
+  }
+}
