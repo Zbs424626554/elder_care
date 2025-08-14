@@ -1,17 +1,23 @@
 import React from 'react';
-import { Card, Typography } from 'antd';
-
-const { Title } = Typography;
+import EmergencyCall from './EmergencyCall';
 
 const Emergency: React.FC = () => {
   return (
-    <div>
-      <Title level={2}>紧急呼叫</Title>
-      <Card>
-        <p>紧急呼叫页面，具体功能待开发...</p>
-      </Card>
+    <div
+      style={{
+        background: '#fff',
+        minHeight: 'calc(100vh - 1.2rem)',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        padding: '0.24rem'
+      }}
+    >
+      <EmergencyCall />
     </div>
   );
 };
 
-export default Emergency; 
+export default Emergency;

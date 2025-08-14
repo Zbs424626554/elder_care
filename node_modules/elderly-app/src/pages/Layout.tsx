@@ -1,112 +1,80 @@
-import React from 'react';
-import { Layout as AntLayout, Menu, Button } from 'antd';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import React from "react";
+import { TabBar } from "antd-mobile";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
-  HomeOutlined,
-  UserOutlined,
-  HeartOutlined,
-  TeamOutlined,
-  FileTextOutlined,
-  PhoneOutlined,
-  LogoutOutlined,
-} from '@ant-design/icons';
-import { AuthService } from '../services/auth.service';
-
-const { Header, Sider, Content } = AntLayout;
+  AppOutline,
+  UnorderedListOutline,
+  MessageOutline,
+  UserOutline,
+} from "antd-mobile-icons";
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentUser = AuthService.getCurrentUser();
 
-  const menuItems = [
-    {
-      key: '/home',
-      icon: <HomeOutlined />,
-      label: '首页',
-    },
-    {
-      key: '/home/profile',
-      icon: <UserOutlined />,
-      label: '个人信息',
-    },
-    {
-      key: '/home/health',
-      icon: <HeartOutlined />,
-      label: '健康管理',
-    },
-    {
-      key: '/home/nurses',
-      icon: <TeamOutlined />,
-      label: '护工列表',
-    },
-    {
-      key: '/home/orders',
-      icon: <FileTextOutlined />,
-      label: '订单管理',
-    },
-    {
-      key: '/home/emergency',
-      icon: <PhoneOutlined />,
-      label: '紧急呼叫',
-    },
+  const tabs = [
+    { key: "/home/call", title: "呼叫", icon: <AppOutline /> },
+    { key: "/home/orders", title: "订单", icon: <UnorderedListOutline /> },
+    { key: "/home/message", title: "消息", icon: <MessageOutline /> },
+    { key: "/home/mine", title: "我的", icon: <UserOutline /> },
   ];
 
-  const handleMenuClick = ({ key }: { key: string }) => {
-    navigate(key);
-  };
-
-  const handleLogout = () => {
-    AuthService.logout();
-  };
+  const currentKey =
+    tabs.find((t) => location.pathname.startsWith(t.key))?.key || "";
 
   return (
-    <AntLayout style={{ minHeight: '100vh' }}>
-      <Sider>
-        <div style={{
-          height: 64,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: 18,
-          fontWeight: 'bold'
-        }}>
-          智慧养老平台
-        </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={menuItems}
-          onClick={handleMenuClick}
-        />
-      </Sider>
-      <AntLayout>
-        <Header style={{
-          padding: '0 16px',
-          background: '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <div>欢迎，{currentUser?.realname || currentUser?.username}</div>
-          <Button onClick={handleLogout} icon={<LogoutOutlined />}>
-            退出登录
-          </Button>
-        </Header>
-        <Content style={{
-          margin: '16px',
-          padding: '24px',
-          background: '#fff',
-          borderRadius: '8px',
-          minHeight: 'calc(100vh - 112px)'
-        }}>
-          <Outlet />
-        </Content>
-      </AntLayout>
-    </AntLayout>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <div style={{ flex: 1, overflow: "auto", paddingBottom: "1.36rem" }}>
+        <Outlet />
+      </div>
+      <div
+        style={{
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          borderTop: "1px solid #000",
+          background: "#000",
+        }}
+      >
+        <TabBar
+          style={{ height: "1.36rem", background: "#000" }}
+          safeArea
+          activeKey={currentKey}
+          onChange={(key) => navigate(key)}
+        >
+          {tabs.map((item) => (
+            <TabBar.Item
+              key={item.key}
+              icon={
+                <div
+                  style={{
+                    fontSize: "0.52rem",
+                    color: currentKey === item.key ? "#ff4d4f" : "#fff",
+                  }}
+                >
+                  {item.icon}
+                </div>
+              }
+              title={
+                <span
+                  style={{
+                    fontSize: "0.38rem",
+                    fontWeight: 700,
+                    color: currentKey === item.key ? "#ff4d4f" : "#fff",
+                    marginTop: "0.08rem",
+                    display: "inline-block",
+                  }}
+                >
+                  {item.title}
+                </span>
+              }
+            />
+          ))}
+        </TabBar>
+      </div>
+    </div>
   );
 };
 
-export default Layout; 
+export default Layout;

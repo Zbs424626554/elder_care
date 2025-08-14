@@ -1,0 +1,305 @@
+.home {
+  padding: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: calc(100vh - 124px);
+  /* 减去导航栏(44px) + 底部Tab(60px) + 安全区的高度 */
+  /* 确保在开发环境中也能正确显示 */
+  position: relative;
+  z-index: 1;
+}
+
+/* 欢迎卡片 */
+.welcomeCard {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  margin-bottom: 20px !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  color: white !important;
+  /* 确保卡片在开发环境中也能正确显示 */
+  position: relative;
+  z-index: 2;
+  margin-top: 150px;
+}
+
+.welcomeContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcomeText h2 {
+  margin: 0 0 8px 0 !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: white !important;
+}
+
+.welcomeText p {
+  margin: 0 !important;
+  font-size: 14px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  opacity: 0.9;
+}
+
+.welcomeAvatar {
+  flex-shrink: 0;
+}
+
+.avatarCircle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 功能网格 */
+.functionGrid {
+  margin-bottom: 20px;
+}
+
+.functionCard {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.3s ease !important;
+  height: 120px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+}
+
+.functionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.functionIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 24px;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.functionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.functionSubtitle {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+/* 快捷操作 */
+.quickActions {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  margin-bottom: 20px !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.quickActionsHeader h3 {
+  margin: 0 0 16px 0 !important;
+  font-size: 18px !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+}
+
+.quickActionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.actionItem {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.actionItem:hover {
+  background: #e9ecef;
+  transform: translateX(4px);
+}
+
+.actionIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 18px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.actionContent {
+  flex: 1;
+}
+
+.actionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.actionSubtitle {
+  font-size: 13px;
+  color: #666;
+}
+
+.actionArrow {
+  color: #999;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* 健康提醒 */
+.healthReminder {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.reminderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.reminderHeader h3 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+}
+
+.reminderCount {
+  background: #ff6b6b;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.reminderList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reminderItem {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.reminderItem:hover {
+  background: #e9ecef;
+}
+
+.reminderIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 18px;
+  background: white;
+  flex-shrink: 0;
+}
+
+.reminderContent {
+  flex: 1;
+}
+
+.reminderTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.reminderDesc {
+  font-size: 13px;
+  color: #666;
+}
+
+.reminderTime {
+  font-size: 12px;
+  color: #999;
+  flex-shrink: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .welcomeText h2 {
+    font-size: 18px !important;
+  }
+
+  .welcomeText p {
+    font-size: 13px !important;
+  }
+
+  .functionCard {
+    padding: 16px !important;
+    height: 100px;
+  }
+
+  .functionIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .functionTitle {
+    font-size: 14px;
+  }
+
+  .functionSubtitle {
+    font-size: 11px;
+  }
+}
