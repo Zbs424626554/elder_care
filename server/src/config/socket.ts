@@ -3,6 +3,7 @@ import type { Server as HttpServer } from 'http';
 
 export const initSocket = (server: HttpServer) => {
   const io = new Server(server, {
+    path: '/socket.io',
     cors: {
       origin: [
         'http://localhost:5173',
@@ -11,7 +12,8 @@ export const initSocket = (server: HttpServer) => {
         'http://localhost:5176'
       ],
       credentials: true
-    }
+    },
+    transports: ['polling']
   });
 
   io.on('connection', socket => {

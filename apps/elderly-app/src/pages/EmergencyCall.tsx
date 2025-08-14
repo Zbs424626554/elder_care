@@ -11,25 +11,32 @@ export default function EmergencyCall() {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [alertId, setAlertId] = useState<string | null>(null);
   const timerRef = useRef<number | null>(null);
+  const alertIdRef = useRef<string | null>(null); // 使用 ref 保存 alertId，避免异步问题
 
   const start = async () => {
     const res = await emergency.initiate();
     const id = res.alertId;
     setAlertId(id);
+    alertIdRef.current = id; // 同时保存到 ref 中
     recorderRef.current = new MicRecorder();
-    await recorderRef.current.start();
+    try {
+      await recorderRef.current.start();
+    } catch (e) {
+      Toast.show({ content: '录音权限未开启或不受支持，但仍可发送求助' });
+    }
     speak('将在五秒后给紧急联系人打电话');
     setCountdown(5);
     if (timerRef.current) window.clearInterval(timerRef.current);
     const t = window.setInterval(() => {
       setCountdown(prev => {
-        if ((prev ?? 0) <= 1) {
+        const newCount = (prev ?? 0) - 1;
+        if (newCount <= 0) {
           if (timerRef.current) window.clearInterval(timerRef.current);
           timerRef.current = null;
-          confirmCall().catch(console.error);
+          confirmCall();
           return null;
         }
-        return (prev as number) - 1;
+        return newCount;
       });
     }, 1000);
     timerRef.current = t as unknown as number;
@@ -40,7 +47,7 @@ export default function EmergencyCall() {
       window.clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    if (alertId) await emergency.cancel(alertId);
+    if (alertIdRef.current) await emergency.cancel(alertIdRef.current);
     if (recorderRef.current) {
       try { await recorderRef.current.stop(); } catch { }
     }
@@ -50,22 +57,46 @@ export default function EmergencyCall() {
   };
 
   const confirmCall = async () => {
+    // 优先使用 ref 中的 alertId，避免状态更新延迟问题
+    const savedAlertId = alertIdRef.current || alertId;
+    if (!savedAlertId) {
+      Toast.show({ content: '操作失败：无效的请求ID' });
+      return;
+    }
+
+    let location: any = undefined;
+    let base64: string | undefined = undefined;
+
+    // 停止录音并转换为 base64（失败也继续）
     try {
       const blob = await recorderRef.current!.stop();
-      const base64 = await blobToBase64(blob);
-      if (alertId) await emergency.uploadAudioBase64(alertId, base64);
-      const location = await getCurrentGeoPoint();
-      if (alertId) await emergency.commit(alertId, { location });
-      Toast.show({ content: '已通知紧急联系人' });
+      base64 = await blobToBase64(blob);
     } catch (e) {
+      // 录音失败，继续执行
+    }
+
+    // 获取定位（失败也继续）
+    try {
+      location = await getCurrentGeoPoint();
+    } catch (e) {
+      // 定位失败，继续执行
+    }
+
+    // 提交请求
+    try {
+      await emergency.commit(savedAlertId, { location, base64 });
+      Toast.show({ content: '已通知紧急联系人' });
+    } catch (commitError) {
       Toast.show({ content: '操作失败' });
-    } finally {
-      setAlertId(null);
-      setCountdown(null);
-      if (timerRef.current) {
-        window.clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
+    }
+
+    // 清理状态
+    setAlertId(null);
+    alertIdRef.current = null; // 同时清理 ref
+    setCountdown(null);
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
     }
   };
 
@@ -120,6 +151,7 @@ export default function EmergencyCall() {
           将在 {countdown} 秒后呼叫，正在录音…
         </div>
       )}
+
 
       {/* 单一主按钮已集成到圆形按钮点击 */}
     </div>

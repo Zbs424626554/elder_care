@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, message, Typography, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+<<<<<<< HEAD
+=======
+import { useNavigate, Link } from 'react-router-dom';
+>>>>>>> feat/one-tap-call-clean
 
 const { Title } = Typography;
 
@@ -18,6 +22,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         username: values.username,
         password: values.password,
       };
+<<<<<<< HEAD
       
       // 动态导入避免循环依赖
       const { AuthService } = await import('../../services/auth.service');
@@ -28,6 +33,18 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       
       const role = response.data.user.role;
       
+=======
+
+      // 动态导入避免循环依赖
+      const { AuthService } = await import('../../services/auth.service');
+      const response = await AuthService.login(loginParams);
+
+      AuthService.saveUserInfo(response.data.token, response.data.user);
+      message.success('登录成功');
+
+      const role = response.data.user.role;
+
+>>>>>>> feat/one-tap-call-clean
       // 使用回调或直接跳转
       if (onLoginSuccess) {
         onLoginSuccess(role);
@@ -39,7 +56,11 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           nurse: 'http://localhost:5175',
           admin: 'http://localhost:5176'
         };
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> feat/one-tap-call-clean
         const redirectUrl = roleRedirectMap[role];
         if (redirectUrl) {
           setTimeout(() => {
@@ -56,10 +77,17 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   };
 
   return (
+<<<<<<< HEAD
     <div style={{ 
       minHeight: '100vh', 
       display: 'flex', 
       alignItems: 'center', 
+=======
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+>>>>>>> feat/one-tap-call-clean
       justifyContent: 'center',
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     }}>
@@ -70,7 +98,11 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           </Title>
           <p style={{ color: '#666', margin: 0 }}>请登录您的账户</p>
         </div>
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> feat/one-tap-call-clean
         <Form
           name="login"
           onFinish={onFinish}
@@ -81,9 +113,15 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
             name="username"
             rules={[{ required: true, message: '请输入用户名!' }]}
           >
+<<<<<<< HEAD
             <Input 
               prefix={<UserOutlined />} 
               placeholder="用户名" 
+=======
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="用户名"
+>>>>>>> feat/one-tap-call-clean
             />
           </Form.Item>
 
@@ -98,9 +136,15 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           </Form.Item>
 
           <Form.Item>
+<<<<<<< HEAD
             <Button 
               type="primary" 
               htmlType="submit" 
+=======
+            <Button
+              type="primary"
+              htmlType="submit"
+>>>>>>> feat/one-tap-call-clean
               loading={loading}
               style={{ width: '100%', height: 40 }}
             >
@@ -108,6 +152,15 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
             </Button>
           </Form.Item>
         </Form>
+<<<<<<< HEAD
+=======
+        <div style={{ textAlign: 'center', marginTop: 18 }}>
+          <span style={{ color: '#888' }}>没有账号？</span>{' '}
+          <Link to="/register" style={{ color: '#1890ff', fontWeight: 500 }}>
+            立即注册
+          </Link>
+        </div>
+>>>>>>> feat/one-tap-call-clean
       </Card>
     </div>
   );
