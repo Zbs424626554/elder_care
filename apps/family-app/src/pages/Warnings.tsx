@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Avatar, Tag, Modal } from 'antd-mobile';
-import { ExclamationCircleOutline, PhonebookOutline, UserOutline } from 'antd-mobile-icons';
 import styles from './Warnings.module.css';
 import { socket, registerUser } from '../socket';
 import { AuthService } from '../services/auth.service';
 import request from '../utils/request';
+import PageHeader from '../components/PageHeader';
 
 interface Warning {
   id: string;
@@ -90,13 +89,13 @@ const Warnings: React.FC = () => {
   const getWarningColor = (type: string) => {
     switch (type) {
       case 'emergency':
-        return 'danger';
+        return '#ff6b6b';
       case 'warning':
-        return 'warning';
+        return '#ffa726';
       case 'reminder':
-        return 'primary';
+        return '#42a5f5';
       default:
-        return 'default';
+        return '#999';
     }
   };
 
@@ -127,7 +126,6 @@ const Warnings: React.FC = () => {
   };
 
   const handleWarningAction = (warning: Warning) => {
-
     // 标记为已处理
     setWarnings(warnings.map(w =>
       w.id === warning.id ? { ...w, status: 'handled' } : w
@@ -158,137 +156,165 @@ const Warnings: React.FC = () => {
       audio.play();
     } catch { }
   }
+
   const unreadCount = warnings.filter(w => w.status === 'unread').length;
 
   return (
     <div className={styles.warnings}>
+      <PageHeader title="健康预警" />
       {/* 预警统计 */}
-      <Card className={styles.warningStats}>
-        <div className={styles.statsHeader}>
-          <div className={styles.statsTitle}>
-            <UserOutline className={styles.statsIcon} />
+      <div className={styles['warning-stats']}>
+        <div className={styles['stats-header']}>
+          <div className={styles['stats-title']}>
+            <i className="fas fa-user stats-icon"></i>
             <span>预警统计</span>
           </div>
-          {/* <Badge content={unreadCount} color="#ff6b6b" /> */}
         </div>
-        <div className={styles.statsContent}>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>{warnings.filter(w => w.type === 'emergency').length}</div>
-            <div className={styles.statLabel}>紧急预警</div>
+        <div className={styles['stats-content']}>
+          <div className={styles['stat-item']}>
+            <div className={styles['stat-number']}>{warnings.filter(w => w.type === 'emergency').length}</div>
+            <div className={styles['stat-label']}>紧急预警</div>
           </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>{warnings.filter(w => w.type === 'warning').length}</div>
-            <div className={styles.statLabel}>一般预警</div>
+          <div className={styles['stat-item']}>
+            <div className={styles['stat-number']}>{warnings.filter(w => w.type === 'warning').length}</div>
+            <div className={styles['stat-label']}>一般预警</div>
           </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>{warnings.filter(w => w.type === 'reminder').length}</div>
-            <div className={styles.statLabel}>提醒事项</div>
+          <div className={styles['stat-item']}>
+            <div className={styles['stat-number']}>{warnings.filter(w => w.type === 'reminder').length}</div>
+            <div className={styles['stat-label']}>提醒事项</div>
           </div>
         </div>
-      </Card>
+      </div>
 
       {/* 预警列表 */}
-      <div className={styles.warningsList}>
+      <div className={styles['warnings-list']}>
         {warnings.map((warning) => (
-          <Card key={warning.id} className={`${styles.warningCard} ${warning.status}`}>
-            <div className={styles.warningHeader}>
-              <div className={styles.warningInfo}>
-                <div className={styles.warningTitle}>{warning.title}</div>
-                <div className={styles.warningTime}>{warning.time}</div>
+          <div key={warning.id} className={`${styles['warning-card']} ${styles[warning.status]}`}>
+            <div className={styles['warning-header']}>
+              <div className={styles['warning-info']}>
+                <div className={styles['warning-title']}>{warning.title}</div>
+                <div className={styles['warning-time']}>{warning.time}</div>
               </div>
-              <div className={styles.warningTags}>
-                <Tag color={getWarningColor(warning.type)}>
+              <div className={styles['warning-tags']}>
+                <span className={styles['warning-tag']} style={{ backgroundColor: getWarningColor(warning.type) }}>
                   {warning.type === 'emergency' ? '紧急' :
                     warning.type === 'warning' ? '一般' : '提醒'}
-                </Tag>
-                <Tag color={getPriorityColor(warning.priority)}>
+                </span>
+                <span className={styles['warning-tag']} style={{ backgroundColor: getPriorityColor(warning.priority) }}>
                   {warning.priority === 'high' ? '高优先级' :
                     warning.priority === 'medium' ? '中优先级' : '低优先级'}
-                </Tag>
+                </span>
               </div>
             </div>
 
-            <div className={styles.warningContent}>
-              <div className={styles.warningDescription}>
+            <div className={styles['warning-content']}>
+              <div className={styles['warning-description']}>
                 {warning.description}
               </div>
 
-              <div className={styles.elderlyInfo}>
-                <Avatar
-                  src={warning.elderlyAvatar || ''}
-                  className={styles.elderlyAvatar}
-                />
-                <span className={styles.elderlyName}>{warning.elderlyName}</span>
+              <div className={styles['elderly-info']}>
+                <div className={styles['elderly-avatar']}>
+                  {warning.elderlyAvatar ? (
+                    <img src={warning.elderlyAvatar} alt="头像" />
+                  ) : (
+                    <i className="fas fa-user"></i>
+                  )}
+                </div>
+                <span className={styles['elderly-name']}>{warning.elderlyName}</span>
                 {warning.location && (
-                  <span className={styles.warningLocation}>📍 {warning.location}</span>
+                  <span className={styles['warning-location']}>📍 {warning.location}</span>
                 )}
               </div>
             </div>
 
-            <div className={styles.warningActions}>
+            <div className={styles['warning-actions']}>
               {warning.type === 'emergency' && (
-                <Button
-                  size="small"
-                  color="danger"
+                <button
+                  className={`${styles['action-btn']} ${styles['emergency-btn']}`}
                   onClick={() => handleContact(warning)}
-                  className={styles.actionBtn}
                 >
-                  <PhonebookOutline />
+                  <i className="fas fa-phone"></i>
                   立即联系
-                </Button>
+                </button>
               )}
               {warning.type === 'warning' && (
-                <Button
-                  size="small"
-                  color="warning"
+                <button
+                  className={`${styles['action-btn']} ${styles['warning-btn']}`}
                   onClick={() => handleWarningAction(warning)}
-                  className={styles.actionBtn}
                 >
-                  <ExclamationCircleOutline />
+                  <i className="fas fa-exclamation-triangle"></i>
                   处理预警
-                </Button>
+                </button>
               )}
               {warning.type === 'reminder' && (
-                <Button
-                  size="small"
-                  color="primary"
+                <button
+                  className={`${styles['action-btn']} ${styles['reminder-btn']}`}
                   onClick={() => handleWarningAction(warning)}
-                  className={styles.actionBtn}
                 >
-                  {/* <MessageOutline /> */}
+                  <i className="fas fa-check"></i>
                   确认提醒
-                </Button>
+                </button>
               )}
-              <Button size="small" fill="outline" onClick={() => { setSelected(warning); setShowModal(true); }} className={styles.actionBtn}>查看详情</Button>
+              <button
+                className={`${styles['action-btn']} ${styles['detail-btn']}`}
+                onClick={() => { setSelected(warning); setShowModal(true); }}
+              >
+                查看详情
+              </button>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
 
       {/* 空状态 */}
       {warnings.length === 0 && (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>🔔</div>
-          <div className={styles.emptyText}>暂无预警信息</div>
-          <div className={styles.emptyDesc}>您的老人目前都很安全</div>
+        <div className={styles['empty-state']}>
+          <div className={styles['empty-icon']}>🔔</div>
+          <div className={styles['empty-text']}>暂无预警信息</div>
+          <div className={styles['empty-desc']}>您的老人目前都很安全</div>
         </div>
       )}
-      <Modal visible={showModal} onClose={() => setShowModal(false)} content={
-        <div>
-          <div style={{ fontWeight: 700, marginBottom: 8 }}>详情</div>
-          <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>定位: {selected?.location || '无'}</div>
-          <div style={{ fontSize: 12, color: '#666', marginBottom: 6, maxHeight: 120, overflow: 'auto' }}>摘要: {selected?.description}</div>
-          {selected?.transcript && (
-            <div style={{ fontSize: 12, color: '#666', marginBottom: 6, maxHeight: 120, overflow: 'auto' }}>
-              语音内容: {selected.transcript}
+
+      {/* 模态框 */}
+      {showModal && (
+        <div className={styles['modal-overlay']} onClick={() => setShowModal(false)}>
+          <div className={styles['modal-content']} onClick={(e) => e.stopPropagation()}>
+            <div className={styles['modal-header']}>
+              <h3>详情</h3>
+              <button className={styles['modal-close']} onClick={() => setShowModal(false)}>
+                <i className="fas fa-times"></i>
+              </button>
             </div>
-          )}
-          <div style={{ display: 'flex', gap: 8 }}>
-            <Button size="small" onClick={() => setShowModal(false)}>关闭</Button>
-            <Button size="small" color="primary" onClick={() => selected && fetchAndPlay(selected.id)}>播放录音</Button>
+            <div className={styles['modal-body']}>
+              <div className={styles['modal-item']}>
+                <span className={styles['modal-label']}>定位:</span>
+                <span className={styles['modal-value']}>{selected?.location || '无'}</span>
+              </div>
+              <div className={styles['modal-item']}>
+                <span className={styles['modal-label']}>摘要:</span>
+                <span className={styles['modal-value']}>{selected?.description}</span>
+              </div>
+              {selected?.transcript && (
+                <div className={styles['modal-item']}>
+                  <span className={styles['modal-label']}>语音内容:</span>
+                  <span className={styles['modal-value']}>{selected.transcript}</span>
+                </div>
+              )}
+            </div>
+            <div className={styles['modal-footer']}>
+              <button className={`${styles['modal-btn']} ${styles['secondary']}`} onClick={() => setShowModal(false)}>
+                关闭
+              </button>
+              <button
+                className={`${styles['modal-btn']} ${styles['primary']}`}
+                onClick={() => selected && fetchAndPlay(selected.id)}
+              >
+                播放录音
+              </button>
+            </div>
           </div>
         </div>
-      } />
+      )}
     </div>
   );
 };

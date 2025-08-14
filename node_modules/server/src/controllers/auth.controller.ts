@@ -76,6 +76,60 @@ export class AuthController {
     }
   }
 
+  // 创建老人用户（家属端添加老人）
+  static async createElderly(req: Request, res: Response) {
+    try {
+      const { username, password, phone, realname, avatar } = req.body;
+
+      if (!username || !password || !phone || !realname) {
+        return res.json({ code: 400, message: '缺少必要参数', data: null });
+      }
+
+      // 检查手机号是否已存在
+      const existUser = await User.findOne({ phone });
+      if (existUser) {
+        return res.json({ code: 409, message: '该手机号已被注册', data: null });
+      }
+
+      // 检查用户名是否已存在
+      const existUsername = await User.findOne({ username });
+      if (existUsername) {
+        return res.json({ code: 409, message: '用户名已存在', data: null });
+      }
+
+      // 创建老人用户
+      const user = await User.create({
+        username,
+        password,
+        phone,
+        role: 'elderly',
+        realname,
+        avatar: avatar || '',
+        status: true
+      });
+
+      const userInfo = {
+        id: user._id,
+        username: user.username,
+        phone: user.phone,
+        role: user.role,
+        realname: user.realname,
+        avatar: user.avatar,
+        status: user.status,
+        createdTime: user.createdTime
+      };
+
+      return res.json({
+        code: 200,
+        message: '创建老人用户成功',
+        data: { user: userInfo }
+      });
+    } catch (error) {
+      console.error('创建老人用户失败:', error);
+      return res.json({ code: 500, message: '创建老人用户失败', data: null });
+    }
+  }
+
   // 获取当前用户信息（需登录）
   static async getProfile(req: Request, res: Response) {
     try {

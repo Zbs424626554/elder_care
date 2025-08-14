@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Button, Avatar, Tag, Tabs } from 'antd-mobile';
 import { UserOutline, CheckOutline, StarOutline, CloseOutline } from 'antd-mobile-icons';
 import styles from './Orders.module.css';
+import PageHeader from '../components/PageHeader';
 
 interface Order {
   id: string;
@@ -149,6 +150,7 @@ const Orders: React.FC = () => {
 
   return (
     <div className={styles.orders}>
+      <PageHeader title="订单管理" />
       {/* 筛选标签 */}
       <div className={styles.filterTabs}>
         <Tabs

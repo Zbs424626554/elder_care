@@ -1,30 +1,23 @@
 .health {
-  padding: 0;
-  padding-top: 15px;
-  padding-bottom: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: calc(100vh - 124px);
-  /* 减去导航栏(44px) + 底部Tab(60px) + 安全区的高度 */
-  /* 确保在开发环境中也能正确显示 */
-  position: relative;
-  z-index: 1;
+  background: transparent;
+  min-height: 100vh;
 }
 
 /* 老人选择器 */
 .elderlySelector {
-  background: white !important;
-  border-radius: 16px !important;
-  padding: 20px !important;
-  margin-bottom: -25px !important;
-  border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transition: all 0.3s ease !important;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.elderlySelector:hover {
-  transform: translateY(-50px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+.elderlySelector:active {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .elderlyInfo {
@@ -34,17 +27,15 @@
 }
 
 .elderlyAvatar {
-  width: 60px !important;
-  height: 60px !important;
-  border-radius: 50% !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: white !important;
-  font-size: 24px !important;
-  font-weight: 600 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin-right: 16px !important;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: #59a5f5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
 }
 
 .elderlyDetails {
@@ -66,16 +57,87 @@
 .selectorArrow {
   color: #999;
   font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.elderlySelector.active .selectorArrow {
+  transform: rotate(180deg);
+}
+
+/* 下拉选择器 */
+.elderlyDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.elderlyOption {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.elderlyOption:last-child {
+  border-bottom: none;
+}
+
+.elderlyOption:active {
+  background: #f8f9fa;
+}
+
+.elderlyOption.selected {
+  background: #e6f7ff;
+}
+
+.elderlyOptionAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: #59a5f5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.elderlyOptionInfo {
+  flex: 1;
+}
+
+.elderlyOptionName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.elderlyOptionStatus {
+  font-size: 12px;
+  color: #666;
 }
 
 /* 今日健康数据 */
 .healthDataCard {
-  background: white !important;
-  border-radius: 16px !important;
-  padding: 20px !important;
-  margin-bottom: 20px !important;
-  border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .healthDataHeader {
@@ -86,10 +148,10 @@
 }
 
 .healthDataHeader h3 {
-  margin: 0 !important;
-  font-size: 18px !important;
-  color: #333 !important;
-  font-weight: 600 !important;
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
 }
 
 .healthDate {
@@ -116,9 +178,8 @@
   transition: all 0.3s ease;
 }
 
-.metricCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+.metricCard:active {
+  background: #e9ecef;
 }
 
 .metricIcon {
@@ -128,7 +189,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 20px;
   margin-right: 12px;
   background: white;
 }
@@ -159,149 +220,124 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  font-size: 12px !important;
-}
-
-/* AI健康分析 */
-.aiAnalysis {
-  background: white !important;
-  border-radius: 16px !important;
-  padding: 20px !important;
-  margin-bottom: 20px !important;
-  border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-}
-
-.analysisHeader {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.aiIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  margin-right: 12px;
-}
-
-.analysisHeader h3 {
-  margin: 0 !important;
-  font-size: 18px !important;
-  color: #333 !important;
-  font-weight: 600 !important;
-}
-
-.analysisContent {
-  background: #f8f9fa;
+  font-size: 12px;
+  padding: 4px 8px;
   border-radius: 12px;
-  padding: 16px;
+  font-weight: 600;
 }
 
-.analysisText {
-  margin: 0 0 12px 0 !important;
-  font-size: 14px;
-  color: #333;
-  line-height: 1.5;
+/* 状态标签配色 */
+.statusNormal {
+  background: #e6f7ff;
+  color: #1890ff;
 }
 
-.analysisList {
-  margin: 0 !important;
-  padding-left: 20px !important;
+.statusWarning {
+  background: #fff7e6;
+  color: #fa8c16;
 }
 
-.analysisList li {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-  line-height: 1.4;
+.statusDanger {
+  background: #fff1f0;
+  color: #ff4d4f;
 }
 
-.analysisList li:last-child {
-  margin-bottom: 0;
+
+
+/* 健康建议 */
+.healthAdvice {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 血压趋势 */
-.bloodPressureTrend {
-  background: white !important;
-  border-radius: 16px !important;
-  padding: 20px !important;
-  margin-bottom: 20px !important;
-  border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-}
-
-.trendHeader {
+.adviceHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.trendHeader h3 {
-  margin: 0 !important;
-  font-size: 18px !important;
-  color: #333 !important;
-  font-weight: 600 !important;
-}
-
-.trendPeriod {
-  font-size: 14px;
-  color: #666;
-  background: #f8f9fa;
-  padding: 4px 12px;
-  border-radius: 12px;
-}
-
-.trendChart {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 40px 20px;
-  text-align: center;
-}
-
-.chartPlaceholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.chartIcon {
-  font-size: 48px;
-  margin-bottom: 12px;
-}
-
-.chartText {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
-}
-
-.chartDesc {
-  font-size: 14px;
-  color: #666;
-}
-
-/* 健康建议 */
-.healthAdvice {
-  background: white !important;
-  border-radius: 16px !important;
-  padding: 20px !important;
-  border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-}
-
 .healthAdvice h3 {
-  margin: 0 0 16px 0 !important;
-  font-size: 18px !important;
-  color: #333 !important;
-  font-weight: 600 !important;
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.aiAdviceButton {
+  background: #0077C2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.aiAdviceButton:hover {
+  background: #005a9e;
+}
+
+.aiAdviceButton:active {
+  background: #004080;
+}
+
+.aiAdviceButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.aiAdviceButton i {
+  font-size: 12px;
+}
+
+.adviceActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.refreshButton {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  width: 36px;
+  height: 36px;
+}
+
+.refreshButton:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+.refreshButton:active {
+  background: #dee2e6;
+}
+
+.refreshButton:disabled {
+  background: #f8f9fa;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.refreshButton i {
+  font-size: 14px;
 }
 
 .adviceList {
@@ -319,7 +355,7 @@
   transition: all 0.3s ease;
 }
 
-.adviceItem:hover {
+.adviceItem:active {
   background: #e9ecef;
 }
 
@@ -350,6 +386,31 @@
 .adviceDesc {
   font-size: 13px;
   color: #666;
+  line-height: 1.5;
+}
+
+/* 占位符样式 */
+.advicePlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #dee2e6;
+}
+
+.placeholderIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.placeholderText {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
 }
 
 /* 响应式设计 */

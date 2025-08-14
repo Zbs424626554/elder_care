@@ -37,6 +37,15 @@ export interface LoginResponse {
   user: UserInfo;
 }
 
+// 创建老人用户参数
+export interface CreateElderlyParams {
+  username: string;
+  password: string;
+  phone: string;
+  realname: string;
+  avatar?: string;
+}
+
 // 认证服务类
 export class AuthService {
   /**
@@ -112,4 +121,21 @@ export class AuthService {
     localStorage.setItem('userRole', user.role);
     localStorage.setItem('userInfo', JSON.stringify(user));
   }
-} 
+
+  /**
+   * 创建老人用户（家属端添加老人）
+   */
+  static async createElderly(params: CreateElderlyParams): Promise<ApiResponse<UserInfo>> {
+    return http.post('/auth/create-elderly', {
+      ...params,
+      role: 'elderly'
+    });
+  }
+
+  /**
+   * 获取老人用户列表
+   */
+  static async getElderlyList(): Promise<ApiResponse<{ list: UserInfo[], total: number }>> {
+    return http.get('/users/role/elderly');
+  }
+}
