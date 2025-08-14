@@ -22,6 +22,11 @@ const Layout: React.FC = () => {
       icon: <AppOutline />,
     },
     {
+      key: '/home/warnings',
+      title: '预警',
+      icon: <ExclamationCircleOutline />,
+    },
+    {
       key: '/home/elderly',
       title: '老人',
       icon: <UserOutline />,
