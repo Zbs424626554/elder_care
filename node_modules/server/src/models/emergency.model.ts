@@ -8,9 +8,15 @@ export interface IEmergencyAlert extends Document {
     coordinates: [number, number];
   };
   audioClip?: string;
+  transcript?: string;
   aiAnalysis?: string;
   status: 'pending' | 'handled' | 'falseAlarm';
   handledBy?: mongoose.Types.ObjectId;
+  elderlyName?: string;
+  contactName?: string;
+  contactPhone?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const emergencyAlertSchema = new Schema({
@@ -35,7 +41,19 @@ const emergencyAlertSchema = new Schema({
   audioClip: {
     type: String
   },
+  transcript: {
+    type: String
+  },
   aiAnalysis: {
+    type: String
+  },
+  elderlyName: {
+    type: String
+  },
+  contactName: {
+    type: String
+  },
+  contactPhone: {
     type: String
   },
   status: {

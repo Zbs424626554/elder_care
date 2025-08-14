@@ -32,39 +32,60 @@ const RootRedirect: React.FC = () => {
 // 家属端路由组件
 const FamilyRoutes: React.FC = () => {
   return (
-      <Routes>
-        {/* 公共路由 - 使用共享的认证页面 */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        {/* 根路径重定向 */}
-        <Route path="/" element={<RootRedirect />} />
+    <Routes>
+      {/* 公共路由 - 使用共享的认证页面 */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      {/* 根路径重定向 */}
+      <Route path="/" element={<RootRedirect />} />
 
-        {/* 家属端路由 */}
-        <Route
-          path="/home"
-          element={
-            <PrivateRoute requiredRoles={['family']}>
-              <Layout />
-            </PrivateRoute>
-          }
-        >
-          {/* 首页 - 默认路由 */}
-          <Route index element={<Home />} />
+      {/* 家属端主布局路由 */}
+      <Route
+        path="/home"
+        element={
+          <PrivateRoute requiredRoles={['family']}>
+            <Layout />
+          </PrivateRoute>
+        }
+      >
+        {/* 首页 - 默认路由 */}
+        <Route index element={<Home />} />
 
-          {/* 主要标签页路由 */}
-          <Route path="elderly" element={<Elderly />} />
-          <Route path="health" element={<Health />} />
-          <Route path="nurses" element={<Nurses />} />
-          <Route path="profile" element={<Profile />} />
+        {/* 主要标签页路由 */}
+        <Route path="health" element={<Health />} />
+        <Route path="nurses" element={<Nurses />} />
+        <Route path="profile" element={<Profile />} />
+      </Route>
 
-          {/* 通过首页链接访问的页面 */}
-          <Route path="orders" element={<Orders />} />
-          <Route path="warnings" element={<Warnings />} />
-        </Route>
+      {/* 一级路由页面 */}
+      <Route
+        path="/elderly"
+        element={
+          <PrivateRoute requiredRoles={['family']}>
+            <Elderly />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/orders"
+        element={
+          <PrivateRoute requiredRoles={['family']}>
+            <Orders />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/warnings"
+        element={
+          <PrivateRoute requiredRoles={['family']}>
+            <Warnings />
+          </PrivateRoute>
+        }
+      />
 
-        {/* 404页面重定向到统一登录 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      {/* 404页面重定向到统一登录 */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 

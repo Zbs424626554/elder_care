@@ -94,7 +94,7 @@ request.interceptors.response.use(
       return Promise.reject(new Error(data.message || '请求失败'));
     }
 
-    return data;
+    return response;
   },
   (error) => {
     // 处理网络错误

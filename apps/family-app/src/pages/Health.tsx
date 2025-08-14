@@ -1,31 +1,39 @@
-import React, { useState } from 'react';
-import { Card, Avatar, Tag, Button } from 'antd-mobile';
-import { HeartOutline, UserOutline, DownOutline } from 'antd-mobile-icons';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './Health.module.css';
+import { generateHealthAdvice } from '../services/ai.service';
+import { HealthService } from '../services/health.service';
+import { ElderlyService } from '../services/elderly.service';
+import type { HealthData } from '../services/health.service';
+import type { ElderlyUser } from '../services/elderly.service';
 
-interface HealthData {
-  elderlyId: string;
-  elderlyName: string;
-  elderlyAvatar?: string;
-  heartRate: number;
-  bloodPressure: string;
-  temperature: number;
-  oxygenLevel: number;
-  bloodSugar: number;
-  lastUpdate: string;
-  status: 'normal' | 'warning' | 'danger';
+interface Elderly {
+  id: string;
+  name: string;
+  status: string;
+}
+
+interface HealthAdvice {
+  title: string;
+  description: string;
+  icon: string;
 }
 
 const Health: React.FC = () => {
   const [selectedElderly, setSelectedElderly] = useState('1');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [aiAdvice, setAiAdvice] = useState<HealthAdvice[]>([]);
+  const [isLoadingAdvice, setIsLoadingAdvice] = useState(false);
+  const [showAiAdvice, setShowAiAdvice] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const elderlyList = [
-    { label: '张爷爷', value: '1' },
-    { label: '李奶奶', value: '2' },
+  const elderlyList: Elderly[] = [
+    { id: '1', name: '张爷爷', status: '健康状态良好' },
+    { id: '2', name: '李奶奶', status: '需要关注' },
   ];
 
   const healthData: HealthData[] = [
     {
+      id: '1',
       elderlyId: '1',
       elderlyName: '张爷爷',
       heartRate: 75,
@@ -37,6 +45,7 @@ const Health: React.FC = () => {
       status: 'normal',
     },
     {
+      id: '2',
       elderlyId: '2',
       elderlyName: '李奶奶',
       heartRate: 95,
@@ -50,18 +59,69 @@ const Health: React.FC = () => {
   ];
 
   const currentHealthData = healthData.find(data => data.elderlyId === selectedElderly);
-  const currentElderly = elderlyList.find(elderly => elderly.value === selectedElderly);
+  const currentElderly = elderlyList.find(elderly => elderly.id === selectedElderly);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'normal':
-        return 'success';
-      case 'warning':
-        return 'warning';
-      case 'danger':
-        return 'danger';
-      default:
-        return 'default';
+  // 点击外部区域关闭下拉菜单
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
+
+  const handleElderlySelect = (elderlyId: string) => {
+    setSelectedElderly(elderlyId);
+    setShowDropdown(false);
+    // 切换老人时重置AI建议
+    setAiAdvice([]);
+    setShowAiAdvice(false);
+  };
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  // 获取AI健康建议
+  const handleGetAiAdvice = async () => {
+    if (!currentHealthData || !currentElderly) return;
+
+    setIsLoadingAdvice(true);
+    try {
+      const advice = await generateHealthAdvice(currentHealthData, currentElderly.name);
+      setAiAdvice(advice);
+      setShowAiAdvice(true);
+    } catch (error) {
+      console.error('获取AI建议失败:', error);
+      // 使用默认建议
+      setAiAdvice([
+        {
+          title: "定期运动",
+          description: "建议每天进行30分钟轻度运动，如散步、太极拳等，有助于改善血液循环和心肺功能。",
+          icon: "💡"
+        },
+        {
+          title: "均衡饮食",
+          description: "注意营养搭配，少盐少油，多摄入蔬菜水果，控制血糖和血压。",
+          icon: "🥗"
+        },
+        {
+          title: "充足睡眠",
+          description: "保证7-8小时优质睡眠，有助于身体恢复和免疫系统功能。",
+          icon: "😴"
+        }
+      ]);
+      setShowAiAdvice(true);
+    } finally {
+      setIsLoadingAdvice(false);
     }
   };
 
@@ -84,11 +144,6 @@ const Health: React.FC = () => {
     return 'normal';
   };
 
-  const getOxygenStatus = (level: number) => {
-    if (level < 95) return 'warning';
-    return 'normal';
-  };
-
   const getBloodSugarStatus = (sugar: number) => {
     if (sugar < 3.9 || sugar > 6.1) return 'warning';
     return 'normal';
@@ -101,159 +156,201 @@ const Health: React.FC = () => {
 
     if (systolicNum > 140 || diastolicNum > 90) return 'danger';
     if (systolicNum > 120 || diastolicNum > 80) return 'warning';
-    return 'success';
+    return 'normal';
   };
 
   const getTemperatureStatus = (temp: number) => {
-    if (temp > 37.5) return 'warning';
-    if (temp > 37.2) return 'danger';
-    return 'success';
+    if (temp > 37.5) return 'danger';
+    if (temp > 37.2) return 'warning';
+    return 'normal';
   };
 
   return (
     <div className={styles.health}>
       {/* 老人选择器 */}
-      <Card className={styles.elderlySelector}>
+      <div
+        ref={dropdownRef}
+        className={`${styles.elderlySelector} ${showDropdown ? styles.active : ''}`}
+        onClick={toggleDropdown}
+      >
         <div className={styles.elderlyInfo}>
-          <Avatar
-            className={styles.elderlyAvatar}
-            src={currentHealthData?.elderlyAvatar || ''}
-          />
+          <div className={styles.elderlyAvatar}>{currentElderly?.name?.slice(0, 1) || '长'}</div>
           <div className={styles.elderlyDetails}>
-            <div className={styles.elderlyName}>{currentHealthData?.elderlyName}</div>
-            <div className={styles.elderlyStatus}>健康状态良好</div>
+            <div className={styles.elderlyName}>{currentElderly?.name}</div>
+            <div className={styles.elderlyStatus}>{currentElderly?.status}</div>
           </div>
-          <DownOutline className={styles.selectorArrow} />
+          <i className={`fas fa-chevron-down ${styles.selectorArrow}`}></i>
         </div>
-      </Card>
+
+        {/* 下拉选项 */}
+        {showDropdown && (
+          <div className={styles.elderlyDropdown}>
+            {elderlyList.map((elderly) => (
+              <div
+                key={elderly.id}
+                className={`${styles.elderlyOption} ${elderly.id === selectedElderly ? styles.selected : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleElderlySelect(elderly.id);
+                }}
+              >
+                <div className={styles.elderlyOptionAvatar}>{elderly.name.slice(0, 1)}</div>
+                <div className={styles.elderlyOptionInfo}>
+                  <div className={styles.elderlyOptionName}>{elderly.name}</div>
+                  <div className={styles.elderlyOptionStatus}>{elderly.status}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* 今日健康数据 */}
-      <Card className={styles.healthDataCard}>
+      <div className={styles.healthDataCard}>
         <div className={styles.healthDataHeader}>
           <h3>今日健康数据</h3>
           <div className={styles.healthDate}>{currentHealthData?.lastUpdate}</div>
         </div>
 
         <div className={styles.healthMetricsGrid}>
+          {/* 血压 */}
           <div className={styles.metricCard}>
             <div className={styles.metricIcon}>
-              <HeartOutline />
+              <i className="fas fa-heartbeat"></i>
             </div>
             <div className={styles.metricContent}>
               <div className={styles.metricLabel}>血压</div>
               <div className={styles.metricValue}>{currentHealthData?.bloodPressure}</div>
               <div className={styles.metricUnit}>mmHg</div>
             </div>
-            <Tag className={styles.metricStatus} color={getBloodPressureStatus(currentHealthData?.bloodPressure || '')}>
-              {getBloodPressureStatus(currentHealthData?.bloodPressure || '') === 'success' ? '正常' : '偏高'}
-            </Tag>
+            {(() => {
+              const status = getBloodPressureStatus(currentHealthData?.bloodPressure || '0/0');
+              return (
+                <span className={`${styles.metricStatus} ${status === 'normal' ? styles.statusNormal : status === 'warning' ? styles.statusWarning : styles.statusDanger}`}>
+                  {getStatusText(status)}
+                </span>
+              );
+            })()}
           </div>
 
+          {/* 血糖 */}
           <div className={styles.metricCard}>
             <div className={styles.metricIcon}>
-              <HeartOutline />
+              <i className="fas fa-cubes"></i>
             </div>
             <div className={styles.metricContent}>
               <div className={styles.metricLabel}>血糖</div>
               <div className={styles.metricValue}>{currentHealthData?.bloodSugar}</div>
               <div className={styles.metricUnit}>mmol/L</div>
             </div>
-            <Tag className={styles.metricStatus} color={getBloodSugarStatus(currentHealthData?.bloodSugar || '')}>
-              {getBloodSugarStatus(currentHealthData?.bloodSugar || '') === 'success' ? '正常' : '偏高'}
-            </Tag>
+            {(() => {
+              const status = getBloodSugarStatus(currentHealthData?.bloodSugar || 0);
+              return (
+                <span className={`${styles.metricStatus} ${status === 'normal' ? styles.statusNormal : styles.statusWarning}`}>
+                  {getStatusText(status)}
+                </span>
+              );
+            })()}
           </div>
 
+          {/* 心率 */}
           <div className={styles.metricCard}>
             <div className={styles.metricIcon}>
-              <HeartOutline />
+              <i className="fas fa-heart"></i>
             </div>
             <div className={styles.metricContent}>
               <div className={styles.metricLabel}>心率</div>
               <div className={styles.metricValue}>{currentHealthData?.heartRate}</div>
               <div className={styles.metricUnit}>bpm</div>
             </div>
-            <Tag className={styles.metricStatus} color={getHeartRateStatus(currentHealthData?.heartRate || 0)}>
-              {getHeartRateStatus(currentHealthData?.heartRate || 0) === 'success' ? '正常' : '异常'}
-            </Tag>
+            {(() => {
+              const status = getHeartRateStatus(currentHealthData?.heartRate || 0);
+              return (
+                <span className={`${styles.metricStatus} ${status === 'normal' ? styles.statusNormal : status === 'warning' ? styles.statusWarning : styles.statusDanger}`}>
+                  {getStatusText(status)}
+                </span>
+              );
+            })()}
           </div>
 
+          {/* 体温 */}
           <div className={styles.metricCard}>
             <div className={styles.metricIcon}>
-              <HeartOutline />
+              <i className="fas fa-temperature-high"></i>
             </div>
             <div className={styles.metricContent}>
               <div className={styles.metricLabel}>体温</div>
               <div className={styles.metricValue}>{currentHealthData?.temperature}</div>
               <div className={styles.metricUnit}>°C</div>
             </div>
-            <Tag className={styles.metricStatus} color={getTemperatureStatus(currentHealthData?.temperature || 0)}>
-              {getTemperatureStatus(currentHealthData?.temperature || 0) === 'success' ? '正常' : '偏高'}
-            </Tag>
+            {(() => {
+              const status = getTemperatureStatus(currentHealthData?.temperature || 0);
+              return (
+                <span className={`${styles.metricStatus} ${status === 'normal' ? styles.statusNormal : status === 'warning' ? styles.statusWarning : styles.statusDanger}`}>
+                  {getStatusText(status)}
+                </span>
+              );
+            })()}
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* AI健康分析 */}
-      <Card className="ai-analysis">
-        <div className="analysis-header">
-          <div className="ai-icon">🤖</div>
-          <h3>AI健康分析</h3>
+      {/* AI健康建议 */}
+      <div className={styles.healthAdvice}>
+        <div className={styles.adviceHeader}>
+          <h3>AI健康建议</h3>
+          <div className={styles.adviceActions}>
+            {showAiAdvice && (
+              <button
+                className={styles.refreshButton}
+                onClick={handleGetAiAdvice}
+                disabled={isLoadingAdvice}
+                title="重新生成建议"
+              >
+                <i className="fas fa-sync-alt"></i>
+              </button>
+            )}
+            {!showAiAdvice && (
+              <button
+                className={styles.aiAdviceButton}
+                onClick={handleGetAiAdvice}
+                disabled={isLoadingAdvice}
+              >
+                {isLoadingAdvice ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin"></i>
+                    生成中...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-robot"></i>
+                    查看AI建议
+                  </>
+                )}
+              </button>
+            )}
+          </div>
         </div>
-        <div className="analysis-content">
-          <p className="analysis-text">
-            根据今日数据，{currentElderly?.label}的健康状况良好：
-          </p>
-          <ul className="analysis-list">
-            <li>血压在正常范围内</li>
-            <li>血糖控制良好</li>
-            <li>心率稳定</li>
-            <li>体温正常</li>
-          </ul>
-        </div>
-      </Card>
 
-      {/* 血压趋势 */}
-      <Card className="blood-pressure-trend">
-        <div className="trend-header">
-          <h3>血压趋势</h3>
-          <span className="trend-period">最近7天</span>
-        </div>
-        <div className="trend-chart">
-          <div className="chart-placeholder">
-            <div className="chart-icon">📊</div>
-            <div className="chart-text">血压趋势图</div>
-            <div className="chart-desc">显示收缩压和舒张压变化</div>
+        {showAiAdvice && aiAdvice.length > 0 ? (
+          <div className={styles.adviceList}>
+            {aiAdvice.map((advice, index) => (
+              <div key={index} className={styles.adviceItem}>
+                <div className={styles.adviceIcon}>{advice.icon}</div>
+                <div className={styles.adviceContent}>
+                  <div className={styles.adviceTitle}>{advice.title}</div>
+                  <div className={styles.adviceDesc}>{advice.description}</div>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      </Card>
-
-      {/* 健康建议 */}
-      <Card className="health-advice">
-        <h3>健康建议</h3>
-        <div className="advice-list">
-          <div className="advice-item">
-            <div className="advice-icon">💡</div>
-            <div className="advice-content">
-              <div className="advice-title">定期运动</div>
-              <div className="advice-desc">建议每天进行30分钟轻度运动</div>
-            </div>
+        ) : !showAiAdvice ? (
+          <div className={styles.advicePlaceholder}>
+            <div className={styles.placeholderIcon}>🤖</div>
+            <div className={styles.placeholderText}>点击"查看AI建议"获取个性化健康建议</div>
           </div>
-          <div className="advice-item">
-            <div className="advice-icon">🥗</div>
-            <div className="advice-content">
-              <div className="advice-title">均衡饮食</div>
-              <div className="advice-desc">注意营养搭配，少盐少油</div>
-            </div>
-          </div>
-          <div className="advice-item">
-            <div className="advice-icon">😴</div>
-            <div className="advice-content">
-              <div className="advice-title">充足睡眠</div>
-              <div className="advice-desc">保证7-8小时优质睡眠</div>
-            </div>
-          </div>
-        </div>
-      </Card>
+        ) : null}
+      </div>
     </div>
   );
 };

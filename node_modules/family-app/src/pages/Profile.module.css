@@ -1,16 +1,3 @@
-.profile {
-  padding: 0;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: calc(100vh - 124px);
-  /* 减去导航栏(44px) + 底部Tab(60px) + 安全区的高度 */
-  /* 确保在开发环境中也能正确显示 */
-  position: relative;
-  z-index: 1;
-  margin-top: 330px;
-}
-
 /* 个人信息头部 */
 .profileHeader {
   background: white !important;

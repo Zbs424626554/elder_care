@@ -1,20 +1,6 @@
-.nurses {
-  padding: 0;
-  padding-top: 15px;
-  padding-bottom: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: calc(100vh - 124px);
-  /* 减去导航栏(44px) + 底部Tab(60px) + 安全区的高度 */
-  /* 确保在开发环境中也能正确显示 */
-  position: relative;
-  z-index: 1;
-  margin-top: 300px;
-}
-
 /* 搜索栏 */
 .searchContainer {
   margin-bottom: 20px;
-  padding: 0 16px;
 }
 
 .searchBar {
@@ -26,7 +12,6 @@
 /* 筛选标签 */
 .filterTabs {
   margin-bottom: 20px;
-  padding: 0 16px;
 }
 
 .filterTabs :global(.adm-tabs-header) {
@@ -45,10 +30,7 @@
   color: white !important;
 }
 
-/* 护工列表 */
-.nursesList {
-  padding: 0 16px;
-}
+
 
 .nurseCard {
   background: white !important;
