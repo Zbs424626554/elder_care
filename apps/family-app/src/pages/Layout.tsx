@@ -1,117 +1,90 @@
 import React from 'react';
-import { Layout as AntLayout, Menu, Button } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { TabBar, SafeArea } from 'antd-mobile';
 import {
-  HomeOutlined,
-  UserOutlined,
-  TeamOutlined,
-  HeartOutlined,
-  FileTextOutlined,
-  ExclamationCircleOutlined,
-  LogoutOutlined,
-} from '@ant-design/icons';
-import { AuthService } from '../services/auth.service';
-
-const { Header, Sider, Content } = AntLayout;
+  AppOutline,
+  UserOutline,
+  HeartOutline,
+  UserAddOutline,
+  UnorderedListOutline,
+  ExclamationCircleOutline,
+} from 'antd-mobile-icons';
+import styles from './Layout.module.css';
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentUser = AuthService.getCurrentUser();
 
-  const menuItems = [
+  const tabs = [
     {
       key: '/home',
-      icon: <HomeOutlined />,
-      label: '首页',
-    },
-    {
-      key: '/home/profile',
-      icon: <UserOutlined />,
-      label: '个人信息',
+      title: '首页',
+      icon: <AppOutline />,
     },
     {
       key: '/home/elderly',
-      icon: <TeamOutlined />,
-      label: '绑定老人',
+      title: '老人',
+      icon: <UserOutline />,
     },
     {
       key: '/home/health',
-      icon: <HeartOutlined />,
-      label: '健康数据',
+      title: '健康',
+      icon: <HeartOutline />,
     },
     {
       key: '/home/nurses',
-      icon: <TeamOutlined />,
-      label: '护工管理',
+      title: '护工',
+      icon: <UserAddOutline />,
     },
     {
-      key: '/home/orders',
-      icon: <FileTextOutlined />,
-      label: '订单管理',
-    },
-    {
-      key: '/home/warnings',
-      icon: <ExclamationCircleOutlined />,
-      label: '健康预警',
+      key: '/home/profile',
+      title: '我的',
+      icon: <UserOutline />,
     },
   ];
 
-  const handleMenuClick = ({ key }: { key: string }) => {
+  const getActiveKey = () => {
+    const path = location.pathname;
+    if (path === '/home') return '/home';
+    return path;
+  };
+
+  const handleTabChange = (key: string) => {
     navigate(key);
   };
 
-  const handleLogout = () => {
-    AuthService.logout();
-  };
-
   return (
-    <AntLayout style={{ minHeight: '100vh' }}>
-      <Sider>
-        <div style={{ 
-          height: 64, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: 18,
-          fontWeight: 'bold'
-        }}>
-          智慧养老平台
-        </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={menuItems}
-          onClick={handleMenuClick}
-        />
-      </Sider>
-      <AntLayout>
-        <Header style={{ 
-          padding: '0 16px', 
-          background: '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <div>欢迎，{currentUser?.realname || currentUser?.username}</div>
-          <Button onClick={handleLogout} icon={<LogoutOutlined />}>
-            退出登录
-          </Button>
-        </Header>
-        <Content style={{ 
-          margin: '16px',
-          padding: '24px',
-          background: '#fff',
-          borderRadius: '8px',
-          minHeight: 'calc(100vh - 112px)'
-        }}>
-          <Outlet />
-        </Content>
-      </AntLayout>
-    </AntLayout>
+    <div className={styles.layout}>
+      {/* 顶部安全区 */}
+      <SafeArea position="top" />
+
+      {/* 导航栏 */}
+      <div className={styles.navBar}>
+        <span>智慧养老</span>
+        <i className="fas fa-bell notification-icon"></i>
+      </div>
+
+      {/* 内容区域 */}
+      <div className={styles.content}>
+        <Outlet />
+      </div>
+
+      {/* 底部标签栏 */}
+      <div className={styles.tabBarContainer}>
+        <TabBar
+          activeKey={getActiveKey()}
+          onChange={handleTabChange}
+          className={styles.customTabBar}
+        >
+          {tabs.map((item) => (
+            <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+          ))}
+        </TabBar>
+        {/* 底部安全区 */}
+        <SafeArea position="bottom" />
+      </div>
+    </div>
   );
 };
 
-export default Layout; 
+export default Layout;

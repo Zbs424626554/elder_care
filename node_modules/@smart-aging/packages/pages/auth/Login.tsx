@@ -1,102 +1,91 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, message, Typography, Card } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate, Link } from 'react-router-dom';
-import { AuthService, LoginParams } from '../../services/auth.service';
+import React, { useState } from "react";
+import { Form, Input, Button, message, Typography, Card } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
-const Login: React.FC = () => {
+interface LoginProps {
+  onLoginSuccess?: (role: string) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      // 服务器支持 username 或 phone 登录，这里使用 username
-      const loginParams: LoginParams = {
+      const loginParams = {
         username: values.username,
         password: values.password,
       };
+
+      // 动态导入避免循环依赖
+      const { AuthService } = await import("../../services/auth.service");
       const response = await AuthService.login(loginParams);
-      console.log('登录响应:', response);
 
-      // 保存用户信息到本地存储
       AuthService.saveUserInfo(response.data.token, response.data.user);
+      message.success("登录成功");
 
-      message.success('登录成功');
       const role = response.data.user.role;
-      console.log('用户角色:', role);
 
-      const roleRedirectMap: Record<string, string> = {
-        elderly: 'http://localhost:5173/home',
-        family: 'http://localhost:5174/home',
-        nurse: 'http://localhost:5175/home',
-      };
-
-      const redirectUrl = roleRedirectMap[role];
-      if (redirectUrl) {
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 1000); // 增加延迟时间，让用户看到成功消息
+      // 使用回调或直接跳转
+      if (onLoginSuccess) {
+        onLoginSuccess(role);
       } else {
-        console.error('未知的用户角色:', role);
-        message.error('用户角色无效');
+        // 直接跳转到对应应用
+        const roleRedirectMap: Record<string, string> = {
+          elderly: "http://localhost:5173",
+          family: "http://localhost:5174",
+          nurse: "http://localhost:5175",
+          admin: "http://localhost:5176",
+        };
+
+        const redirectUrl = roleRedirectMap[role];
+        if (redirectUrl) {
+          setTimeout(() => {
+            window.location.href = redirectUrl;
+          }, 1000);
+        }
       }
     } catch (error) {
-      console.error('登录失败:', error);
-      // 不要再弹 message.error，拦截器已经弹了
+      console.error("登录失败:", error);
+      message.error("登录失败，请检查用户名和密码");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-    }}>
-      <Card style={{ width: 400, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
-        <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <Title level={2} style={{ color: '#1890ff' }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      }}
+    >
+      <Card style={{ width: 400, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <Title level={2} style={{ color: "#1890ff", marginBottom: 8 }}>
             智慧养老平台
           </Title>
-          <Text type="secondary">统一登录系统</Text>
+          <p style={{ color: "#666", margin: 0 }}>请登录您的账户</p>
         </div>
 
-        <Form
-          name="login"
-          onFinish={onFinish}
-          autoComplete="off"
-          size="large"
-        >
+        <Form name="login" onFinish={onFinish} autoComplete="off" size="large">
           <Form.Item
             name="username"
-            rules={[
-              { required: true, message: '请输入用户名' },
-              { min: 2, message: '用户名至少2位' }
-            ]}
+            rules={[{ required: true, message: "请输入用户名!" }]}
           >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="请输入用户名或手机号"
-            />
+            <Input prefix={<UserOutlined />} placeholder="用户名" />
           </Form.Item>
 
           <Form.Item
             name="password"
-            rules={[
-              { required: true, message: '请输入密码' },
-              { min: 6, message: '密码至少6位' }
-            ]}
+            rules={[{ required: true, message: "请输入密码!" }]}
           >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="请输入密码"
-            />
+            <Input.Password prefix={<LockOutlined />} placeholder="密码" />
           </Form.Item>
 
           <Form.Item>
@@ -104,24 +93,15 @@ const Login: React.FC = () => {
               type="primary"
               htmlType="submit"
               loading={loading}
-              style={{ width: '100%' }}
+              style={{ width: "100%", height: 40 }}
             >
               登录
             </Button>
           </Form.Item>
-
-          <div style={{ textAlign: 'center' }}>
-            <Text type="secondary">
-              还没有账号？{' '}
-              <Link to="/register" style={{ color: '#1890ff' }}>
-                立即注册
-              </Link>
-            </Text>
-          </div>
         </Form>
       </Card>
     </div>
   );
 };
 
-export default Login; 
+export default Login;
