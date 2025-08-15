@@ -2,7 +2,14 @@
   "name": "smart-aging",
   "version": "1.0.0",
   "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "server",
+    "apps/*",
+    "packages"
+  ],
   "scripts": {
+    "install:all": "npm install",
     "start:server": "cd server && ts-node-dev src/index.ts",
     "dev:elderly": "cd apps/elderly-app && npm run dev",
     "dev:family": "cd apps/family-app && npm run dev",
@@ -15,8 +22,6 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "private": true,
-
   "devDependencies": {
     "eslint": "^9.32.0",
     "husky": "^8.0.0",
