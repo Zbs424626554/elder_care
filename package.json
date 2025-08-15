@@ -9,20 +9,14 @@
     "dev:nurse": "cd apps/nurse-app && npm run dev",
     "dev:admin": "cd apps/admin-panel && npm run dev",
     "lint": "eslint . --ext .ts,.tsx,.vue --fix",
-    "prepare": "husky install",
-    "install:all": "npm install && npm run install:workspaces",
-    "install:workspaces": "cd packages && npm install && cd ../apps/elderly-app && npm install && cd ../family-app && npm install && cd ../nurse-app && npm install && cd ../admin-panel && npm install && cd ../../server && npm install"
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "private": true,
-  "workspaces": [
-    "packages",
-    "apps/*",
-    "server"
-  ],
+
   "devDependencies": {
     "eslint": "^9.32.0",
     "husky": "^8.0.0",
