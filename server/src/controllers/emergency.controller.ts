@@ -119,43 +119,43 @@ export const commitEmergency = (io: IOServer) => async (req: Request, res: Respo
     emitToReceivers(io, receivers, 'emergency:updated', callingPayload);
   }
   if (contactPhone) {
-    // 不依赖高风险判定，直接拨号
+    // 不依赖高风险判定，直接拨号（异步）
     placeEmergencyCall(contactPhone, '检测到紧急情况，请尽快联系老人或前往查看。').catch(() => void 0);
   }
 
-  // AI 管线：转写 + 语义分析（无 Key 时返回占位结果）
-  let transcript: string | undefined;
-  if (updated?.audioClip) {
-    try {
-      const { transcribeBase64Audio } = await import('../ai/transcribe');
-      transcript = await transcribeBase64Audio(updated.audioClip);
-    } catch (error) {
-      console.error('[Emergency] Transcription failed:', error);
-      transcript = undefined;
+  // 立即返回，避免前端等待转写/分析导致超时
+  res.json({ code: 200, message: 'ok', data: { queued: true } });
+
+  // 在后台异步执行：转写 + 语义分析 + 事件推送
+  setImmediate(async () => {
+    let transcript: string | undefined = undefined;
+    if (updated?.audioClip) {
+      try {
+        transcript = await transcribeBase64Audio(updated.audioClip);
+      } catch (error) {
+        console.error('[Emergency] Transcription failed:', error);
+        transcript = undefined;
+      }
     }
-  } else {
-    transcript = undefined;
-  }
 
-  const analysisObj = await analyzeEmergency({
-    transcript: transcript || '',
-    location,
+    try {
+      const analysisObj = await analyzeEmergency({
+        transcript: transcript || '',
+        location,
+      });
+      const aiAnalysis = JSON.stringify(analysisObj);
+      const updateData: any = { aiAnalysis };
+      if (transcript) updateData.transcript = transcript;
+      await EmergencyAlert.findByIdAndUpdate(id, updateData);
+
+      const analyzedPayload = { alertId: id, status: 'calling', aiAnalysis, transcript, elderlyId, elderlyName, contactPhone, location };
+      if (receivers.length === 0) {
+        io.emit('emergency:updated', analyzedPayload);
+      } else {
+        emitToReceivers(io, receivers, 'emergency:updated', analyzedPayload);
+      }
+    } catch (e) {
+      console.error('[Emergency] Background analyze failed:', e);
+    }
   });
-  // 将语音识别结果和AI分析结果都保存到数据库
-  const aiAnalysis = JSON.stringify(analysisObj);
-  const updateData: any = { aiAnalysis };
-  if (transcript) {
-    updateData.transcript = transcript; // 保存原始转写文本
-  }
-  await EmergencyAlert.findByIdAndUpdate(id, updateData);
-
-  // 保持"calling"状态不倒退，仅追加 aiAnalysis 和 transcript 字段的更新事件
-  const analyzedPayload = { alertId: id, status: 'calling', aiAnalysis, transcript, elderlyId, elderlyName, contactPhone, location };
-  // 临时：如果没有找到紧急联系人，就广播给所有人（测试用）
-  if (receivers.length === 0) {
-    io.emit('emergency:updated', analyzedPayload);
-  } else {
-    emitToReceivers(io, receivers, 'emergency:updated', analyzedPayload);
-  }
-  res.json({ code: 200, message: 'ok', data: { aiAnalysis: analysisObj } });
 };

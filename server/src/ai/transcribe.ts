@@ -28,6 +28,7 @@ export async function transcribeBase64Audio(base64: string): Promise<string> {
       secretId,
       secretKey,
       dataBase64: wavB64,
+      dataBytesLength: wavBuf.length,
       engServiceType: '16k_zh',
     });
     await cleanup();
@@ -74,8 +75,8 @@ async function convertWebmToWavTemp(webmBuffer: Buffer): Promise<{ wavPath: stri
   };
 }
 
-async function tencentAsrSentenceRecognition(params: { secretId: string; secretKey: string; dataBase64: string; engServiceType?: string; }): Promise<string> {
-  const { secretId, secretKey, dataBase64, engServiceType = '16k_zh' } = params;
+async function tencentAsrSentenceRecognition(params: { secretId: string; secretKey: string; dataBase64: string; dataBytesLength?: number; engServiceType?: string; }): Promise<string> {
+  const { secretId, secretKey, dataBase64, dataBytesLength, engServiceType = '16k_zh' } = params;
   // 动态导入，避免没有安装时报错
   const tc = await import('tencentcloud-sdk-nodejs');
   const AsrClient = (tc as any).asr.v20190614.Client;
@@ -91,7 +92,8 @@ async function tencentAsrSentenceRecognition(params: { secretId: string; secretK
     VoiceFormat: 'wav',
     UsrAudioKey: `key_${Date.now()}`,
     Data: dataBase64,
-    DataLen: Buffer.byteLength(dataBase64),
+    // DataLen 需为音频原始字节长度，不能使用 base64 字符串长度
+    DataLen: typeof dataBytesLength === 'number' ? dataBytesLength : Buffer.from(dataBase64, 'base64').length,
   };
   const resp = await client.SentenceRecognition(req);
   // 返回字段可能为 Result
