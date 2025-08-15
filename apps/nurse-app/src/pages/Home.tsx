@@ -152,14 +152,14 @@ const Home: React.FC = () => {
             <div className="stat-icon calendar">
               <CalendarOutlined />
             </div>
-            <div className="stat-value">3</div>
+            <div className="stat-value">2</div>
             <div className="stat-label">今日订单</div>
           </Col>
           <Col span={6} className="stat-item">
             <div className="stat-icon dollar">
               <DollarOutlined />
             </div>
-            <div className="stat-value">3,860</div>
+            <div className="stat-value">2,860</div>
             <div className="stat-label">本月收入<span className="stat-unit">元</span></div>
           </Col>
           <Col span={6} className="stat-item">
