@@ -6,6 +6,8 @@ export interface IOrder extends Document {
   serviceType: mongoose.Types.ObjectId;
   status: 'pending' | 'accepted' | 'started' | 'completed' | 'confirmed' | 'canceled';
   orderTime: Date;
+  elderlyId: mongoose.Types.ObjectId;
+  requirements: string;
   startTime?: Date;
   endTime?: Date;
   duration: number;
@@ -52,6 +54,10 @@ const orderSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  elderlyId: {
+    type: Schema.Types.ObjectId,
+    ref: "Elder",
+  },
   startTime: {
     type: Date
   },
@@ -94,7 +100,7 @@ const orderSchema = new Schema({
       }
     }
   },
-  remarks: {
+  requirements: {
     type: String
   },
   healthSnapshot: {
