@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import styles from './Layout.module.css';
-
+import { socket, registerUser } from '../socket';
+import { AuthService } from '../services/auth.service';
 const Layout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,6 +39,24 @@ const Layout: React.FC = () => {
   const handleTabChange = (key: string) => {
     navigate(key);
   };
+  useEffect(() => {
+    const user = AuthService.getCurrentUser?.();
+    const uid = (user as any)?.id || (user as any)?._id;
+    if (uid) {
+      registerUser(uid);
+    }
+
+    const onEmergencyUpdated = (payload: any) => {
+      const status = payload?.status;
+      if ((status === 'calling' || status === 'pending') && location.pathname !== '/warnings') {
+        navigate('/warnings');
+      }
+    };
+    socket.on('emergency:updated', onEmergencyUpdated);
+    return () => {
+      socket.off('emergency:updated', onEmergencyUpdated);
+    };
+  }, [location.pathname, navigate]);
 
   return (
     <>
