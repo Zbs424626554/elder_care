@@ -133,14 +133,52 @@ const Orders: React.FC = () => {
   useEffect(() => {
     const initMap = async () => {
       if (!mapVisible || !navOrder || !mapContainerRef.current) return;
+
+      // 检查百度地图是否可用，如果不可用则尝试重新加载
       if (!(window as any).BMapGL) {
-        message.error('BMapGL 未加载，请确认在 index.html 中已正确引入百度地图脚本');
-        return;
+        console.log('BMapGL 未加载，尝试重新加载百度地图脚本...');
+
+        // 尝试重新加载百度地图脚本
+        const loadBaiduMap = () => {
+          return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://api.map.baidu.com/api?v=1.0&type=webgl&ak=uVqZ5HJnmnA95xhBUo4fCUl2M4Pji7Ky';
+            script.onload = () => {
+              console.log('百度地图脚本重新加载成功');
+              resolve(true);
+            };
+            script.onerror = () => {
+              console.error('百度地图脚本重新加载失败');
+              reject(new Error('地图脚本加载失败'));
+            };
+            document.head.appendChild(script);
+          });
+        };
+
+        try {
+          await loadBaiduMap();
+          // 等待脚本执行
+          await new Promise(resolve => setTimeout(resolve, 1000));
+
+          if (!(window as any).BMapGL) {
+            message.error('百度地图加载失败，请检查网络连接或刷新页面重试');
+            setMapVisible(false);
+            return;
+          }
+        } catch (error) {
+          message.error('百度地图加载失败，请检查网络连接或刷新页面重试');
+          setMapVisible(false);
+          return;
+        }
       }
 
       setMapLoading(true);
       try {
+        // 确保 BMapGL 可用
         const BMapGL = (window as any).BMapGL;
+        if (!BMapGL) {
+          throw new Error('BMapGL 对象不可用');
+        }
         const map = new BMapGL.Map(mapContainerRef.current);
         mapRef.current = map;
 
@@ -312,6 +350,26 @@ const Orders: React.FC = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  // 检测网络状态
+  useEffect(() => {
+    const checkNetworkStatus = () => {
+      if (!navigator.onLine) {
+        message.warning('网络连接已断开，地图功能可能无法正常使用');
+      }
+    };
+
+    window.addEventListener('online', () => message.success('网络连接已恢复'));
+    window.addEventListener('offline', checkNetworkStatus);
+
+    // 初始检查
+    checkNetworkStatus();
+
+    return () => {
+      window.removeEventListener('online', () => message.success('网络连接已恢复'));
+      window.removeEventListener('offline', checkNetworkStatus);
+    };
+  }, []);
+
   // 将后端订单映射到前端展示结构
   const mapServerOrder = (o: OrderRecord): ServiceOrder => {
     // address 支持三种结构：string | { formatted } | { city, district, ... }
@@ -424,56 +482,80 @@ const Orders: React.FC = () => {
     return (
       <div style={{
         background: 'white',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 12,
-        boxShadow: '0 4px 14px rgba(0,0,0,0.06)',
-        border: order.urgent ? '2px solid #ff4d4f' : '1px solid #f0f0f0'
+        borderRadius: 16,
+        padding: 20,
+        marginBottom: 16,
+        border: order.urgent ? '2px solid #ff4d4f' : '1px solid #e8e8e8',
+        transition: 'all 0.3s ease'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Title level={4} style={{ margin: 0 }}>{order.title}</Title>
-            <Tag color="green">派单</Tag>
-            {order.urgent ? <Tag color="red">紧急</Tag> : null}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Title level={4} style={{ margin: 0, color: '#262626' }}>{order.title}</Title>
+            <Tag color="green" style={{ borderRadius: '6px' }}>派单</Tag>
+            {order.urgent ? <Tag color="red" style={{ borderRadius: '6px' }}>紧急</Tag> : null}
           </div>
-          <Tag color={statusColor}>{statusLabel}</Tag>
+          <Tag color={statusColor} style={{ borderRadius: '6px', fontWeight: '500' }}>{statusLabel}</Tag>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-          <EnvironmentOutlined />
-          <Text>{order.location}</Text>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+          <EnvironmentOutlined style={{ color: '#8c8c8c', fontSize: '16px' }} />
+          <Text style={{ color: '#595959', fontSize: '14px' }}>{order.location}</Text>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
-          <DollarOutlined style={{ color: '#faad14' }} />
-          <Text strong style={{ color: '#faad14', fontSize: 16 }}>¥{order.price}</Text>
-          <Text type="secondary">/天</Text>
-          <Text type="secondary" style={{ marginLeft: 12 }}>{order.duration || '—'}</Text>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 16 }}>
+          <DollarOutlined style={{ color: '#faad14', fontSize: '16px' }} />
+          <Text strong style={{ color: '#faad14', fontSize: '18px' }}>¥{order.price}</Text>
+          <Text type="secondary" style={{ fontSize: '14px' }}>/天</Text>
+          <Text type="secondary" style={{ marginLeft: 16, fontSize: '14px' }}>{order.duration || '—'}</Text>
         </div>
 
-        <Divider style={{ margin: '12px 0' }} />
+        <Divider style={{ margin: '20px 0', borderColor: '#f0f0f0' }} />
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <Text type="secondary">家属：{order.familyInfo.name}</Text>
+            <Text type="secondary" style={{ fontSize: '14px', color: '#8c8c8c' }}>家属：{order.familyInfo.name}</Text>
             <br />
-            <Space>
-              <Rate disabled defaultValue={order.familyInfo.rating} style={{ fontSize: 12 }} />
-              <Text type="secondary">{order.familyInfo.rating}</Text>
-            </Space>
           </div>
 
-          <Space>
+          <Space size="small">
             {isMyOrder && order.status === 'assigned' && (
-              <Button type="primary" size="small" onClick={() => handleUpdateOrderStatus(order.id, 'processing')}>开始服务</Button>
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => handleUpdateOrderStatus(order.id, 'processing')}
+                style={{ borderRadius: '8px', fontWeight: '500' }}
+              >
+                开始服务
+              </Button>
             )}
             {isMyOrder && order.status === 'processing' && (
-              <Button type="primary" size="small" onClick={() => handleUpdateOrderStatus(order.id, 'completed')}>完成服务</Button>
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => handleUpdateOrderStatus(order.id, 'completed')}
+                style={{ borderRadius: '8px', fontWeight: '500' }}
+              >
+                完成服务
+              </Button>
             )}
             {!isMyOrder && (
-              <Button type="primary" size="small" onClick={() => handleAcceptAssignment(order.id)} disabled={order.status !== 'assigned'}>接受派单</Button>
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => handleAcceptAssignment(order.id)}
+                disabled={order.status !== 'assigned'}
+                style={{ borderRadius: '8px', fontWeight: '500' }}
+              >
+                接受派单
+              </Button>
             )}
-            <Button size="small" onClick={() => navigate(`/home/orders/${order.id}`)}>查看详情</Button>
+            <Button
+              size="small"
+              onClick={() => navigate(`/home/orders/${order.id}`)}
+              style={{ borderRadius: '8px', borderColor: '#d9d9d9' }}
+            >
+              查看详情
+            </Button>
           </Space>
         </div>
       </div>
@@ -481,30 +563,42 @@ const Orders: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '16px' }}>
-      <Title level={2}>服务订单</Title>
+    <div style={{
+      padding: '16px',
+      background: '#f5f5f5',
+      minHeight: '100vh'
+    }}>
+      <Title level={2} style={{ marginBottom: '24px', color: '#262626' }}>服务订单</Title>
 
       {/* 搜索和筛选 */}
       <div style={{
         background: 'white',
-        padding: '16px',
-        borderRadius: '8px',
-        marginBottom: '16px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        padding: '20px',
+        borderRadius: '12px',
+        marginBottom: '20px',
+        border: '1px solid #e8e8e8'
       }}>
+        <Text type="secondary" style={{ fontSize: '14px' }}>
+          当前显示：我的订单 ({filteredMyOrders.length} 个)
+        </Text>
       </div>
 
       {/* 订单列表 */}
       <div style={{
         background: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        borderRadius: '12px',
+        border: '1px solid #e8e8e8',
+        overflow: 'hidden'
       }}>
         <Tabs defaultActiveKey="my-orders">
           <TabPane tab="我的订单" key="my-orders">
             {filteredMyOrders.length > 0 ? (
-              <div style={{ padding: '16px' }}>
-                {filteredMyOrders.map(order => renderOrderCard(order, true))}
+              <div style={{ padding: '16px' }} >
+                {filteredMyOrders.map(order => (
+                  <div key={order.id}>
+                    {renderOrderCard(order, true)}
+                  </div>
+                ))}
               </div>
             ) : (
               <Empty

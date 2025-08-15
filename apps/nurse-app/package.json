@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@smart-aging/packages": "workspace:*",
+    "@smart-aging/packages": "file:../../packages",
     "@ant-design/icons": "^5.2.6",
     "antd": "^5.12.8",
     "antd-mobile": "^5.39.0",
