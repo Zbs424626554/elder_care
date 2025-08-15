@@ -54,8 +54,8 @@ export const rolePermissions: RolePermissions = {
   // 超级管理员可以访问所有菜单
   admin_super: [
     { key: '/dashboard', label: '仪表盘' },
-    { 
-      key: '/dashboard/users', 
+    {
+      key: '/dashboard/users',
       label: '用户管理',
       apiEndpoints: [
         'GET /api/admin/user/list',
@@ -68,148 +68,158 @@ export const rolePermissions: RolePermissions = {
         'GET /api/admin/statistics'
       ]
     },
-    { 
-      key: '/dashboard/permissions', 
+    {
+      key: '/dashboard/permissions',
       label: '权限管理',
       apiEndpoints: ['GET /api/admin/user/list', 'POST /api/admin/user/permissions']
     },
-    { 
-      key: '/dashboard/approve', 
+    {
+      key: '/dashboard/approve',
       label: '审核控制',
-      apiEndpoints: ['POST /api/admin/user/audit']
+      apiEndpoints: [
+        'POST /api/admin/user/audit',
+        'GET /api/approves',
+        'GET /api/approves/*',
+        'POST /api/approves/*'
+      ]
     },
-    { 
-      key: '/dashboard/orders', 
+    {
+      key: '/dashboard/orders',
       label: '订单管理',
       apiEndpoints: ['GET /api/admin/order/list']
     },
-    { 
-      key: '/dashboard/payments', 
+    {
+      key: '/dashboard/payments',
       label: '支付结算',
       apiEndpoints: ['GET /api/admin/order/list']
     },
-    { 
-      key: '/dashboard/services', 
+    {
+      key: '/dashboard/services',
       label: '服务管理',
       apiEndpoints: ['GET /api/admin/service/list']
     },
-    { 
-      key: '/dashboard/disputes', 
+    {
+      key: '/dashboard/disputes',
       label: '纠纷处理',
       apiEndpoints: ['GET /api/admin/support/list']
     },
-    { 
-      key: '/dashboard/reviews-complaints', 
+    {
+      key: '/dashboard/reviews-complaints',
       label: '评价与投诉',
       apiEndpoints: ['GET /api/admin/review/list', 'GET /api/admin/support/list']
     },
-    { 
-      key: '/dashboard/data-summary', 
+    {
+      key: '/dashboard/data-summary',
       label: '数据汇总',
       apiEndpoints: ['GET /api/admin/statistics']
     },
-    { 
-      key: '/dashboard/settings', 
+    {
+      key: '/dashboard/settings',
       label: '系统设置',
       apiEndpoints: ['POST /api/admin/config']
     },
-    { 
-      key: '/dashboard/announcements', 
+    {
+      key: '/dashboard/announcements',
       label: '内容管理',
       apiEndpoints: ['POST /api/admin/announcement']
     },
-    { 
-      key: '/dashboard/support-tickets', 
+    {
+      key: '/dashboard/support-tickets',
       label: '客服工单',
       apiEndpoints: ['GET /api/admin/support/list']
     },
-    { 
-      key: '/dashboard/config', 
+    {
+      key: '/dashboard/config',
       label: '基础配置',
       apiEndpoints: ['POST /api/admin/config']
     },
   ],
-  
+
   // 顶层 admin（未分配子角色时）：默认只给仪表盘，实际导航由 pagePermissions 控制
   admin: [
     { key: '/dashboard', label: '仪表盘' },
   ],
-  
+
   // 客服主管
   cs_manager: [
     { key: '/dashboard', label: '仪表盘' },
-    { 
-      key: '/dashboard/users', 
+    {
+      key: '/dashboard/users',
       label: '用户管理',
       apiEndpoints: ['GET /api/admin/user/list']
     },
-    { 
-      key: '/dashboard/services', 
+    {
+      key: '/dashboard/services',
       label: '服务管理',
       apiEndpoints: ['GET /api/admin/service/list']
     },
-    { 
-      key: '/dashboard/orders', 
+    {
+      key: '/dashboard/orders',
       label: '订单管理',
       apiEndpoints: ['GET /api/admin/order/list']
     },
-    { 
-      key: '/dashboard/disputes', 
+    {
+      key: '/dashboard/disputes',
       label: '纠纷处理',
       apiEndpoints: ['GET /api/admin/support/list']
     },
-    { 
-      key: '/dashboard/reviews-complaints', 
+    {
+      key: '/dashboard/reviews-complaints',
       label: '评价与投诉',
       apiEndpoints: ['GET /api/admin/review/list', 'GET /api/admin/support/list']
     },
-    { 
-      key: '/dashboard/support-tickets', 
+    {
+      key: '/dashboard/support-tickets',
       label: '客服工单',
       apiEndpoints: ['GET /api/admin/support/list']
     },
-    { 
-      key: '/dashboard/announcements', 
+    {
+      key: '/dashboard/announcements',
       label: '内容管理',
       apiEndpoints: ['POST /api/admin/announcement']
     },
   ],
-  
+
   // 审核员
   reviewer: [
     { key: '/dashboard', label: '仪表盘' },
-    { 
-      key: '/dashboard/approve', 
+    {
+      key: '/dashboard/approve',
       label: '审核控制',
-      apiEndpoints: ['POST /api/admin/user/audit']
+      apiEndpoints: [
+        'POST /api/admin/user/audit',
+        'GET /api/approves',
+        'GET /api/approves/*',
+        'POST /api/approves/*'
+      ]
     },
-    { 
-      key: '/dashboard/reviews-complaints', 
+    {
+      key: '/dashboard/reviews-complaints',
       label: '评价与投诉',
       apiEndpoints: ['GET /api/admin/review/list']
     },
-    { 
-      key: '/dashboard/support-tickets', 
+    {
+      key: '/dashboard/support-tickets',
       label: '客服工单',
       apiEndpoints: ['GET /api/admin/support/list']
     },
   ],
-  
+
   // 财务
   finance: [
     { key: '/dashboard', label: '仪表盘' },
-    { 
-      key: '/dashboard/payments', 
+    {
+      key: '/dashboard/payments',
       label: '支付结算',
       apiEndpoints: ['GET /api/admin/order/list']
     },
-    { 
-      key: '/dashboard/data-summary', 
+    {
+      key: '/dashboard/data-summary',
       label: '数据汇总',
       apiEndpoints: ['GET /api/admin/statistics']
     },
-    { 
-      key: '/dashboard/orders', 
+    {
+      key: '/dashboard/orders',
       label: '订单管理',
       apiEndpoints: ['GET /api/admin/order/list']
     },
@@ -218,13 +228,13 @@ export const rolePermissions: RolePermissions = {
   // 内容管理员
   content_manager: [
     { key: '/dashboard', label: '仪表盘' },
-    { 
-      key: '/dashboard/announcements', 
+    {
+      key: '/dashboard/announcements',
       label: '内容管理',
       apiEndpoints: ['POST /api/admin/announcement']
     },
-    { 
-      key: '/dashboard/services', 
+    {
+      key: '/dashboard/services',
       label: '服务管理',
       apiEndpoints: ['GET /api/admin/service/list']
     },
@@ -233,8 +243,8 @@ export const rolePermissions: RolePermissions = {
   // 系统管理员
   system_admin: [
     { key: '/dashboard', label: '仪表盘' },
-    { 
-      key: '/dashboard/users', 
+    {
+      key: '/dashboard/users',
       label: '用户管理',
       apiEndpoints: [
         'GET /api/admin/user/list',
@@ -244,18 +254,18 @@ export const rolePermissions: RolePermissions = {
         'POST /api/admin/user/delete'
       ]
     },
-    { 
-      key: '/dashboard/permissions', 
+    {
+      key: '/dashboard/permissions',
       label: '权限管理',
       apiEndpoints: ['GET /api/admin/user/list', 'POST /api/admin/user/permissions']
     },
-    { 
-      key: '/dashboard/settings', 
+    {
+      key: '/dashboard/settings',
       label: '系统设置',
       apiEndpoints: ['POST /api/admin/config']
     },
-    { 
-      key: '/dashboard/config', 
+    {
+      key: '/dashboard/config',
       label: '基础配置',
       apiEndpoints: ['POST /api/admin/config']
     },
@@ -284,13 +294,13 @@ export const canAccessRoute = (role: string, routePath: string, _userPermissions
 export const getApiEndpointsByRole = (role: string): string[] => {
   const permissions = getPermissionsByRole(role);
   const endpoints: string[] = [];
-  
+
   permissions.forEach(permission => {
     if (permission.apiEndpoints) {
       endpoints.push(...permission.apiEndpoints);
     }
   });
-  
+
   return [...new Set(endpoints)]; // 去重
 };
 

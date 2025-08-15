@@ -90,36 +90,28 @@ const Approve: React.FC = () => {
 
   const loadData = async () => {
     try {
-      // 这里以示例接口为占位：从投诉与评价加载待审核项
-      const reviewsRes: any = await api.get('/review', { page: 1, limit: 10, hasAppeal: true });
-      const complaintsRes: any = await api.get('/complaints', { page: 1, limit: 10, status: 'pending' });
-
-      // 将后端数据映射到两个表
-      const nv: NurseVerification[] = (reviewsRes?.data?.reviews || []).map((r: any) => ({
-        id: String(r._id),
-        nurseId: String(r.revieweeId?._id || r.revieweeId),
-        nurseName: r.revieweeId?.name || '—',
-        phone: '—',
-        idCard: '—',
-        certificateNo: '—',
-        certificateType: '—',
-        certificateImage: '',
-        idCardFront: '',
-        idCardBack: '',
-        status: 'pending',
-        submitTime: r.createdAt ? new Date(r.createdAt).toLocaleString() : '-',
+      // 从后端读取 test.approves 集合
+      const approvesRes: any = await api.get('/approves');
+      const nv: NurseVerification[] = (approvesRes?.data || []).map((d: any) => ({
+        id: String(d.id || d._id),
+        nurseId: String(d.nurseId || ''),
+        nurseName: d.nurseName || '—',
+        phone: d.phone || '—',
+        idCard: d.idCard || '—',
+        certificateNo: d.certificateNo || '—',
+        certificateType: d.certificateType || '—',
+        certificateImage: d.certificateImage || '',
+        idCardFront: d.idCardFront || '',
+        idCardBack: d.idCardBack || '',
+        status: d.status || 'pending',
+        submitTime: d.submitTime || '-',
+        reviewTime: d.reviewTime,
+        reviewBy: d.reviewBy,
+        rejectReason: d.rejectReason,
       }));
 
-      const fb: FamilyBinding[] = (complaintsRes?.data?.complaints || []).map((c: any) => ({
-        id: String(c._id),
-        familyId: String(c.complainantId?._id || c.complainantId),
-        familyName: c.complainantId?.name || '—',
-        elderlyId: String(c.targetId?._id || c.targetId || ''),
-        elderlyName: c.targetId?.name || '—',
-        relationship: c.type || '—',
-        status: 'pending',
-        submitTime: c.createdAt ? new Date(c.createdAt).toLocaleString() : '-',
-      }));
+      // 家属绑定仍然占位（如后端提供再替换）
+      const fb: FamilyBinding[] = [];
 
       setNurseVerifications(nv);
       setFamilyBindings(fb);
@@ -159,33 +151,35 @@ const Approve: React.FC = () => {
   const handleReject = () => {
     rejectForm.validateFields().then(values => {
       if (selectedNurse) {
-        // 处理护工拒绝
-        setNurseVerifications(prevState => 
-          prevState.map(nurse => 
-            nurse.id === selectedNurse.id 
-              ? { 
-                  ...nurse, 
-                  status: 'rejected', 
+        // 处理护工拒绝 -> 调用后端
+        api.post(`/approves/${selectedNurse.id}/reject`, { reason: values.reason }).then(() => {
+          setNurseVerifications(prevState =>
+            prevState.map(nurse =>
+              nurse.id === selectedNurse.id
+                ? {
+                  ...nurse,
+                  status: 'rejected',
                   reviewTime: new Date().toLocaleString(),
                   reviewBy: '当前管理员',
                   rejectReason: values.reason
-                } 
-              : nurse
-          )
-        );
-        message.success('已拒绝护工认证申请');
+                }
+                : nurse
+            )
+          );
+          message.success('已拒绝护工认证申请');
+        });
       } else if (selectedBinding) {
         // 处理绑定拒绝
-        setFamilyBindings(prevState => 
-          prevState.map(binding => 
-            binding.id === selectedBinding.id 
-              ? { 
-                  ...binding, 
-                  status: 'rejected', 
-                  reviewTime: new Date().toLocaleString(),
-                  reviewBy: '当前管理员',
-                  rejectReason: values.reason
-                } 
+        setFamilyBindings(prevState =>
+          prevState.map(binding =>
+            binding.id === selectedBinding.id
+              ? {
+                ...binding,
+                status: 'rejected',
+                reviewTime: new Date().toLocaleString(),
+                reviewBy: '当前管理员',
+                rejectReason: values.reason
+              }
               : binding
           )
         );
@@ -203,31 +197,33 @@ const Approve: React.FC = () => {
       content: type === 'nurse' ? '确定通过该护工的认证申请吗？' : '确定通过该家属绑定申请吗？',
       onOk() {
         if (type === 'nurse') {
-          // 处理护工批准
-          setNurseVerifications(prevState => 
-            prevState.map(nurse => 
-              nurse.id === record.id 
-                ? { 
-                    ...nurse, 
-                    status: 'approved', 
+          // 处理护工批准 -> 调用后端
+          api.post(`/approves/${(record as NurseVerification).id}/approve`).then(() => {
+            setNurseVerifications(prevState =>
+              prevState.map(nurse =>
+                nurse.id === record.id
+                  ? {
+                    ...nurse,
+                    status: 'approved',
                     reviewTime: new Date().toLocaleString(),
                     reviewBy: '当前管理员'
-                  } 
-                : nurse
-            )
-          );
-          message.success('已通过护工认证申请');
+                  }
+                  : nurse
+              )
+            );
+            message.success('已通过护工认证申请');
+          });
         } else {
           // 处理绑定批准
-          setFamilyBindings(prevState => 
-            prevState.map(binding => 
-              binding.id === record.id 
-                ? { 
-                    ...binding, 
-                    status: 'approved', 
-                    reviewTime: new Date().toLocaleString(),
-                    reviewBy: '当前管理员'
-                  } 
+          setFamilyBindings(prevState =>
+            prevState.map(binding =>
+              binding.id === record.id
+                ? {
+                  ...binding,
+                  status: 'approved',
+                  reviewTime: new Date().toLocaleString(),
+                  reviewBy: '当前管理员'
+                }
                 : binding
             )
           );
@@ -289,8 +285,8 @@ const Approve: React.FC = () => {
       key: 'action',
       render: (_: any, record: NurseVerification) => (
         <Space size="middle">
-          <Button 
-            type="link" 
+          <Button
+            type="link"
             icon={<EyeOutlined />}
             onClick={() => showNurseDetail(record)}
           >
@@ -298,16 +294,16 @@ const Approve: React.FC = () => {
           </Button>
           {record.status === 'pending' && (
             <>
-              <Button 
-                type="link" 
-                icon={<CheckOutlined />} 
+              <Button
+                type="link"
+                icon={<CheckOutlined />}
                 style={{ color: '#52c41a' }}
                 onClick={() => handleApprove('nurse', record)}
               >
                 通过
               </Button>
-              <Button 
-                type="link" 
+              <Button
+                type="link"
                 danger
                 icon={<CloseOutlined />}
                 onClick={() => showRejectModal('nurse', record)}
@@ -369,8 +365,8 @@ const Approve: React.FC = () => {
       key: 'action',
       render: (_: any, record: FamilyBinding) => (
         <Space size="middle">
-          <Button 
-            type="link" 
+          <Button
+            type="link"
             icon={<EyeOutlined />}
             onClick={() => showBindingDetail(record)}
           >
@@ -378,16 +374,16 @@ const Approve: React.FC = () => {
           </Button>
           {record.status === 'pending' && (
             <>
-              <Button 
-                type="link" 
-                icon={<CheckOutlined />} 
+              <Button
+                type="link"
+                icon={<CheckOutlined />}
                 style={{ color: '#52c41a' }}
                 onClick={() => handleApprove('family', record)}
               >
                 通过
               </Button>
-              <Button 
-                type="link" 
+              <Button
+                type="link"
                 danger
                 icon={<CloseOutlined />}
                 onClick={() => showRejectModal('family', record)}
@@ -403,7 +399,7 @@ const Approve: React.FC = () => {
 
   return (
     <div className="approve-page">
-      <Card 
+      <Card
         title={
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <SafetyOutlined style={{ marginRight: 8 }} />
@@ -411,8 +407,8 @@ const Approve: React.FC = () => {
           </div>
         }
       >
-        <Tabs 
-          activeKey={activeKey} 
+        <Tabs
+          activeKey={activeKey}
           onChange={setActiveKey}
           items={[
             {
@@ -421,15 +417,15 @@ const Approve: React.FC = () => {
                 <span>
                   <IdcardOutlined />
                   护工资质审核
-                  <Badge 
-                    count={nurseVerifications.filter(n => n.status === 'pending').length} 
+                  <Badge
+                    count={nurseVerifications.filter(n => n.status === 'pending').length}
                     style={{ marginLeft: 8 }}
                   />
                 </span>
               ),
               children: (
-                <Table 
-                  columns={nurseColumns} 
+                <Table
+                  columns={nurseColumns}
                   dataSource={nurseVerifications}
                   rowKey="id"
                   pagination={{ pageSize: 10 }}
@@ -442,15 +438,15 @@ const Approve: React.FC = () => {
                 <span>
                   <TeamOutlined />
                   家属绑定审核
-                  <Badge 
-                    count={familyBindings.filter(b => b.status === 'pending').length} 
+                  <Badge
+                    count={familyBindings.filter(b => b.status === 'pending').length}
                     style={{ marginLeft: 8 }}
                   />
                 </span>
               ),
               children: (
-                <Table 
-                  columns={bindingColumns} 
+                <Table
+                  columns={bindingColumns}
                   dataSource={familyBindings}
                   rowKey="id"
                   pagination={{ pageSize: 10 }}
@@ -510,11 +506,11 @@ const Approve: React.FC = () => {
                 <Descriptions.Item label="证书编号">{selectedNurse.certificateNo}</Descriptions.Item>
                 <Descriptions.Item label="申请状态">
                   <Tag color={
-                    selectedNurse.status === 'approved' ? 'green' : 
-                    selectedNurse.status === 'rejected' ? 'red' : 'blue'
+                    selectedNurse.status === 'approved' ? 'green' :
+                      selectedNurse.status === 'rejected' ? 'red' : 'blue'
                   }>
-                    {selectedNurse.status === 'approved' ? '已通过' : 
-                     selectedNurse.status === 'rejected' ? '已拒绝' : '待审核'}
+                    {selectedNurse.status === 'approved' ? '已通过' :
+                      selectedNurse.status === 'rejected' ? '已拒绝' : '待审核'}
                   </Tag>
                 </Descriptions.Item>
                 <Descriptions.Item label="提交时间">{selectedNurse.submitTime}</Descriptions.Item>
@@ -532,7 +528,7 @@ const Approve: React.FC = () => {
               </Descriptions>
 
               <Divider>证件照片</Divider>
-              
+
               <Row gutter={16}>
                 <Col span={8}>
                   <Card title="身份证正面" variant="borderless">
@@ -604,11 +600,11 @@ const Approve: React.FC = () => {
                 <Descriptions.Item label="关系">{selectedBinding.relationship}</Descriptions.Item>
                 <Descriptions.Item label="申请状态">
                   <Tag color={
-                    selectedBinding.status === 'approved' ? 'green' : 
-                    selectedBinding.status === 'rejected' ? 'red' : 'blue'
+                    selectedBinding.status === 'approved' ? 'green' :
+                      selectedBinding.status === 'rejected' ? 'red' : 'blue'
                   }>
-                    {selectedBinding.status === 'approved' ? '已通过' : 
-                     selectedBinding.status === 'rejected' ? '已拒绝' : '待审核'}
+                    {selectedBinding.status === 'approved' ? '已通过' :
+                      selectedBinding.status === 'rejected' ? '已拒绝' : '待审核'}
                   </Tag>
                 </Descriptions.Item>
                 <Descriptions.Item label="提交时间">{selectedBinding.submitTime}</Descriptions.Item>

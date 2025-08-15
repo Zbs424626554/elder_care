@@ -15,6 +15,7 @@ import Schedule from '../pages/Schedule';
 
 import Message from '../pages/Message';
 import Health from '../pages/Health';
+import OrderDetail from '../pages/OrderDetail';
 
 // 根路由重定向组件
 const RootRedirect: React.FC = () => {
@@ -57,6 +58,7 @@ const NurseRoutes: React.FC = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="certification" element={<Certification />} />
         <Route path="orders" element={<Orders />} />
+        <Route path="orders/:id" element={<OrderDetail />} />
         <Route path="income" element={<Income />} />
         <Route path="schedule" element={<Schedule />} />
 
