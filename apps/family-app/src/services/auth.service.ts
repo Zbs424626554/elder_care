@@ -87,12 +87,23 @@ export class AuthService {
   }
 
   /**
-   * 检查是否已登录（通过请求 /auth/profile 判断）
+   * 是否存在本地token（同步）
+   */
+  static hasToken(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
+  /**
+   * 检查是否已登录（优先检查本地token，其次调用 /auth/profile 校验）
    */
   static async isLoggedIn(): Promise<boolean> {
+    if (this.hasToken()) return true;
     try {
-      const res = await http.get('/auth/profile');
-      return res.code === 200;
+      const res: any = await http.get('/auth/profile');
+      // 兼容不同响应结构
+      if (res?.code === 200) return true;
+      if (res?.data && (res as any).status === 200) return true;
+      return false;
     } catch {
       return false;
     }

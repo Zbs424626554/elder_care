@@ -1,22 +1,14 @@
-import { Router } from 'express';
+import express from 'express';
 import { UserController } from '../controllers/user.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 
-const router = Router();
+const router = express.Router();
 
-// 获取老人用户列表
-router.get('/role/elderly', authenticateToken, UserController.getElderlyList);
-
-// 获取用户信息
-router.get('/:id', authenticateToken, UserController.getUserById);
-
-// 更新用户信息
-router.put('/:id', authenticateToken, UserController.updateUser);
-
-// 删除用户
-router.delete('/:id', authenticateToken, UserController.deleteUser);
-
-// 获取所有用户（管理员权限）
-router.get('/', authenticateToken, UserController.getAllUsers);
+// 用户管理相关路由
+router.get('/elderly', authenticateToken, UserController.getElderlyList);
+router.get('/role/elderly/all', authenticateToken, UserController.getAllElderlyUsers);
+router.post('/bind-elderly', authenticateToken, UserController.bindElderly);
+router.delete('/unbind-elderly/:id', authenticateToken, UserController.unbindElderly);
+router.get('/test-all', authenticateToken, UserController.testGetAllUsers);
 
 export default router;

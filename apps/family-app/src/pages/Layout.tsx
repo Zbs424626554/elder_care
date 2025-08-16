@@ -18,9 +18,9 @@ const Layout: React.FC = () => {
       icon: <i className="fas fa-heartbeat"></i>,
     },
     {
-      key: '/home/nurses',
-      title: '护工',
-      icon: <i className="fas fa-user-nurse"></i>,
+      key: '/home/orders',
+      title: '订单',
+      icon: <i className="fas fa-list-alt"></i>,
     },
     {
       key: '/home/profile',
