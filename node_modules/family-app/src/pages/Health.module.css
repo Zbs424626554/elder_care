@@ -134,7 +134,7 @@
 .healthDataCard {
   background: white;
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   margin-bottom: 16px;
   border: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -154,6 +154,12 @@
   font-weight: 600;
 }
 
+.healthDataActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .healthDate {
   font-size: 14px;
   color: #666;
@@ -162,20 +168,50 @@
   border-radius: 12px;
 }
 
+.refreshHealthButton {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  width: 32px;
+  height: 32px;
+}
+
+.refreshHealthButton:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+.refreshHealthButton:active {
+  background: #dee2e6;
+}
+
+.refreshHealthButton i {
+  font-size: 12px;
+}
+
 .healthMetricsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .metricCard {
   background: #f8f9fa;
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   transition: all 0.3s ease;
+  min-height: 72px;
 }
 
 .metricCard:active {
@@ -183,32 +219,36 @@
 }
 
 .metricIcon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  margin-right: 12px;
+  font-size: 18px;
+  margin-right: 10px;
   background: white;
+  flex-shrink: 0;
 }
 
 .metricContent {
   flex: 1;
+  min-width: 0;
+  padding-right: 6px;
 }
 
 .metricLabel {
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .metricValue {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #333;
   margin-bottom: 2px;
+  line-height: 1.2;
 }
 
 .metricUnit {
@@ -216,14 +256,12 @@
   color: #999;
 }
 
-.metricStatus {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-weight: 600;
+.metricStatusContainer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-width: 46px;
 }
 
 /* 状态标签配色 */
@@ -410,6 +448,75 @@
 .placeholderText {
   font-size: 14px;
   color: #666;
+  line-height: 1.4;
+}
+
+/* 无老人时的提示样式 */
+.noElderlyMessage {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 8px;
+  border: 1px dashed #dee2e6;
+}
+
+.noElderlyIcon {
+  font-size: 24px;
+  margin-right: 12px;
+  color: #6c757d;
+}
+
+.noElderlyText {
+  flex: 1;
+}
+
+.noElderlyTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+.noElderlyDesc {
+  font-size: 12px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+/* 无健康数据时的提示样式 */
+.noHealthData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  margin: 16px 0;
+  border: 2px dashed #dee2e6;
+}
+
+.noHealthDataIcon {
+  font-size: 48px;
+  margin-right: 16px;
+  color: #6c757d;
+}
+
+.noHealthDataText {
+  text-align: center;
+}
+
+.noHealthDataTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.noHealthDataDesc {
+  font-size: 14px;
+  color: #6c757d;
   line-height: 1.4;
 }
 

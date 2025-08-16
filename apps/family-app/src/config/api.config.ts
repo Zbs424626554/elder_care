@@ -13,11 +13,14 @@ export const API_CONFIG = {
 
   // 用户管理
   USERS: {
-    GET_ELDERLY_LIST: '/users/role/elderly',
+    GET_ELDERLY_LIST: '/users/elderly',
+    GET_ALL_ELDERLY_USERS: '/users/role/elderly/all',
     GET_USER_BY_ID: (id: string) => `/users/${id}`,
     UPDATE_USER: (id: string) => `/users/${id}`,
     DELETE_USER: (id: string) => `/users/${id}`,
-    GET_ALL_USERS: '/users'
+    GET_ALL_USERS: '/users',
+    BIND_ELDERLY: '/users/bind-elderly',
+    UNBIND_ELDERLY: (id: string) => `/users/unbind-elderly/${id}`,
   },
 
   // 健康数据

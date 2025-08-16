@@ -2,8 +2,45 @@
 .elderly {
   background-color: #f5f5f5;
   min-height: 100vh;
-  padding-top: 66px;
-  /* 50px header + 16px padding */
+}
+
+/* 页面标题 */
+.pageHeader {
+  background-color: #0077C2;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.backButton {
+  position: absolute;
+  left: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  flex: 1;
 }
 
 /* 搜索栏 */
@@ -13,9 +50,27 @@
 }
 
 .searchBar {
-  border-radius: 12px !important;
-  background: white !important;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 加载状态 */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.loadingText {
+  color: #666;
+  font-size: 16px;
+}
+
+/* 空状态 */
+.emptyContainer {
+  padding: 40px 20px;
 }
 
 /* 老人列表 */
@@ -24,18 +79,18 @@
 }
 
 .elderlyCard {
-  background: white !important;
-  border-radius: 16px !important;
-  padding: 20px !important;
-  margin-bottom: 16px !important;
-  border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-  transition: all 0.3s ease !important;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
 .elderlyCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 /* 老人头部信息 */
@@ -53,17 +108,17 @@
 }
 
 .elderlyAvatar {
-  width: 60px !important;
-  height: 60px !important;
-  border-radius: 50% !important;
-  margin-right: 16px !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: white !important;
-  font-size: 24px !important;
-  font-weight: 600 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .elderlyDetails {
@@ -89,13 +144,13 @@
 }
 
 .actionBtn {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 8px !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 健康信息 */
@@ -151,80 +206,162 @@
 
 .detailBtn {
   flex: 1;
-  border-radius: 8px !important;
-  height: 36px !important;
-  font-size: 14px !important;
+  border-radius: 8px;
+  height: 36px;
+  font-size: 14px;
 }
 
 .reportBtn {
   flex: 1;
-  border-radius: 8px !important;
-  height: 36px !important;
-  font-size: 14px !important;
+  border-radius: 8px;
+  height: 36px;
+  font-size: 14px;
 }
 
 /* 添加按钮 */
 .addButton {
-  position: fixed !important;
-  bottom: 80px !important;
-  right: 20px !important;
-  width: 56px !important;
-  height: 56px !important;
-  border-radius: 50% !important;
-  box-shadow: 0 4px 20px rgba(0, 123, 194, 0.3) !important;
-  z-index: 1000 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 24px !important;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(0, 123, 194, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
 }
 
 .addButton:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 25px rgba(0, 123, 194, 0.4) !important;
+  box-shadow: 0 6px 25px rgba(0, 123, 194, 0.4);
 }
 
-/* 模态框样式 */
-.elderly .adm-modal {
-  border-radius: 16px !important;
+/* 绑定老人模态框样式 */
+.bindModalContent {
+  padding: 8px 0;
 }
 
-.elderly .adm-modal-content {
-  padding: 20px !important;
+.availableElderlyHint {
+  margin: 16px 0;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
 }
 
-.elderly .adm-form-item {
-  margin-bottom: 16px !important;
+.hintTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
 }
 
-.elderly .adm-form-item-label {
-  font-size: 14px !important;
-  color: #333 !important;
-  font-weight: 500 !important;
+.availableElderlyList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.elderly .adm-input {
-  border-radius: 8px !important;
-  border: 1px solid #e0e0e0 !important;
-  padding: 12px !important;
-  font-size: 14px !important;
+.availableElderlyItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
 }
 
-.elderly .adm-input:focus {
-  border-color: #0077C2 !important;
-  box-shadow: 0 0 0 2px rgba(0, 123, 194, 0.1) !important;
+.elderlyName {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.elderlyUsername {
+  font-size: 12px;
+  color: #666;
+  font-family: monospace;
+}
+
+.bindInstructions {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  margin-top: 16px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+/* 无可用老人时的提示样式 */
+.noAvailableElderly {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.noElderlyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.noElderlyTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.noElderlyDesc {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.noElderlySuggestions {
+  text-align: left;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.suggestionItem {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.suggestionItem:last-child {
+  margin-bottom: 0;
 }
 
 /* 响应式设计 */
 @media (max-width: 375px) {
+  .pageHeader {
+    padding: 12px 16px;
+  }
+
+  .backButton {
+    left: 16px;
+    font-size: 18px;
+  }
+
+  .pageTitle {
+    font-size: 18px;
+  }
+
   .elderlyCard {
-    padding: 16px !important;
+    padding: 16px;
   }
 
   .elderlyAvatar {
-    width: 50px !important;
-    height: 50px !important;
-    font-size: 20px !important;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
   }
 
   .elderlyName {
@@ -246,25 +383,39 @@
   }
 
   .addButton {
-    width: 50px !important;
-    height: 50px !important;
-    font-size: 20px !important;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
   }
 }
 
-/* 空状态 */
-.elderlyList:empty::after {
-  content: '暂无老人信息';
-  display: block;
-  text-align: center;
-  padding: 40px 20px;
+.addButtonContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.addButtonHint {
+  font-size: 12px;
   color: #999;
-  font-size: 16px;
+  text-align: center;
+  padding: 4px 8px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
 }
 
-/* 开发环境特殊处理 */
-@media screen and (max-height: 800px) {
-  .elderly {
-    padding-top: 10px;
-  }
+.testContainer {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.testButton {
+  font-size: 12px;
+  height: 36px;
+  border-radius: 18px;
 }
