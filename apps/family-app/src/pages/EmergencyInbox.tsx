@@ -31,4 +31,3 @@ export default function EmergencyInbox({ currentUserId }: { currentUserId: strin
     </div>
   );
 }
-

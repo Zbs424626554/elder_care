@@ -20,6 +20,7 @@ import { WebSocket, WebSocketServer } from "ws";
 import messageRoutes from "./routes/ZBS/message";
 import userRoutesZBS from "./routes/ZBS/users";
 import elderHealthRoutesZBS from "./routes/ZBS/elderhealth";
+import elderOrderRoutes from "./routes/ZBS/elderorder";
 
 dotenv.config();
 
@@ -68,9 +69,18 @@ app.use("/api", userRoutesZBS);
 app.use("/api", elderHealthRoutesZBS);
 
 // WebSocket服务器设置
+
+
+app.use("/api", messageRoutes);
+app.use("/api", userRoutes);
+app.use("/api/elderorder", elderOrderRoutes);
+
+// WebSocket服务器设置（启用压缩与最大负载限制）
 const wss = new WebSocketServer({
   server,
   path: "/ws",
+  perMessageDeflate: true,
+  maxPayload: 1024 * 1024, // 1MB
 });
 
 // 存储用户连接
@@ -84,6 +94,26 @@ const userConnections = new Map<string, UserConnection>();
 const conversationUsers = new Map<string, Set<string>>(); // conversationId -> Set of usernames
 
 // WebSocket连接处理
+// 为心跳追踪扩展属性
+type AliveWebSocket = WebSocket & { isAlive?: boolean };
+
+// 心跳：服务端定期ping，未响应的连接将被清理
+const heartbeatInterval = setInterval(() => {
+  wss.clients.forEach((client) => {
+    const c = client as AliveWebSocket;
+    if (c.isAlive === false) {
+      try {
+        c.terminate();
+      } catch {}
+      return;
+    }
+    c.isAlive = false;
+    try {
+      c.ping();
+    } catch {}
+  });
+}, 30000);
+
 wss.on("connection", (ws: WebSocket, req) => {
   const url = new URL(req.url!, `http://${req.headers.host}`);
   const username = url.searchParams.get("username");
@@ -100,6 +130,13 @@ wss.on("connection", (ws: WebSocket, req) => {
     ws,
     username,
     lastSeen: Date.now(),
+  });
+
+  // 标记连接存活并监听pong
+  const aliveWs = ws as AliveWebSocket;
+  aliveWs.isAlive = true;
+  ws.on("pong", () => {
+    aliveWs.isAlive = true;
   });
 
   // 发送连接确认
@@ -496,9 +533,11 @@ setInterval(() => {
   });
 }, 60000); // 每分钟检查一次
 
+// 进程结束时清理心跳定时器
+process.on("exit", () => clearInterval(heartbeatInterval));
+
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`WebSocket server running on ws://localhost:${PORT}/ws`);
-
 });

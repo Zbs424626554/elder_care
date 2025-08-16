@@ -24,7 +24,3 @@ export async function uploadAudioBase64(id: string, base64: string): Promise<voi
 }
 
 export async function commit(id: string, body: { location?: { type: 'Point'; coordinates: [number, number] }; base64?: string }) {
-  const res = await request.post(`/emergency/${id}/commit`, body);
-  return res.data;
-}
-

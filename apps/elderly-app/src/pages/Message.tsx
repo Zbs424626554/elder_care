@@ -21,10 +21,10 @@ import WebSocketService from "../services/websocket.service";
 // 聊天消息类型定义
 interface ChatMessage {
   id: string;
-  content: string;
+  content: any; // 支持位置对象或 geo: 字符串
   timestamp: Date;
   isRead: boolean;
-  type: "text" | "image" | "voice" | "system";
+  type: "text" | "image" | "voice" | "system" | "location";
 }
 
 // 聊天联系人类型定义
@@ -218,6 +218,15 @@ export default function Message() {
   const filteredChatList = chatList.filter((chat) =>
     chat.name.toLowerCase().includes(searchValue.toLowerCase())
   );
+
+  // 列表最后一条消息展示文案
+  const getLastMessagePreview = (msg: ChatMessage) => {
+    if (!msg) return "暂无消息";
+    if (msg.type === "image") return "[ 图片 ]";
+    if (msg.type === "voice") return "[ 语音 ]";
+    if (msg.type === "location") return "[ 位置信息 ]";
+    return msg.content;
+  };
 
   // 格式化时间显示
   const formatTime = (date: Date | string | number) => {
@@ -584,7 +593,7 @@ export default function Message() {
                       }}
                     >
                       {chat.lastMessage.type === "system" && "🔔 "}
-                      {chat.lastMessage.content}
+                      {getLastMessagePreview(chat.lastMessage)}
                     </span>
                     {chat.unreadCount > 0 && (
                       <Badge

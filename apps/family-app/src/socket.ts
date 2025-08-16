@@ -17,4 +17,3 @@ export function registerUser(userId: string) {
     socket.once('connect', doRegister);
   }
 }
-

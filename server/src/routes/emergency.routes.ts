@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 import type { Server as IOServer } from 'socket.io';
 import { authenticateToken } from '../middleware/auth.middleware';

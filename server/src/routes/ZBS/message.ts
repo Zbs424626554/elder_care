@@ -115,7 +115,7 @@ router.get("/messagelist/:username", async (req: Request, res: Response) => {
               content: lastMessage.content,
               timestamp: new Date(lastMessage.send_time),
               isRead: true, // 简化处理，后续可以添加已读逻辑
-              type: "text",
+              type: lastMessage.type || "text",
             }
           : null,
         unreadCount: 0, // 简化处理，后续可以添加未读计数逻辑
@@ -206,7 +206,7 @@ router.post(
   async (req: Request, res: Response) => {
     try {
       const { conversationId } = req.params;
-      const { sender, content, type = "text" } = req.body;
+      const { sender, content, type = "text", status, time } = req.body;
 
       // 验证必要参数
       if (!sender || !content) {
@@ -257,13 +257,15 @@ router.post(
       }
 
       // 创建新消息
-      const newMessage = {
+      const newMessage: any = {
         sender: sender,
         send_time: Date.now(),
         content: content,
         type: type,
         receiver: receivers,
       };
+      if (status) newMessage.status = status;
+      if (typeof time === "number") newMessage.time = time;
 
       // 添加消息到对话中
       conversation.messages.push(newMessage);
@@ -280,6 +282,8 @@ router.post(
             sendTime: newMessage.send_time,
             type: type,
             receiver: receivers,
+            ...(status ? { status } : {}),
+            ...(typeof time === "number" ? { time } : {}),
           },
           timestamp: Date.now(),
         });
@@ -299,6 +303,8 @@ router.post(
           content: content,
           sendTime: newMessage.send_time,
           type: type,
+          ...(status ? { status } : {}),
+          ...(typeof time === "number" ? { time } : {}),
         },
       });
     } catch (error) {

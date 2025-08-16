@@ -49,4 +49,47 @@ export class ElderHealthService {
       await http.post<ElderHealthArchiveDto>("/elderhealth/init");
     return data as ElderHealthArchiveDto;
   }
+
+  static async updateAddress(address: string): Promise<ElderHealthArchiveDto> {
+    const { data } = await http.post<ElderHealthArchiveDto>(
+      "/elderhealth/address",
+      { address }
+    );
+    return data as ElderHealthArchiveDto;
+  }
+
+  static async addMedical(item: string): Promise<ElderHealthArchiveDto> {
+    const { data } = await http.post<ElderHealthArchiveDto>(
+      "/elderhealth/medicals",
+      { item }
+    );
+    return data as ElderHealthArchiveDto;
+  }
+
+  static async addAllergy(item: string): Promise<ElderHealthArchiveDto> {
+    const { data } = await http.post<ElderHealthArchiveDto>(
+      "/elderhealth/allergies",
+      { item }
+    );
+    return data as ElderHealthArchiveDto;
+  }
+
+  static async addMedication(
+    name: string,
+    time: string
+  ): Promise<ElderHealthArchiveDto> {
+    const { data } = await http.post<ElderHealthArchiveDto>(
+      "/elderhealth/medication",
+      { name, time }
+    );
+    return data as ElderHealthArchiveDto;
+  }
+
+  static async updateAge(age: number): Promise<ElderHealthArchiveDto> {
+    const { data } = await http.post<ElderHealthArchiveDto>(
+      "/elderhealth/age",
+      { age }
+    );
+    return data as ElderHealthArchiveDto;
+  }
 }

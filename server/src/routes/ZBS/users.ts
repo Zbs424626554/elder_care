@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { User } from "../../models/user.model";
+import { authenticateToken } from "../../middleware/auth.middleware";
 
 const router = Router();
 
@@ -65,6 +66,53 @@ router.get("/users", async (req: Request, res: Response) => {
     });
   }
 });
+
+// 修改当前登录用户密码
+router.post(
+  "/users/change-password",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const userId = (req as any).userId as string;
+      const { oldPassword, newPassword } = req.body as {
+        oldPassword?: string;
+        newPassword?: string;
+      };
+
+      if (!oldPassword || !newPassword) {
+        return res.json({ code: 400, message: "缺少必要参数", data: null });
+      }
+
+      if (newPassword.length < 6) {
+        return res.json({
+          code: 400,
+          message: "新密码长度不能少于6位",
+          data: null,
+        });
+      }
+
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.json({ code: 404, message: "用户不存在", data: null });
+      }
+
+      const match = await user.comparePassword(oldPassword);
+      if (!match) {
+        return res.json({ code: 401, message: "旧密码不正确", data: null });
+      }
+
+      user.password = newPassword;
+      await user.save();
+
+      return res.json({ code: 200, message: "密码修改成功", data: null });
+    } catch (error) {
+      console.error("修改密码失败:", error);
+      return res
+        .status(500)
+        .json({ code: 500, message: "修改密码失败", data: null });
+    }
+  }
+);
 
 // 根据角色获取用户列表
 router.get("/users/role/:role", async (req: Request, res: Response) => {

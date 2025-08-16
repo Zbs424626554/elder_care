@@ -63,7 +63,17 @@ const messageItemSchema = new Schema(
     type: {
       type: String,
       required: true,
-      enum: ["text", "image", "voice", "video", "file"],
+      // 区分语音消息、语音通话、视频通话为不同类型
+      enum: [
+        "text",
+        "image",
+        "voice", // 语音消息
+        "voice_call", // 语音通话记录
+        "video_call", // 视频通话记录
+        "video",
+        "file",
+        "location",
+      ],
       default: "text",
     },
     status: {

@@ -26,6 +26,9 @@ export class WebSocketService {
   private listeners: Map<string, Set<(data: any) => void>> = new Map();
   private reconnectInterval: NodeJS.Timeout | null = null;
   private heartbeatInterval: NodeJS.Timeout | null = null;
+  private connectTimeoutTimer: NodeJS.Timeout | null = null;
+  private backoffMs = 1000; // 指数退避起始
+  private readonly maxBackoffMs = 15000;
   private isConnecting = false;
   private currentUser: string | null = null;
 
@@ -73,6 +76,13 @@ export class WebSocketService {
         this.ws.onopen = () => {
           console.log("WebSocket连接已建立");
           this.isConnecting = false;
+          // 重置退避
+          this.backoffMs = 1000;
+          // 清理连接超时计时器
+          if (this.connectTimeoutTimer) {
+            clearTimeout(this.connectTimeoutTimer);
+            this.connectTimeoutTimer = null;
+          }
           this.startHeartbeat();
 
           // 发送用户上线消息
@@ -98,6 +108,10 @@ export class WebSocketService {
           console.log("WebSocket连接已关闭:", event.code, event.reason);
           this.isConnecting = false;
           this.stopHeartbeat();
+          if (this.connectTimeoutTimer) {
+            clearTimeout(this.connectTimeoutTimer);
+            this.connectTimeoutTimer = null;
+          }
 
           // 如果不是主动关闭，尝试重连
           if (event.code !== 1000) {
@@ -108,8 +122,24 @@ export class WebSocketService {
         this.ws.onerror = (error) => {
           console.warn("WebSocket连接错误:", error);
           this.isConnecting = false;
+          if (this.connectTimeoutTimer) {
+            clearTimeout(this.connectTimeoutTimer);
+            this.connectTimeoutTimer = null;
+          }
           reject(new Error("WebSocket连接失败"));
         };
+
+        // 连接超时（比如10秒）
+        this.connectTimeoutTimer = setTimeout(() => {
+          if (this.ws && this.ws.readyState !== WebSocket.OPEN) {
+            try {
+              this.ws.close();
+            } catch {}
+            this.isConnecting = false;
+            reject(new Error("WebSocket连接超时"));
+            this.scheduleReconnect();
+          }
+        }, 10000);
       } catch (error) {
         this.isConnecting = false;
         reject(error);
@@ -218,17 +248,16 @@ export class WebSocketService {
   sendChatMessage(
     conversationId: string,
     content: string,
-    receivers: string[]
+    receivers: string[],
+    msgType?: string
   ) {
     this.send({
       type: "message",
       data: {
         conversationId,
         content,
-        receivers,
-        sender: this.currentUser,
+        type: msgType,
         sendTime: Date.now(),
-      },
       conversationId,
       sender: this.currentUser || undefined,
       timestamp: Date.now(),
@@ -421,7 +450,10 @@ export class WebSocketService {
           this.scheduleReconnect();
         });
       }
-    }, 3000); // 3秒后重连
+    }, this.backoffMs);
+
+    // 指数退避上限
+    this.backoffMs = Math.min(this.backoffMs * 2, this.maxBackoffMs);
   }
 
   // 开始心跳
@@ -431,13 +463,14 @@ export class WebSocketService {
         this.send({
           type: "ping" as any,
           data: { timestamp: Date.now() },
-        });
+          // Fallback 到应用层 ping
+          this.send({ type: "ping" as any, data: { timestamp: Date.now() } });
+        }
       }
-    }, 30000); // 每30秒发送一次心跳
+    }, 25000); // 25秒
   }
 
   // 停止心跳
-  private stopHeartbeat() {
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
       this.heartbeatInterval = null;
