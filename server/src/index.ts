@@ -8,7 +8,7 @@ import authRoutes from './routes/auth.routes';
 import emergencyRoutes from './routes/emergency.routes';
 import userRoutes from './routes/users.routes';
 import healthRoutes from './routes/health.routes';
-import elderHealthRoutes from './routes/elderhealth.routes';
+// import elderHealthRoutes from './routes/elderhealth.routes';
 import ordersRoutes from './routes/orders.routes';
 import approvesRoutes from './routes/approves.routes';
 import uploadRoutes from './routes/upload.routes';
@@ -19,7 +19,7 @@ import { initSocket } from './config/socket';
 import { WebSocket, WebSocketServer } from "ws";
 import messageRoutes from "./routes/ZBS/message";
 import userRoutesZBS from "./routes/ZBS/users";
-import elderHealthRoutesZBS from "./routes/ZBS/elderhealth";
+import elderHealthRoutes from "./routes/ZBS/elderhealth";
 import elderOrderRoutes from "./routes/ZBS/elderorder";
 
 dotenv.config();
@@ -66,7 +66,8 @@ app.use('/api/approves', approvesRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use("/api", messageRoutes);
 app.use("/api", userRoutesZBS);
-app.use("/api", elderHealthRoutesZBS);
+app.use("/api", elderHealthRoutes);
+app.use("/api/elderorder", elderOrderRoutes);
 
 // WebSocket服务器设置
 

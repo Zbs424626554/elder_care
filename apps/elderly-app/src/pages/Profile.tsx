@@ -14,8 +14,11 @@ const Profile: React.FC = () => {
 
   const displayName = useMemo(
     () => currentUser?.realname || currentUser?.username || "未登录用户",
+    [currentUser]
+  );
   const maskPhone = (value?: string): string => {
     if (!value) return "-";
+    const digitsOnly = value.replace(/\D/g, "");
     const normalized =
       digitsOnly.length >= 11 ? digitsOnly.slice(-11) : digitsOnly;
     if (normalized.length < 7) return value;
@@ -32,6 +35,8 @@ const Profile: React.FC = () => {
   );
 
   const showBasicInfo = () => {
+    Dialog.show({
+      title: "基础资料",
       content: (
         <div style={{ padding: "16px 0" }}>
           <div style={{ marginBottom: "16px" }}>
@@ -234,6 +239,7 @@ const Profile: React.FC = () => {
 
   return (
     <div style={{ padding: 12 }}>
+      <div
         style={{
           background: "#fff",
           borderRadius: 8,

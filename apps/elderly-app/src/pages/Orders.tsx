@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Empty, DotLoading, Card, Tag, Divider, Tabs } from "antd-mobile";
 import { http } from "../utils/request";
@@ -357,8 +356,4 @@ const Orders: React.FC = () => {
   );
 };
 
-<<<<<<< HEAD
 export default Orders;
-=======
-export default Orders;
->>>>>>> origin/zbs-chat

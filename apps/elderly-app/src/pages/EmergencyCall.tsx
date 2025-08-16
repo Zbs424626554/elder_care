@@ -19,12 +19,14 @@ export default function EmergencyCall() {
     setAlertId(id);
     alertIdRef.current = id; // 同时保存到 ref 中
     recorderRef.current = new MicRecorder();
+    try {
       await recorderRef.current.start();
     } catch (e) {
       Toast.show({ content: '录音权限未开启或不受支持，但仍可发送求助' });
     }
-    recorderRef.current = new MicRecorder();
-    await recorderRef.current.start();
+    speak('将在五秒后给紧急联系人打电话');
+    setCountdown(5);
+    if (timerRef.current) window.clearInterval(timerRef.current);
     const t = window.setInterval(() => {
       setCountdown(prev => {
         const newCount = (prev ?? 0) - 1;
@@ -150,8 +152,8 @@ export default function EmergencyCall() {
         </div>
       )}
 
+
       {/* 单一主按钮已集成到圆形按钮点击 */}
     </div>
   );
 }
-

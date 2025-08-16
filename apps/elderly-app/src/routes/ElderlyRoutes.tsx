@@ -1,13 +1,13 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { AuthService } from "../services/auth.service";
-import { PrivateRoute } from "../components/PrivateRoute";
-import { Login, Register } from "@smart-aging/packages";
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthService } from '../services/auth.service';
+import { PrivateRoute } from '../components/PrivateRoute';
+import { Login, Register } from '@smart-aging/packages';
 // 老人端页面
-import Layout from "../pages/Layout";
-import Emergency from "../pages/Emergency";
-import Orders from "../pages/Orders";
-import Profile from "../pages/Profile";
+import Layout from '../pages/Layout';
+import Emergency from '../pages/Emergency';
+import Orders from '../pages/Orders';
+import Profile from '../pages/Profile';
 import Message from "../pages/Message";
 import Heath from "../pages/Health";
 import Chat from "../pages/Chat";
@@ -21,7 +21,7 @@ const RootRedirect: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  if (currentRole === "elderly") {
+  if (currentRole === 'elderly') {
     return <Navigate to="/home" replace />;
   }
 
@@ -30,40 +30,8 @@ const RootRedirect: React.FC = () => {
 };
 
 // 老人端路由组件
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        {/* 根路径重定向 */}
-        <Route path="/" element={<RootRedirect />} />
-
-        {/* 老人端路由 */}
-        <Route
-          path="/home"
-          element={
-            <PrivateRoute requiredRoles={['elderly']}>
-              <Layout />
-            </PrivateRoute>
-          }
-        >
-          <Route index element={<Emergency />} />
-          <Route path="call" element={<Emergency />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="message" element={<Message />} />
-          <Route path="mine" element={<Profile />} />
-          <Route path="health" element={<Heath />} />
-        </Route>
-        <Route path="chat/:id" element={<Chat />} />
-
-
-        {/* 404页面 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-  );
-};
-
-export default ElderlyRoutes; 
-
+const ElderlyRoutes: React.FC = () => {
+  return (
     <Routes>
       {/* 公共路由 - 使用共享的认证页面 */}
       <Route path="/login" element={<Login />} />
@@ -76,7 +44,7 @@ export default ElderlyRoutes;
       <Route
         path="/home"
         element={
-          <PrivateRoute requiredRoles={["elderly"]}>
+          <PrivateRoute requiredRoles={['elderly']}>
             <Layout />
           </PrivateRoute>
         }
@@ -90,10 +58,11 @@ export default ElderlyRoutes;
       </Route>
       <Route path="chat/:id" element={<Chat />} />
 
+
       {/* 404页面 */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
 
-export default ElderlyRoutes;
+export default ElderlyRoutes; 

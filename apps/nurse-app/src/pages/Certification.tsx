@@ -10,7 +10,11 @@ import {
   Steps,
   Space,
   Divider,
-  Alert
+  Alert,
+  Card,
+  Row,
+  Col,
+  Tag
 } from 'antd';
 import {
   UploadOutlined,
@@ -20,7 +24,8 @@ import {
   GlobalOutlined,
   EditOutlined,
   CheckCircleOutlined,
-
+  ClockCircleOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
 import request from '../utils/request';
@@ -52,22 +57,16 @@ const Certification: React.FC = () => {
   const checkCertificationStatus = async () => {
     try {
       console.log('开始查询认证状态...');
-      // 这里需要根据当前用户的身份证号查询认证状态
-      // 暂时使用一个示例查询，实际应该根据用户信息查询
       const response = await request.get('/approves', {
-        params: {
-          // 可以根据需要添加查询参数
-        }
+        params: {}
       });
 
       console.log('认证状态查询响应:', response);
       console.log('响应数据:', response.data);
 
-      // 注意：request 封装已在响应拦截器中返回 ApiResponse，本次调用返回值结构为
-      // { code: number, message: string, data: any }，其中 response.data 即为列表数组
       const list = response?.data as any[] | undefined;
       if (Array.isArray(list) && list.length > 0) {
-        const latestCert = list[0]; // 获取最新的认证记录
+        const latestCert = list[0];
         console.log('最新认证记录:', latestCert);
         setCertificationStatus(latestCert.status);
 
@@ -85,21 +84,18 @@ const Certification: React.FC = () => {
             setStatusMessage('未知状态');
         }
       } else {
-        // 如果没有认证记录，说明用户还没有提交过认证
         console.log('没有找到认证记录，设置默认状态');
         setCertificationStatus('pending');
         setStatusMessage('资质认证待审核');
       }
     } catch (error) {
       console.error('查询认证状态失败:', error);
-      // 查询失败时也设置默认状态
       console.log('查询失败，设置默认状态');
       setCertificationStatus('pending');
       setStatusMessage('资质认证待审核');
     }
   };
 
-  // 组件加载时查询状态
   useEffect(() => {
     checkCertificationStatus();
   }, []);
@@ -124,13 +120,17 @@ const Certification: React.FC = () => {
       title: '基本信息',
       icon: <UserOutlined />,
       content: (
-        <div>
+        <Card size="small" style={{ marginBottom: 16 }}>
           <Form.Item
             name="realName"
             label="真实姓名"
             rules={[{ required: true, message: '请输入真实姓名' }]}
           >
-            <Input placeholder="请输入您的真实姓名" />
+            <Input
+              placeholder="请输入您的真实姓名"
+              size="large"
+              style={{ borderRadius: '8px' }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -141,78 +141,89 @@ const Certification: React.FC = () => {
               { pattern: /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/, message: '请输入正确的身份证号' }
             ]}
           >
-            <Input placeholder="请输入18位身份证号" />
+            <Input
+              placeholder="请输入18位身份证号"
+              size="large"
+              style={{ borderRadius: '8px' }}
+            />
           </Form.Item>
-        </div>
+        </Card>
       )
     },
     {
       title: '资质证明',
       icon: <FileTextOutlined />,
       content: (
-        <div>
+        <Card size="small" style={{ marginBottom: 16 }}>
           <Alert
             message="资质证明要求"
             description="请上传清晰的证件照片，支持jpg、png格式，文件大小不超过5MB"
             type="info"
             showIcon
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: 24, borderRadius: '8px' }}
           />
 
-          <Form.Item
-            name="nursingCert"
-            label="护理证"
-          >
-            <Upload
-              listType="picture-card"
-              maxCount={1}
-              beforeUpload={() => false}
-              accept=".jpg,.jpeg,.png"
-              action=""
-              fileList={nursingCertFiles}
-              onChange={({ fileList }) => {
-                console.log('nursingCert onChange fileList:', fileList);
-                setNursingCertFiles(fileList);
-              }}
-            >
-              <div>
-                <UploadOutlined />
-                <div style={{ marginTop: 8 }}>上传护理证</div>
-              </div>
-            </Upload>
-          </Form.Item>
-
-          <Form.Item
-            name="healthCert"
-            label="健康证"
-          >
-            <Upload
-              listType="picture-card"
-              maxCount={1}
-              beforeUpload={() => false}
-              accept=".jpg,.jpeg,.png"
-              action=""
-              fileList={healthCertFiles}
-              onChange={({ fileList }) => {
-                console.log('healthCert onChange fileList:', fileList);
-                setHealthCertFiles(fileList);
-              }}
-            >
-              <div>
-                <UploadOutlined />
-                <div style={{ marginTop: 8 }}>上传健康证</div>
-              </div>
-            </Upload>
-          </Form.Item>
-        </div>
+          <Row gutter={[16, 16]}>
+            <Col span={12}>
+              <Form.Item
+                name="nursingCert"
+                label="护理证"
+              >
+                <Upload
+                  listType="picture-card"
+                  maxCount={1}
+                  beforeUpload={() => false}
+                  accept=".jpg,.jpeg,.png"
+                  action=""
+                  fileList={nursingCertFiles}
+                  onChange={({ fileList }) => {
+                    console.log('nursingCert onChange fileList:', fileList);
+                    setNursingCertFiles(fileList);
+                  }}
+                  style={{ width: '100%' }}
+                >
+                  <div style={{ padding: '20px 0' }}>
+                    <UploadOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
+                    <div style={{ marginTop: 8, color: '#666' }}>上传护理证</div>
+                  </div>
+                </Upload>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="healthCert"
+                label="健康证"
+              >
+                <Upload
+                  listType="picture-card"
+                  maxCount={1}
+                  beforeUpload={() => false}
+                  accept=".jpg,.jpeg,.png"
+                  action=""
+                  fileList={healthCertFiles}
+                  onChange={({ fileList }) => {
+                    console.log('healthCert onChange fileList:', fileList);
+                    setHealthCertFiles(fileList);
+                  }}
+                  style={{ width: '100%' }}
+                >
+                  <div style={{ padding: '20px 0' }}>
+                    <UploadOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
+                    <div style={{ marginTop: 8, color: '#666' }}>上传健康证</div>
+                  </div>
+                </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Card>
       )
     },
     {
       title: '技能标签',
       icon: <TagsOutlined />,
       content: (
-        <div>
-          <Text type="secondary" style={{ display: 'block', marginBottom: 16 }}>
+        <Card size="small" style={{ marginBottom: 16 }}>
+          <Text type="secondary" style={{ display: 'block', marginBottom: 24, fontSize: '14px' }}>
             请选择您具备的护理技能，这将帮助客户更好地了解您的专业能力
           </Text>
 
@@ -225,18 +236,34 @@ const Certification: React.FC = () => {
               mode="multiple"
               placeholder="请选择您的护理技能"
               style={{ width: '100%' }}
+              size="large"
               options={skillOptions.map(skill => ({ label: skill, value: skill }))}
+              tagRender={(props) => (
+                <Tag
+                  {...props}
+                  style={{
+                    margin: '4px',
+                    padding: '4px 8px',
+                    borderRadius: '16px',
+                    backgroundColor: '#f0f8ff',
+                    borderColor: '#1890ff',
+                    color: '#1890ff'
+                  }}
+                >
+                  {props.label}
+                </Tag>
+              )}
             />
           </Form.Item>
-        </div>
+        </Card>
       )
     },
     {
       title: '服务范围',
       icon: <GlobalOutlined />,
       content: (
-        <div>
-          <Text type="secondary" style={{ display: 'block', marginBottom: 16 }}>
+        <Card size="small" style={{ marginBottom: 16 }}>
+          <Text type="secondary" style={{ display: 'block', marginBottom: 24, fontSize: '14px' }}>
             请选择您愿意提供的服务类型和范围
           </Text>
 
@@ -249,18 +276,34 @@ const Certification: React.FC = () => {
               mode="multiple"
               placeholder="请选择您的服务范围"
               style={{ width: '100%' }}
+              size="large"
               options={serviceAreaOptions.map(area => ({ label: area, value: area }))}
+              tagRender={(props) => (
+                <Tag
+                  {...props}
+                  style={{
+                    margin: '4px',
+                    padding: '4px 8px',
+                    borderRadius: '16px',
+                    backgroundColor: '#f6ffed',
+                    borderColor: '#52c41a',
+                    color: '#52c41a'
+                  }}
+                >
+                  {props.label}
+                </Tag>
+              )}
             />
           </Form.Item>
-        </div>
+        </Card>
       )
     },
     {
       title: '自我介绍',
       icon: <EditOutlined />,
       content: (
-        <div>
-          <Text type="secondary" style={{ display: 'block', marginBottom: 16 }}>
+        <Card size="small" style={{ marginBottom: 16 }}>
+          <Text type="secondary" style={{ display: 'block', marginBottom: 24, fontSize: '14px' }}>
             请简要介绍您的护理经验、专业特长和服务理念
           </Text>
 
@@ -278,9 +321,10 @@ const Certification: React.FC = () => {
               placeholder="请介绍您的护理经验、专业特长、服务理念等..."
               showCount
               maxLength={500}
+              style={{ borderRadius: '8px', resize: 'none' }}
             />
           </Form.Item>
-        </div>
+        </Card>
       )
     }
   ];
@@ -290,7 +334,6 @@ const Certification: React.FC = () => {
     console.log('Form instance values:', form.getFieldsValue());
     setLoading(true);
     try {
-      // 通过上传接口换取可访问 URL（使用 axios 实例，自动带上 baseURL/凭证）
       const uploadOnce = async (file: File): Promise<string> => {
         const formData = new FormData();
         formData.append('image', file);
@@ -322,7 +365,6 @@ const Certification: React.FC = () => {
         console.log('item.thumbUrl:', item.thumbUrl);
         console.log('item.url:', item.url);
         if (item.originFileObj) return item.originFileObj as File;
-        // 兼容：从 thumbUrl/dataURL 转为 File
         const dataUrl: string | undefined = item.thumbUrl || item.url;
         if (dataUrl && dataUrl.startsWith('data:')) {
           const res = await fetch(dataUrl);
@@ -338,42 +380,30 @@ const Certification: React.FC = () => {
       let nursingUrl = '';
       let healthUrl = '';
 
-      // 如果上传了护理证，则上传到服务器
       if (nursingFile) {
         nursingUrl = await uploadOnce(nursingFile);
         console.log('Generated nursingUrl:', nursingUrl);
       }
 
-      // 如果上传了健康证，则上传到服务器
       if (healthFile) {
         healthUrl = await uploadOnce(healthFile);
         console.log('Generated healthUrl:', healthUrl);
       }
 
-      // 约定：certificateImage=护理证，idCardFront=健康证（字段按后端集合保存 URL）
       const payload = {
         nurseName: values.realName,
         idcard: values.idNumber,
         certificateImage: nursingUrl,
         idCardFront: healthUrl,
-        certificateType: 'both', // 护理证和健康证都有
+        certificateType: 'both',
       };
 
       console.log('Final payload for /approves:', payload);
-
-      // 检查payload的每个字段
-      console.log('Payload field details:');
-      console.log('- nurseName:', typeof payload.nurseName, payload.nurseName);
-      console.log('- idcard:', typeof payload.idcard, payload.idcard);
-      console.log('- certificateImage:', typeof payload.certificateImage, payload.certificateImage);
-      console.log('- idCardFront:', typeof payload.idCardFront, payload.idCardFront);
-      console.log('- certificateType:', typeof payload.certificateType, payload.certificateType);
 
       await request.post('/approves', payload);
 
       message.success('认证信息已提交，请等待审核');
       setSubmitted(true);
-      // 提交成功后立即查询最新状态
       setTimeout(() => {
         checkCertificationStatus();
       }, 1000);
@@ -387,14 +417,13 @@ const Certification: React.FC = () => {
   const nextStep = () => {
     const stepFields: (keyof CertificationForm)[][] = [
       ['realName', 'idNumber'],
-      [], // 文件验证使用自定义逻辑
+      [],
       ['skills'],
       ['serviceAreas'],
       ['selfIntroduction']
     ];
     const fields = stepFields[currentStep] as any;
 
-    // 第二步：自定义文件验证
     if (currentStep === 1) {
       setCurrentStep(currentStep + 1);
       return;
@@ -413,119 +442,211 @@ const Certification: React.FC = () => {
     setCurrentStep(currentStep - 1);
   };
 
+  const getStatusIcon = () => {
+    switch (certificationStatus) {
+      case 'approved':
+        return <CheckCircleOutlined style={{ fontSize: '24px', color: '#52c41a' }} />;
+      case 'rejected':
+        return <ExclamationCircleOutlined style={{ fontSize: '24px', color: '#ff4d4f' }} />;
+      case 'pending':
+        return <ClockCircleOutlined style={{ fontSize: '24px', color: '#faad14' }} />;
+      default:
+        return <ClockCircleOutlined style={{ fontSize: '24px', color: '#faad14' }} />;
+    }
+  };
+
   if (submitted) {
     return (
-      <div style={{ padding: '24px', textAlign: 'center' }}>
-        <CheckCircleOutlined style={{ fontSize: '64px', color: '#52c41a', marginBottom: '16px' }} />
-        <Title level={3}>认证信息已提交</Title>
-        <Text type="secondary" style={{ display: 'block', marginBottom: '24px' }}>
-          您的认证信息已成功提交，我们将在3-5个工作日内完成审核
-        </Text>
-        <Alert
-          message="审核状态"
-          description={
-            <div>
-              <div>当前状态：{statusMessage}</div>
-              {certificationStatus === 'pending' && (
-                <div>预计完成时间：3-5个工作日</div>
-              )}
-              {certificationStatus === 'rejected' && (
-                <div>拒绝原因：请联系客服了解详情</div>
-              )}
+      <div style={{
+        padding: '32px 24px',
+        textAlign: 'center',
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white'
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '40px',
+          borderRadius: '16px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+          maxWidth: '500px',
+          margin: '0 auto'
+        }}>
+          <CheckCircleOutlined style={{ fontSize: '80px', color: '#52c41a', marginBottom: '24px' }} />
+          <Title level={2} style={{ color: '#333', marginBottom: '16px' }}>认证信息已提交</Title>
+          <Text style={{ display: 'block', marginBottom: '32px', fontSize: '16px', color: '#666' }}>
+            您的认证信息已成功提交，我们将在3-5个工作日内完成审核
+          </Text>
+
+          <Card style={{ textAlign: 'left', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+              {getStatusIcon()}
+              <span style={{ marginLeft: '12px', fontSize: '18px', fontWeight: 'bold' }}>
+                审核状态
+              </span>
             </div>
-          }
-          type={
-            certificationStatus === 'approved' ? 'success' :
-              certificationStatus === 'rejected' ? 'error' : 'info'
-          }
-          showIcon
-          style={{ maxWidth: '400px', margin: '0 auto' }}
-        />
+            <div style={{ fontSize: '16px', marginBottom: '8px' }}>
+              当前状态：<strong>{statusMessage}</strong>
+            </div>
+            {certificationStatus === 'pending' && (
+              <div style={{ color: '#666' }}>预计完成时间：3-5个工作日</div>
+            )}
+            {certificationStatus === 'rejected' && (
+              <div style={{ color: '#666' }}>拒绝原因：请联系客服了解详情</div>
+            )}
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '16px' }}>
-      <Title level={2}>资质认证</Title>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      padding: '24px 16px'
+    }}>
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div style={{
+          background: 'white',
+          padding: '32px',
+          borderRadius: '16px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          marginBottom: '24px'
+        }}>
+          <Title level={1} style={{
+            textAlign: 'center',
+            marginBottom: '32px',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>
+            资质认证
+          </Title>
 
-      {/* 认证状态显示 */}
-      {certificationStatus !== null && (
-        <div style={{ marginBottom: '16px' }}>
-          <Alert
-            message="当前认证状态"
-            description={
-              <div>
-                <strong>{statusMessage}</strong>
-                {certificationStatus === 'pending' && (
-                  <div style={{ marginTop: '8px', fontSize: '14px' }}>
-                    预计完成时间：3-5个工作日
-                  </div>
-                )}
-                {certificationStatus === 'rejected' && (
-                  <div style={{ marginTop: '8px', fontSize: '14px' }}>
-                    如有疑问，请联系客服
-                  </div>
-                )}
-              </div>
-            }
-            type={
-              certificationStatus === 'approved' ? 'success' :
-                certificationStatus === 'rejected' ? 'error' : 'info'
-            }
-            showIcon
-            style={{ marginBottom: '16px' }}
-          />
-        </div>
-      )}
-
-      <div style={{ background: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        <Steps current={currentStep} style={{ marginBottom: '24px' }}>
-          {steps.map((step, index) => (
-            <Steps.Step key={index} title={step.title} icon={step.icon} />
-          ))}
-        </Steps>
-
-        <Divider />
-
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          initialValues={{
-            realName: '',
-            idNumber: '',
-            skills: [],
-            serviceAreas: []
-          }}
-        >
-          {steps[currentStep].content}
-
-          <Divider />
-
-          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Button
-              disabled={currentStep === 0}
-              onClick={prevStep}
+          {/* 认证状态显示 */}
+          {certificationStatus !== null && (
+            <Card
+              style={{
+                marginBottom: '32px',
+                border: 'none',
+                borderRadius: '12px',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.05)'
+              }}
+              bodyStyle={{ padding: '20px' }}
             >
-              上一步
-            </Button>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                {getStatusIcon()}
+                <span style={{ marginLeft: '12px', fontSize: '18px', fontWeight: 'bold' }}>
+                  当前认证状态
+                </span>
+              </div>
+              <div style={{ fontSize: '16px', marginBottom: '8px' }}>
+                <strong>{statusMessage}</strong>
+              </div>
+              {certificationStatus === 'pending' && (
+                <div style={{ color: '#666', fontSize: '14px' }}>
+                  预计完成时间：3-5个工作日
+                </div>
+              )}
+              {certificationStatus === 'rejected' && (
+                <div style={{ color: '#666', fontSize: '14px' }}>
+                  如有疑问，请联系客服
+                </div>
+              )}
+            </Card>
+          )}
 
-            {currentStep < steps.length - 1 ? (
-              <Button type="primary" onClick={nextStep}>
-                下一步
-              </Button>
-            ) : (
+          <Steps
+            current={currentStep}
+            style={{ marginBottom: '32px' }}
+            progressDot
+            size="small"
+          >
+            {steps.map((step, index) => (
+              <Steps.Step
+                key={index}
+                title={step.title}
+                icon={step.icon}
+                style={{
+                  fontSize: '14px',
+                  fontWeight: currentStep === index ? 'bold' : 'normal'
+                }}
+              />
+            ))}
+          </Steps>
+
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            initialValues={{
+              realName: '',
+              idNumber: '',
+              skills: [],
+              serviceAreas: []
+            }}
+          >
+            {steps[currentStep].content}
+
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginTop: '32px',
+              paddingTop: '24px',
+              borderTop: '1px solid #f0f0f0'
+            }}>
               <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
+                disabled={currentStep === 0}
+                onClick={prevStep}
+                size="large"
+                style={{
+                  borderRadius: '8px',
+                  padding: '8px 24px',
+                  height: 'auto'
+                }}
               >
-                提交认证
+                上一步
               </Button>
-            )}
-          </Space>
-        </Form>
+
+              {currentStep < steps.length - 1 ? (
+                <Button
+                  type="primary"
+                  onClick={nextStep}
+                  size="large"
+                  style={{
+                    borderRadius: '8px',
+                    padding: '8px 24px',
+                    height: 'auto',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    border: 'none'
+                  }}
+                >
+                  下一步
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  size="large"
+                  style={{
+                    borderRadius: '8px',
+                    padding: '8px 32px',
+                    height: 'auto',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    border: 'none',
+                    fontSize: '16px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  提交认证
+                </Button>
+              )}
+            </div>
+          </Form>
+        </div>
       </div>
     </div>
   );

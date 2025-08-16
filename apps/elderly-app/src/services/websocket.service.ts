@@ -257,7 +257,10 @@ export class WebSocketService {
         conversationId,
         content,
         type: msgType,
+        receivers,
+        sender: this.currentUser,
         sendTime: Date.now(),
+      },
       conversationId,
       sender: this.currentUser || undefined,
       timestamp: Date.now(),
@@ -460,9 +463,10 @@ export class WebSocketService {
   private startHeartbeat() {
     this.heartbeatInterval = setInterval(() => {
       if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        this.send({
-          type: "ping" as any,
-          data: { timestamp: Date.now() },
+        // 发送ping以维持连接
+        try {
+          (this.ws as any).ping?.();
+        } catch {
           // Fallback 到应用层 ping
           this.send({ type: "ping" as any, data: { timestamp: Date.now() } });
         }
@@ -471,6 +475,7 @@ export class WebSocketService {
   }
 
   // 停止心跳
+  private stopHeartbeat() {
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
       this.heartbeatInterval = null;
