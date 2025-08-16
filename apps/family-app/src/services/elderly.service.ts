@@ -36,10 +36,24 @@ export class ElderlyService {
   }
 
   /**
+   * 获取所有老人用户（用于绑定选择）
+   */
+  static async getAllElderlyUsers(): Promise<ApiResponse<{ list: ElderlyUser[], total: number }>> {
+    return http.get(API_CONFIG.USERS.GET_ALL_ELDERLY_USERS);
+  }
+
+  /**
    * 获取老人健康数据
    */
   static async getElderlyHealthData(elderlyId: string): Promise<ApiResponse<ElderlyHealthData>> {
     return http.get(API_CONFIG.ELDER_HEALTH.GET_ARCHIVE(elderlyId));
+  }
+
+  /**
+   * 获取老人详情
+   */
+  static async getElderlyDetail(elderlyId: string): Promise<ApiResponse<{ elderly: ElderlyUser }>> {
+    return http.get(API_CONFIG.USERS.GET_USER_BY_ID(elderlyId));
   }
 
   /**
@@ -77,5 +91,28 @@ export class ElderlyService {
    */
   static async deleteElderly(elderlyId: string): Promise<ApiResponse<null>> {
     return http.delete(API_CONFIG.USERS.DELETE_USER(elderlyId));
+  }
+
+  /**
+   * 绑定老人用户
+   */
+  static async bindElderly(params: {
+    username: string;
+  }): Promise<ApiResponse<ElderlyUser>> {
+    return http.post(API_CONFIG.USERS.BIND_ELDERLY, params);
+  }
+
+  /**
+   * 解绑老人用户
+   */
+  static async unbindElderly(elderlyId: string): Promise<ApiResponse<ElderlyUser>> {
+    return http.delete(API_CONFIG.USERS.UNBIND_ELDERLY(elderlyId));
+  }
+
+  /**
+   * 测试接口 - 获取所有用户（用于调试）
+   */
+  static async testGetAllUsers(): Promise<ApiResponse<any>> {
+    return http.get('/users/test-all');
   }
 }

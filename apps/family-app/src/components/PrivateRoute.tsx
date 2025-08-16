@@ -17,7 +17,9 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   redirectTo = '/login'
 }) => {
   const location = useLocation();
-  const isLoggedIn = AuthService.isLoggedIn();
+  // 使用本地token进行同步校验，避免异步Promise误判
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const isLoggedIn = !!token;
   const currentRole = AuthService.getCurrentRole();
 
   // 如果未登录，重定向到登录页

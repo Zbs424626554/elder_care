@@ -9,10 +9,14 @@ import Layout from '../pages/Layout';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import Elderly from '../pages/Elderly';
+import ElderlyDetail from '../pages/ElderlyDetail';
+import HealthReport from '../pages/HealthReport';
 import Health from '../pages/Health';
-import Nurses from '../pages/Nurses';
 import Orders from '../pages/Orders';
 import Warnings from '../pages/Warnings';
+import Nurses from '../pages/Nurses';
+import Payment from '../pages/Payment';
+import Refund from '../pages/Refund';
 
 // 根路由重定向组件
 const RootRedirect: React.FC = () => {
@@ -54,6 +58,9 @@ const FamilyRoutes: React.FC = () => {
         {/* 主要标签页路由 */}
         <Route path="health" element={<Health />} />
         <Route path="nurses" element={<Nurses />} />
+        <Route path="orders" element={<Orders />} />
+        <Route path="payment" element={<Payment />} />
+        <Route path="refund" element={<Refund />} />
         <Route path="profile" element={<Profile />} />
       </Route>
 
@@ -67,10 +74,18 @@ const FamilyRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/orders"
+        path="/elderly/:id"
         element={
           <PrivateRoute requiredRoles={['family']}>
-            <Orders />
+            <ElderlyDetail />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/elderly/:id/health-report"
+        element={
+          <PrivateRoute requiredRoles={['family']}>
+            <HealthReport />
           </PrivateRoute>
         }
       />

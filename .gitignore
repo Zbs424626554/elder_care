@@ -20,6 +20,7 @@ build/
 .env.test.local
 .env.production.local
 .env.test
+
 # IDE and editor files
 .vscode/
 .idea/
@@ -46,6 +47,7 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
 # Coverage directory used by tools like istanbul
 coverage/
 *.lcov
@@ -71,13 +73,6 @@ coverage/
 *.tsbuildinfo
 
 # Database
-.dynamodb/
-
-# Misc
-.node_repl_history
-.tern-port
-*.tmp
-*.temp
 .dynamodb/
 
 # Misc
