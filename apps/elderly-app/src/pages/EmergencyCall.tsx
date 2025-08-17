@@ -3,7 +3,7 @@ import { Toast } from 'antd-mobile';
 import { PhoneFill } from 'antd-mobile-icons';
 import { speak } from '../utils/tts';
 import { MicRecorder, blobToBase64 } from '../utils/recorder';
-import { getLocationWithFallback } from '../utils/location';
+import { getFixedLocation } from '../utils/location';
 import * as emergency from '../services/emergency';
 
 export default function EmergencyCall() {
@@ -26,10 +26,8 @@ export default function EmergencyCall() {
       Toast.show({ content: '录音权限未开启或不受支持，但仍可发送求助' });
     }
 
-    // 立即开始获取定位（并行进行，不阻塞倒计时）
-    const locationPromise = getLocationWithFallback().catch(e => {
-      return null;
-    });
+    // 使用固定定位（保定理工东院）
+    const locationPromise = Promise.resolve(getFixedLocation());
 
     speak('将在五秒后给紧急联系人打电话');
     setCountdown(5);
@@ -160,14 +158,11 @@ export default function EmergencyCall() {
         </div>
       </div>
 
-      {countdown !== null && (
+            {countdown !== null && (
         <div style={{ marginTop: '0.4rem', fontSize: '0.34rem', textAlign: 'center', color: '#f3433d', fontWeight: 700 }}>
           将在 {countdown} 秒后呼叫，正在录音…
         </div>
       )}
-
-
-
 
       {/* 单一主按钮已集成到圆形按钮点击 */}
     </div>

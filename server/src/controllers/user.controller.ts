@@ -80,6 +80,96 @@ export class UserController {
   }
 
   /**
+   * 获取老人详情
+   */
+  static async getElderlyDetail(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      // 验证ID格式
+      if (!id) {
+        return res.json({
+          code: 400,
+          message: '老人ID不能为空',
+          data: null
+        });
+      }
+
+      // 查找老人用户
+      const elderly = await User.findOne({ _id: id, role: 'elderly' })
+        .select('-password');
+
+      if (!elderly) {
+        return res.json({
+          code: 404,
+          message: '老人信息不存在',
+          data: null
+        });
+      }
+
+      // 格式化返回数据
+      const elderlyData = {
+        id: elderly._id?.toString() || '',
+        username: elderly.username,
+        realname: elderly.realname || elderly.username,
+        phone: elderly.phone,
+        avatar: elderly.avatar || '',
+        status: elderly.status,
+        createdTime: elderly.createdTime,
+        // 添加模拟的病例数据
+        age: 75,
+        gender: '男',
+        height: 170,
+        weight: 65,
+        bmi: 22.5,
+        allergies: ['青霉素', '海鲜'],
+        medications: ['阿司匹林', '钙片', '维生素D'],
+        medicalHistory: ['高血压', '糖尿病', '骨质疏松'],
+        emergencyContact: {
+          name: '张小明',
+          phone: '13800138000',
+          relationship: '儿子'
+        },
+        recentHealthEvents: [
+          {
+            date: '2024-01-15',
+            type: '血压异常',
+            description: '血压偏高，已调整用药',
+            severity: 'medium'
+          },
+          {
+            date: '2024-01-10',
+            type: '血糖检查',
+            description: '血糖控制良好',
+            severity: 'low'
+          },
+          {
+            date: '2024-01-05',
+            type: '跌倒事件',
+            description: '轻微跌倒，无大碍',
+            severity: 'low'
+          }
+        ]
+      };
+
+      return res.json({
+        code: 200,
+        message: '获取成功',
+        data: {
+          elderly: elderlyData
+        }
+      });
+    } catch (error) {
+      console.error('获取老人详情失败:', error);
+      return res.json({
+        code: 500,
+        message: '获取老人详情失败',
+        data: null
+      });
+    }
+  }
+
+  /**
    * 获取老人用户列表
    */
   static async getElderlyList(req: Request, res: Response) {

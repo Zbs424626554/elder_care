@@ -1,6 +1,10 @@
 .paymentPage {
   background: #f5f7fb;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .header {
@@ -31,6 +35,9 @@
 
 .content {
   padding: 20px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .orderInfo {
@@ -225,4 +232,92 @@
 
 .backButton:hover {
   background: #e5e7eb;
+}
+
+.qrCodeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.qrCodeTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2a37;
+  margin-bottom: 8px;
+}
+
+.qrCode {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+  background: #fff;
+}
+
+.qrCodeDesc {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  text-align: center;
+  max-width: 280px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .paymentPage {
+    padding: 0;
+    margin: 0;
+  }
+
+  .content {
+    padding: 16px 12px;
+  }
+
+  .orderInfo,
+  .paymentMethod,
+  .countdown,
+  .resultContainer {
+    margin-bottom: 16px;
+    padding: 16px;
+  }
+
+  .amount {
+    font-size: 28px;
+  }
+
+  .qrCode {
+    width: 180px;
+    height: 180px;
+  }
+
+  .qrCodeDesc {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+}
+
+/* 小屏幕设备适配 */
+@media (max-width: 480px) {
+  .content {
+    padding: 12px 8px;
+  }
+
+  .orderInfo,
+  .paymentMethod,
+  .countdown,
+  .resultContainer {
+    padding: 12px;
+  }
+
+  .amount {
+    font-size: 24px;
+  }
+
+  .qrCode {
+    width: 160px;
+    height: 160px;
+  }
 }

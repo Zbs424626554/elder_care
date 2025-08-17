@@ -52,10 +52,16 @@ export class PaymentService {
     }
   }
 
-  // 查询支付状态
-  static async queryPaymentStatus(orderId: string): Promise<PaymentStatus> {
+  // 查询支付状态（支持长轮询）
+  static async queryPaymentStatus(orderId: string, timeout?: number): Promise<PaymentStatus> {
     try {
-      const response = await http.get(`/payment/status/${orderId}`);
+      const params = timeout ? { timeout } : {};
+      // 为长轮询设置更长的超时时间
+      const config = timeout ? {
+        params,
+        timeout: Math.max(timeout + 5000, 35000) // 比后端超时多5秒，最少35秒
+      } : {};
+      const response = await http.get(`/payment/status/${orderId}`, config);
       return response.data;
     } catch (error) {
       console.error('查询支付状态失败:', error);

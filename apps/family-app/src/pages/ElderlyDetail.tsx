@@ -14,6 +14,26 @@ interface ElderlyDetail extends ElderlyUser {
   temperature?: number;
   oxygenLevel?: number;
   lastHealthUpdate?: string;
+  // 新增病例相关字段
+  age?: number;
+  gender?: string;
+  height?: number;
+  weight?: number;
+  bmi?: number;
+  allergies?: string[];
+  medications?: string[];
+  medicalHistory?: string[];
+  emergencyContact?: {
+    name: string;
+    phone: string;
+    relationship: string;
+  };
+  recentHealthEvents?: Array<{
+    date: string;
+    type: string;
+    description: string;
+    severity: 'low' | 'medium' | 'high';
+  }>;
 }
 
 const ElderlyDetail: React.FC = () => {
@@ -177,6 +197,134 @@ const ElderlyDetail: React.FC = () => {
             <div className={styles.metricValue}>{elderly.oxygenLevel}</div>
             <div className={styles.metricUnit}>%</div>
           </div>
+        </div>
+      </Card>
+
+      {/* 基本信息 */}
+      <Card className={styles.basicInfoCard}>
+        <h3 className={styles.cardTitle}>基本信息</h3>
+        <div className={styles.infoGrid}>
+          <div className={styles.infoItem}>
+            <span className={styles.infoLabel}>年龄</span>
+            <span className={styles.infoValue}>{elderly.age || '75'}岁</span>
+          </div>
+          <div className={styles.infoItem}>
+            <span className={styles.infoLabel}>性别</span>
+            <span className={styles.infoValue}>{elderly.gender || '男'}</span>
+          </div>
+          <div className={styles.infoItem}>
+            <span className={styles.infoLabel}>身高</span>
+            <span className={styles.infoValue}>{elderly.height || '170'}cm</span>
+          </div>
+          <div className={styles.infoItem}>
+            <span className={styles.infoLabel}>体重</span>
+            <span className={styles.infoValue}>{elderly.weight || '65'}kg</span>
+          </div>
+          <div className={styles.infoItem}>
+            <span className={styles.infoLabel}>BMI</span>
+            <span className={styles.infoValue}>{elderly.bmi || '22.5'}</span>
+          </div>
+        </div>
+      </Card>
+
+      {/* 过敏史 */}
+      <Card className={styles.allergiesCard}>
+        <h3 className={styles.cardTitle}>过敏史</h3>
+        <div className={styles.tagList}>
+          {(elderly.allergies || ['青霉素', '海鲜']).map((allergy, index) => (
+            <Tag key={index} color="danger" fill="outline" className={styles.allergyTag}>
+              {allergy}
+            </Tag>
+          ))}
+        </div>
+      </Card>
+
+      {/* 用药记录 */}
+      <Card className={styles.medicationsCard}>
+        <h3 className={styles.cardTitle}>当前用药</h3>
+        <div className={styles.medicationList}>
+          {(elderly.medications || ['阿司匹林', '钙片', '维生素D']).map((medication, index) => (
+            <div key={index} className={styles.medicationItem}>
+              <span className={styles.medicationName}>{medication}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* 病史 */}
+      <Card className={styles.historyCard}>
+        <h3 className={styles.cardTitle}>病史</h3>
+        <div className={styles.historyList}>
+          {(elderly.medicalHistory || ['高血压', '糖尿病', '骨质疏松']).map((history, index) => (
+            <div key={index} className={styles.historyItem}>
+              <span className={styles.historyName}>{history}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* 紧急联系人 */}
+      <Card className={styles.emergencyCard}>
+        <h3 className={styles.cardTitle}>紧急联系人</h3>
+        <div className={styles.emergencyInfo}>
+          <div className={styles.emergencyItem}>
+            <span className={styles.emergencyLabel}>姓名：</span>
+            <span className={styles.emergencyValue}>
+              {elderly.emergencyContact?.name || '张小明'}
+            </span>
+          </div>
+          <div className={styles.emergencyItem}>
+            <span className={styles.emergencyLabel}>电话：</span>
+            <span className={styles.emergencyValue}>
+              {elderly.emergencyContact?.phone || '13800138000'}
+            </span>
+          </div>
+          <div className={styles.emergencyItem}>
+            <span className={styles.emergencyLabel}>关系：</span>
+            <span className={styles.emergencyValue}>
+              {elderly.emergencyContact?.relationship || '儿子'}
+            </span>
+          </div>
+        </div>
+      </Card>
+
+      {/* 近期健康事件 */}
+      <Card className={styles.eventsCard}>
+        <h3 className={styles.cardTitle}>近期健康事件</h3>
+        <div className={styles.eventsList}>
+          {(elderly.recentHealthEvents || [
+            {
+              date: '2024-01-15',
+              type: '血压异常',
+              description: '血压偏高，已调整用药',
+              severity: 'medium'
+            },
+            {
+              date: '2024-01-10',
+              type: '血糖检查',
+              description: '血糖控制良好',
+              severity: 'low'
+            },
+            {
+              date: '2024-01-05',
+              type: '跌倒事件',
+              description: '轻微跌倒，无大碍',
+              severity: 'low'
+            }
+          ]).map((event, index) => (
+            <div key={index} className={styles.eventItem}>
+              <div className={styles.eventHeader}>
+                <span className={styles.eventDate}>{event.date}</span>
+                <Tag
+                  color={event.severity === 'high' ? 'danger' : event.severity === 'medium' ? 'warning' : 'success'}
+                  fill="outline"
+                >
+                  {event.type}
+                </Tag>
+              </div>
+              <div className={styles.eventDescription}>{event.description}</div>
+            </div>
+          ))}
         </div>
       </Card>
 

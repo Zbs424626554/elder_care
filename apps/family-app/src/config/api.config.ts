@@ -15,7 +15,7 @@ export const API_CONFIG = {
   USERS: {
     GET_ELDERLY_LIST: '/users/elderly',
     GET_ALL_ELDERLY_USERS: '/users/role/elderly/all',
-    GET_USER_BY_ID: (id: string) => `/users/${id}`,
+    GET_USER_BY_ID: (id: string) => `/users/elderly/${id}`,
     UPDATE_USER: (id: string) => `/users/${id}`,
     DELETE_USER: (id: string) => `/users/${id}`,
     GET_ALL_USERS: '/users',

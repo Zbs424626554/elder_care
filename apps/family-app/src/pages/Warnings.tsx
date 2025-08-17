@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './Warnings.module.css';
 import { socket, registerUser } from '../socket';
 import { AuthService } from '../services/auth.service';
@@ -24,6 +24,11 @@ const Warnings: React.FC = () => {
   const [warnings, setWarnings] = useState<Warning[]>([]);
   const [selected, setSelected] = useState<Warning | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showNavigation, setShowNavigation] = useState(false);
+  const [navigationLocation, setNavigationLocation] = useState<{ lng: number; lat: number } | null>(null);
+  const [mapLoading, setMapLoading] = useState(false);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<any>(null);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -158,7 +163,9 @@ const Warnings: React.FC = () => {
         const [lng, lat] = loc.coordinates;
         // 检查坐标是否有效
         if (lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90) {
-          return `经度: ${lng.toFixed(6)}, 纬度: ${lat.toFixed(6)}`;
+          // 添加精度信息（如果有的话）
+          const accuracy = loc.accuracy ? ` (精度: ${Math.round(loc.accuracy)}m)` : '';
+          return `经度: ${lng.toFixed(6)}, 纬度: ${lat.toFixed(6)}${accuracy}`;
         } else {
           return '坐标无效';
         }
@@ -180,6 +187,166 @@ const Warnings: React.FC = () => {
       audio.play();
     } catch { }
   }
+
+  // 保定理工东院固定位置
+  const BAODING_FIXED_LOCATION = { lng: 115.488818, lat: 38.814838 };
+
+  // 解析定位信息
+  function parseLocation(location: any): { lng: number; lat: number } | null {
+    if (!location) return null;
+
+    try {
+      const loc = typeof location === 'string' ? JSON.parse(location) : location;
+      if (loc && loc.coordinates && Array.isArray(loc.coordinates) && loc.coordinates.length >= 2) {
+        const [lng, lat] = loc.coordinates;
+        if (lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90) {
+          return { lng, lat };
+        }
+      }
+    } catch (error) {
+      console.error('定位数据解析失败:', error);
+    }
+    return null;
+  }
+
+  // 获取当前位置或固定位置
+  function getCurrentOrFixedLocation(): Promise<{ lng: number; lat: number }> {
+    return new Promise((resolve) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            resolve({
+              lng: position.coords.longitude,
+              lat: position.coords.latitude
+            });
+          },
+          (error) => {
+            // console.log('获取当前位置失败，使用固定位置:', error);
+            resolve(BAODING_FIXED_LOCATION);
+          },
+          { timeout: 5000, enableHighAccuracy: true }
+        );
+      } else {
+        resolve(BAODING_FIXED_LOCATION);
+      }
+    });
+  }
+
+  // 打开导航
+  const openNavigation = (warning: Warning) => {
+    const location = parseLocation(warning.location);
+    if (!location) {
+      alert('无法获取有效的定位信息');
+      return;
+    }
+    setNavigationLocation(location);
+    setShowNavigation(true);
+  };
+
+  // 初始化地图
+  useEffect(() => {
+    if (!showNavigation || !navigationLocation || !mapContainerRef.current) return;
+
+    const initMap = async () => {
+      setMapLoading(true);
+      try {
+        // 检查百度地图是否可用
+        if (!(window as any).BMapGL) {
+          alert('百度地图加载失败，请刷新页面重试');
+          setShowNavigation(false);
+          return;
+        }
+
+        const BMapGL = (window as any).BMapGL;
+        const map = new BMapGL.Map(mapContainerRef.current);
+        mapRef.current = map;
+
+        // 设置地图中心点和缩放级别
+        const destination = new BMapGL.Point(navigationLocation.lng, navigationLocation.lat);
+        map.centerAndZoom(destination, 15);
+        map.enableScrollWheelZoom(true);
+
+        // 添加终点标记
+        const endMarker = new BMapGL.Marker(destination);
+        map.addOverlay(endMarker);
+
+        // 添加终点标签
+        const endLabel = new BMapGL.Label('老人位置', {
+          position: destination,
+          offset: new BMapGL.Size(10, -20)
+        });
+        endLabel.setStyle({
+          color: '#ff4d4f',
+          fontSize: '12px',
+          backgroundColor: 'transparent',
+          border: 'none'
+        });
+        map.addOverlay(endLabel);
+
+        // 获取当前位置作为起点
+        getCurrentOrFixedLocation().then((currentPos) => {
+          const currentLocation = new BMapGL.Point(
+            currentPos.lng,
+            currentPos.lat
+          );
+
+          // 添加起点标记
+          const startMarker = new BMapGL.Marker(currentLocation);
+          map.addOverlay(startMarker);
+
+          const startLabel = new BMapGL.Label('我的位置', {
+            position: currentLocation,
+            offset: new BMapGL.Size(10, -20)
+          });
+          startLabel.setStyle({
+            color: '#1677ff',
+            fontSize: '12px',
+            backgroundColor: 'transparent',
+            border: 'none'
+          });
+          map.addOverlay(startLabel);
+
+          // 规划路线
+          if (typeof BMapGL.DrivingRoute === 'function') {
+            const driving = new BMapGL.DrivingRoute(map, {
+              renderOptions: { map, autoViewport: true },
+            });
+            driving.search(currentLocation, destination);
+          } else {
+            // 如果不支持路线规划，显示直线
+            const line = new BMapGL.Polyline([currentLocation, destination], {
+              strokeColor: '#1677ff',
+              strokeWeight: 6,
+              strokeOpacity: 0.8
+            });
+            map.addOverlay(line);
+            map.setViewport([currentLocation, destination]);
+          }
+        }).catch((error) => {
+          console.error('获取当前位置失败:', error);
+          // 如果获取当前位置失败，只显示终点
+          map.centerAndZoom(destination, 15);
+        });
+
+        setMapLoading(false);
+      } catch (error) {
+        console.error('地图初始化失败:', error);
+        alert('地图初始化失败，请重试');
+        setShowNavigation(false);
+        setMapLoading(false);
+      }
+    };
+
+    initMap();
+
+    // 清理函数
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.destroy();
+        mapRef.current = null;
+      }
+    };
+  }, [showNavigation, navigationLocation]);
 
   const unreadCount = warnings.filter(w => w.status === 'unread').length;
 
@@ -246,7 +413,13 @@ const Warnings: React.FC = () => {
                 </div>
                 <span className={styles['elderly-name']}>{warning.elderlyName}</span>
                 {warning.location && (
-                  <span className={styles['warning-location']}>📍 {formatLocation(warning.location)}</span>
+                  <span
+                    className={styles['warning-location']}
+                    onClick={() => openNavigation(warning)}
+                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                  >
+                    📍 {formatLocation(warning.location)}
+                  </span>
                 )}
               </div>
             </div>
@@ -329,12 +502,77 @@ const Warnings: React.FC = () => {
               <button className={`${styles['modal-btn']} ${styles['secondary']}`} onClick={() => setShowModal(false)}>
                 关闭
               </button>
+              {selected?.location && (
+                <button
+                  className={`${styles['modal-btn']} ${styles['primary']}`}
+                  onClick={() => {
+                    setShowModal(false);
+                    openNavigation(selected);
+                  }}
+                >
+                  导航到位置
+                </button>
+              )}
               <button
                 className={`${styles['modal-btn']} ${styles['primary']}`}
                 onClick={() => selected && fetchAndPlay(selected.id)}
               >
                 播放录音
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 导航模态框 */}
+      {showNavigation && (
+        <div className={styles['modal-overlay']} onClick={() => setShowNavigation(false)}>
+          <div className={styles['modal-content']} onClick={(e) => e.stopPropagation()} style={{ width: '90vw', height: '80vh', maxWidth: 'none' }}>
+            <div className={styles['modal-header']}>
+              <h3>导航到老人位置</h3>
+              <button className={styles['modal-close']} onClick={() => setShowNavigation(false)}>
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            <div className={styles['modal-body']} style={{ height: 'calc(100% - 120px)', padding: 0 }}>
+              {mapLoading ? (
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%',
+                  fontSize: '16px',
+                  color: '#666'
+                }}>
+                  正在加载地图...
+                </div>
+              ) : (
+                <div
+                  ref={mapContainerRef}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '8px'
+                  }}
+                />
+              )}
+            </div>
+            <div className={styles['modal-footer']}>
+              <button className={`${styles['modal-btn']} ${styles['secondary']}`} onClick={() => setShowNavigation(false)}>
+                关闭
+              </button>
+              {navigationLocation && (
+                <button
+                  className={`${styles['modal-btn']} ${styles['primary']}`}
+                  onClick={() => {
+                    // 打开外部导航应用
+                    const url = `https://api.map.baidu.com/direction?origin=&destination=${navigationLocation.lat},${navigationLocation.lng}&mode=driving&region=全国`;
+                    window.open(url, '_blank');
+                  }}
+                >
+                  打开百度地图
+                </button>
+              )}
             </div>
           </div>
         </div>
