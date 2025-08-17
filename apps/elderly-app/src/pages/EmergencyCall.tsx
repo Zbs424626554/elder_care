@@ -3,13 +3,14 @@ import { Toast } from 'antd-mobile';
 import { PhoneFill } from 'antd-mobile-icons';
 import { speak } from '../utils/tts';
 import { MicRecorder, blobToBase64 } from '../utils/recorder';
-import { getCurrentGeoPoint } from '../utils/location';
+import { getLocationWithFallback } from '../utils/location';
 import * as emergency from '../services/emergency';
 
 export default function EmergencyCall() {
   const recorderRef = useRef<MicRecorder | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [alertId, setAlertId] = useState<string | null>(null);
+
   const timerRef = useRef<number | null>(null);
   const alertIdRef = useRef<string | null>(null); // 使用 ref 保存 alertId，避免异步问题
 
@@ -24,6 +25,12 @@ export default function EmergencyCall() {
     } catch (e) {
       Toast.show({ content: '录音权限未开启或不受支持，但仍可发送求助' });
     }
+
+    // 立即开始获取定位（并行进行，不阻塞倒计时）
+    const locationPromise = getLocationWithFallback().catch(e => {
+      return null;
+    });
+
     speak('将在五秒后给紧急联系人打电话');
     setCountdown(5);
     if (timerRef.current) window.clearInterval(timerRef.current);
@@ -33,7 +40,8 @@ export default function EmergencyCall() {
         if (newCount <= 0) {
           if (timerRef.current) window.clearInterval(timerRef.current);
           timerRef.current = null;
-          confirmCall();
+          // 传递定位Promise给confirmCall
+          confirmCall(locationPromise);
           return null;
         }
         return newCount;
@@ -56,7 +64,7 @@ export default function EmergencyCall() {
     setCountdown(null);
   };
 
-  const confirmCall = async () => {
+  const confirmCall = async (locationPromise?: Promise<any>) => {
     // 优先使用 ref 中的 alertId，避免状态更新延迟问题
     const savedAlertId = alertIdRef.current || alertId;
     if (!savedAlertId) {
@@ -75,14 +83,20 @@ export default function EmergencyCall() {
       // 录音失败，继续执行
     }
 
-    // 获取定位（失败也继续）
+    // 等待定位结果（最多等待1秒，避免阻塞太久）
     try {
-      location = await getCurrentGeoPoint();
-    } catch (e) {
+      if (locationPromise) {
+        // 设置1秒超时，确保不会等待太久
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('定位超时')), 1000)
+        );
+        location = await Promise.race([locationPromise, timeoutPromise]);
+      }
+    } catch (e: any) {
       // 定位失败，继续执行
     }
 
-    // 提交请求
+    // 提交请求（包含录音、定位、转文字）
     try {
       await emergency.commit(savedAlertId, { location, base64 });
       Toast.show({ content: '已通知紧急联系人' });
@@ -92,7 +106,7 @@ export default function EmergencyCall() {
 
     // 清理状态
     setAlertId(null);
-    alertIdRef.current = null; // 同时清理 ref
+    alertIdRef.current = null;
     setCountdown(null);
     if (timerRef.current) {
       window.clearInterval(timerRef.current);
@@ -151,6 +165,8 @@ export default function EmergencyCall() {
           将在 {countdown} 秒后呼叫，正在录音…
         </div>
       )}
+
+
 
 
       {/* 单一主按钮已集成到圆形按钮点击 */}

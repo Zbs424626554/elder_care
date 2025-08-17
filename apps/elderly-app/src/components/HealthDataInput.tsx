@@ -41,7 +41,7 @@ const HealthDataInput: React.FC<HealthDataInputProps> = ({ onSuccess }) => {
       };
 
       // 这里应该调用健康记录的API，暂时模拟
-      console.log('健康数据:', healthData);
+      // 健康数据已提交
 
       message.success('健康数据记录成功');
       form.resetFields();

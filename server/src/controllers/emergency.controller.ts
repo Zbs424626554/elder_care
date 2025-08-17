@@ -11,8 +11,10 @@ async function resolveEmergencyReceivers(elderlyUserId: string): Promise<string[
   try {
     const archive = await ElderHealthArchive.findOne({ elderID: elderlyUserId });
     const receivers: string[] = [];
+
     if (archive?.emcontact) {
       const { username, phone } = archive.emcontact as any;
+
       let contactUser = null as any;
       if (username) {
         contactUser = await User.findOne({ username }).select('_id');
@@ -24,6 +26,7 @@ async function resolveEmergencyReceivers(elderlyUserId: string): Promise<string[
         receivers.push(String(contactUser._id));
       }
     }
+
     return receivers;
   } catch (e) {
     return [];
@@ -42,7 +45,10 @@ function emitToReceivers(io: IOServer, receivers: string[], event: string, paylo
     io.emit(event, payload);
     return;
   }
-  receivers.forEach((uid) => io.to(`user:${uid}`).emit(event, payload));
+
+  receivers.forEach((uid) => {
+    io.to(`user:${uid}`).emit(event, payload);
+  });
 }
 
 export const initiateEmergency = (io: IOServer) => async (req: Request, res: Response) => {
@@ -92,6 +98,7 @@ export const uploadAudioBase64 = (io: IOServer) => async (req: Request, res: Res
 export const commitEmergency = (io: IOServer) => async (req: Request, res: Response) => {
   const { id } = req.params;
   const { location, base64 } = req.body as { location?: { type: 'Point'; coordinates: [number, number] }; base64?: string };
+
   const updateObj: any = { location };
   if (base64) {
     updateObj.audioClip = base64;

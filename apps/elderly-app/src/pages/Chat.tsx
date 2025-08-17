@@ -639,7 +639,7 @@ export default function Chat() {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
           localVideoRef.current.muted = true;
-          localVideoRef.current.play().catch(() => {});
+          localVideoRef.current.play().catch(() => { });
         }
       } else {
         await getAudioStream();
@@ -667,7 +667,7 @@ export default function Chat() {
         .map((user) => user.username);
 
       WebSocketService.sendWebRTCOffer(id, offer, receivers);
-      console.log("WebRTC Offer发送成功");
+      // WebRTC Offer发送成功
     } catch (error) {
       console.error("初始化WebRTC通话失败:", error);
       throw error;
@@ -823,14 +823,13 @@ export default function Chat() {
 
     // 连接状态变化
     pc.onconnectionstatechange = () => {
-      console.log("WebRTC连接状态:", pc.connectionState);
       if (pc.connectionState === "connected") {
-        console.log("WebRTC连接建立成功");
+        // WebRTC连接建立成功
       } else if (
         pc.connectionState === "failed" ||
         pc.connectionState === "closed"
       ) {
-        console.log("WebRTC连接失败或关闭");
+        // WebRTC连接失败或关闭
       }
     };
 
@@ -867,9 +866,7 @@ export default function Chat() {
     callDuration?: number,
     callerOverride?: string // 新增参数，用于override caller
   ) => {
-    console.log("id", id);
-    console.log("callSession", callSession);
-    console.log("callerOverride", callerOverride);
+    // 通话记录参数
 
     const effectiveCaller = callerOverride || callSession.caller;
 
@@ -914,7 +911,7 @@ export default function Chat() {
           (receiverUser as any).realname || receiverUser.username,
       };
 
-      console.log("正在保存通话记录:", requestData);
+      // 正在保存通话记录
 
       // 直接调用服务器API保存通话记录
       const response = await fetch("http://localhost:3001/api/send", {
@@ -925,11 +922,11 @@ export default function Chat() {
         body: JSON.stringify(requestData),
       });
 
-      console.log("API响应状态:", response.status, response.statusText);
+      // API响应状态
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log(`通话记录已保存成功: ${status}`, responseData);
+        // 通话记录已保存成功
 
         // 刷新聊天记录显示新的通话记录
         await fetchConversationDetail(true);
@@ -992,7 +989,7 @@ export default function Chat() {
           if (localVideoRef.current) {
             localVideoRef.current.srcObject = stream;
             localVideoRef.current.muted = true;
-            localVideoRef.current.play().catch(() => {});
+            localVideoRef.current.play().catch(() => { });
           }
         } else {
           await getAudioStream();
@@ -1019,7 +1016,7 @@ export default function Chat() {
         const receivers = [data.sender];
         WebSocketService.sendWebRTCAnswer(id!, answer, receivers);
 
-        console.log("WebRTC Answer发送成功");
+        // WebRTC Answer发送成功
       } catch (error) {
         console.error("处理WebRTC Offer失败:", error);
         message.error("建立音频连接失败");
@@ -1038,7 +1035,7 @@ export default function Chat() {
         await peerConnectionRef.current.setRemoteDescription(
           new RTCSessionDescription(data.answer)
         );
-        console.log("WebRTC Answer处理成功");
+        // WebRTC Answer处理成功
       } catch (error) {
         console.error("处理WebRTC Answer失败:", error);
       }
@@ -1055,7 +1052,7 @@ export default function Chat() {
       try {
         const candidate = new RTCIceCandidate(data.candidate);
         await peerConnectionRef.current.addIceCandidate(candidate);
-        console.log("ICE候选添加成功");
+        // ICE候选添加成功
       } catch (error) {
         console.error("添加ICE候选失败:", error);
       }
@@ -1065,7 +1062,7 @@ export default function Chat() {
   // 处理会话更新通知
   const handleConversationUpdated = async (data: any) => {
     if (data.conversationId === id && data.sender !== currentUser?.username) {
-      console.log("收到会话更新通知，刷新对话详情");
+      // 收到会话更新通知，刷新对话详情
       // 刷新对话详情以显示新的通话记录
       await fetchConversationDetail();
     }
@@ -1081,7 +1078,7 @@ export default function Chat() {
           if (localVideoRef.current) {
             localVideoRef.current.srcObject = stream;
             localVideoRef.current.muted = true;
-            localVideoRef.current.play().catch(() => {});
+            localVideoRef.current.play().catch(() => { });
           }
         } else {
           await getAudioStream();
@@ -1394,7 +1391,7 @@ export default function Chat() {
     try {
       if (recorderRef.current) {
         // 停止但不发送
-        recorderRef.current.stop().catch(() => {});
+        recorderRef.current.stop().catch(() => { });
       }
     } finally {
       setIsRecording(false);
@@ -1515,7 +1512,7 @@ export default function Chat() {
       setTimeout(() => {
         if (cameraVideoRef.current) {
           cameraVideoRef.current.srcObject = stream;
-          cameraVideoRef.current.play().catch(() => {});
+          cameraVideoRef.current.play().catch(() => { });
         }
       }, 0);
     } catch (e) {
@@ -1816,7 +1813,7 @@ export default function Chat() {
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
         localVideoRef.current.muted = true;
-        localVideoRef.current.play().catch(() => {});
+        localVideoRef.current.play().catch(() => { });
       }
     } catch (e) {
       message.error("未获得摄像头或麦克风权限，无法发起视频通话");
@@ -2230,11 +2227,10 @@ export default function Chat() {
                 callSession.isActive && callSession.callType === "voice"
                   ? "#ff4d4f"
                   : "#52c41a",
-              border: `1px solid ${
-                callSession.isActive && callSession.callType === "voice"
+              border: `1px solid ${callSession.isActive && callSession.callType === "voice"
                   ? "#ff4d4f"
                   : "#52c41a"
-              }`,
+                }`,
               borderRadius: "50%",
               width: "40px",
               height: "40px",
@@ -2263,11 +2259,10 @@ export default function Chat() {
                 callSession.isActive && callSession.callType === "video"
                   ? "#ff4d4f"
                   : "#1890ff",
-              border: `1px solid ${
-                callSession.isActive && callSession.callType === "video"
+              border: `1px solid ${callSession.isActive && callSession.callType === "video"
                   ? "#ff4d4f"
                   : "#1890ff"
-              }`,
+                }`,
               borderRadius: "50%",
               width: "40px",
               height: "40px",
@@ -2398,10 +2393,10 @@ export default function Chat() {
                           {item.content}
                           {typeof (item as any).time === "number"
                             ? `（${Math.floor((item as any).time / 60)}:${(
-                                (item as any).time % 60
-                              )
-                                .toString()
-                                .padStart(2, "0")}）`
+                              (item as any).time % 60
+                            )
+                              .toString()
+                              .padStart(2, "0")}）`
                             : ""}
                         </span>
                       ) : item.type === "location" ? (

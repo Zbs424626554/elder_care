@@ -74,15 +74,15 @@ export const generateHealthAdvice = async (healthData: any, elderlyName: string)
 请确保建议具体、实用，针对老人的实际健康状况。
 `;
 
-  console.log('📝 发送给AI的提示词:', prompt);
+  // console.log('📝 发送给AI的提示词:', prompt);
 
   try {
-    console.log('🚀 开始调用百川智能API...');
+    // console.log('🚀 开始调用百川智能API...');
     const response = await askQuestion(prompt);
-    console.log('🤖 AI原始响应:', response);
+    // console.log('🤖 AI原始响应:', response);
 
     if (!response) {
-      console.warn("⚠️ AI响应为空，使用默认建议");
+      // console.warn("⚠️ AI响应为空，使用默认建议");
       return getDefaultAdvice();
     }
 
@@ -103,7 +103,7 @@ export const generateHealthAdvice = async (healthData: any, elderlyName: string)
       console.log('🧹 清理后的响应:', cleanResponse);
 
       const parsedResponse = JSON.parse(cleanResponse);
-      console.log('✅ AI响应解析成功:', parsedResponse);
+      // console.log('✅ AI响应解析成功:', parsedResponse);
       return parsedResponse.advice || [];
     } catch (parseError) {
       // 如果JSON解析失败，返回默认建议

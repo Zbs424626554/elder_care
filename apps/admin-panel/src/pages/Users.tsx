@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { 
-  Table, 
-  Button, 
-  Space, 
-  Tag, 
-  Modal, 
+import {
+  Table,
+  Button,
+  Space,
+  Tag,
+  Modal,
   message,
   Card,
   Row,
@@ -104,8 +104,8 @@ const Users: React.FC = () => {
     setLoading(true);
     try {
       const response = await AdminService.getUserList();
-      console.log('用户列表响应11:', response);
-      
+      // 用户列表响应
+
       if ((response as any).code === 200 && (response as any).data && (response as any).data.users) {
         setUsers((response as any).data.users);
       } else {
@@ -146,10 +146,10 @@ const Users: React.FC = () => {
         action: approved ? 'approve' : 'reject',
         isVerified: approved
       });
-      
+
       if ((response as any).code === 200) {
-        setUsers(users.map(user => 
-          user.id === userId 
+        setUsers(users.map(user =>
+          user.id === userId
             ? { ...user, isVerified: approved }
             : user
         ));
@@ -167,12 +167,12 @@ const Users: React.FC = () => {
     try {
       const newStatus = currentStatus === 'active' ? 'frozen' : 'active';
       const action = newStatus === 'active' ? '启用' : '禁用';
-      
+
       const response = await AdminService.updateUserStatus(userId, newStatus);
-      
+
       if ((response as any).code === 200) {
-        setUsers(users.map(user => 
-          user.id === userId 
+        setUsers(users.map(user =>
+          user.id === userId
             ? { ...user, status: newStatus }
             : user
         ));
@@ -219,8 +219,8 @@ const Users: React.FC = () => {
     if (selectedUser) {
       try {
         // 这里应该调用更新用户信息的API
-        setUsers(users.map(user => 
-          user.id === selectedUser.id 
+        setUsers(users.map(user =>
+          user.id === selectedUser.id
             ? { ...user, ...values }
             : user
         ));
@@ -236,7 +236,7 @@ const Users: React.FC = () => {
   const handleAddUserSubmit = async (values: any) => {
     try {
       const response = await AdminService.addUser(values);
-      
+
       if ((response as any).code === 200) {
         if ((response as any).data && (response as any).data.user) {
           setUsers([...users, (response as any).data.user]);
@@ -255,7 +255,7 @@ const Users: React.FC = () => {
         }
         setAddUserModalVisible(false);
         message.success('用户添加成功');
-        
+
         // 重新加载用户列表，确保数据同步
         loadUsers();
       } else {
@@ -271,10 +271,10 @@ const Users: React.FC = () => {
     if (selectedUser) {
       try {
         const response = await AdminService.assignUserRole(selectedUser.id, values.adminRole);
-        
+
         if ((response as any).code === 200) {
-          setUsers(users.map(user => 
-            user.id === selectedUser.id 
+          setUsers(users.map(user =>
+            user.id === selectedUser.id
               ? { ...user, adminRole: values.adminRole }
               : user
           ));
@@ -297,10 +297,10 @@ const Users: React.FC = () => {
       onOk: async () => {
         try {
           const response = await AdminService.updateUserStatus(userId, 'blacklist', '管理员操作');
-          
+
           if ((response as any).code === 200) {
-            setUsers(users.map(user => 
-              user.id === userId 
+            setUsers(users.map(user =>
+              user.id === userId
                 ? { ...user, status: 'blacklist', blacklistReason: '管理员操作' }
                 : user
             ));
@@ -323,10 +323,10 @@ const Users: React.FC = () => {
       onOk: async () => {
         try {
           const response = await AdminService.updateUserStatus(userId, 'active');
-          
+
           if ((response as any).code === 200) {
-            setUsers(users.map(user => 
-              user.id === userId 
+            setUsers(users.map(user =>
+              user.id === userId
                 ? { ...user, status: 'active', blacklistReason: undefined }
                 : user
             ));
@@ -354,15 +354,15 @@ const Users: React.FC = () => {
             qualificationStatus: approved ? 'approved' : 'rejected',
             status: approved ? 'active' : 'pending'
           });
-          
+
           if ((response as any).code === 200) {
-            setUsers(users.map(user => 
-              user.id === userId 
-                ? { 
-                    ...user, 
-                    qualificationStatus: approved ? 'approved' : 'rejected',
-                    status: approved ? 'active' : 'pending'
-                  }
+            setUsers(users.map(user =>
+              user.id === userId
+                ? {
+                  ...user,
+                  qualificationStatus: approved ? 'approved' : 'rejected',
+                  status: approved ? 'active' : 'pending'
+                }
                 : user
             ));
             message.success(`护工资质认证${action}成功`);
@@ -393,8 +393,8 @@ const Users: React.FC = () => {
       key: 'avatar',
       width: 80,
       render: (_, record: User) => (
-        <Avatar 
-          src={record.avatar} 
+        <Avatar
+          src={record.avatar}
           icon={<UserOutlined />}
           size="large"
         />
@@ -422,7 +422,7 @@ const Users: React.FC = () => {
           admin: { text: '管理员', color: 'red' }
         };
         const roleInfo = roleMap[role] || { text: role, color: 'default' };
-        
+
         if (role === 'admin' && record.adminRole) {
           const adminRoleMap: Record<string, string> = {
             super_admin: '超级管理员',
@@ -440,7 +440,7 @@ const Users: React.FC = () => {
             </div>
           );
         }
-        
+
         return <Tag color={roleInfo.color}>{roleInfo.text}</Tag>;
       },
     },
@@ -595,8 +595,8 @@ const Users: React.FC = () => {
             }}
             trigger={['click']}
           >
-            <Button 
-              type="text" 
+            <Button
+              type="text"
               icon={<MoreOutlined />}
               size="small"
             />
@@ -645,9 +645,9 @@ const Users: React.FC = () => {
           for (const userId of selectedRows) {
             await AdminService.updateUserStatus(userId, status);
           }
-          setUsers(users.map(user => 
-            selectedRows.includes(user.id) 
-              ? { ...user, status } 
+          setUsers(users.map(user =>
+            selectedRows.includes(user.id)
+              ? { ...user, status }
               : user
           ));
           setSelectedRows([]);
@@ -699,7 +699,7 @@ const Users: React.FC = () => {
     }));
 
     // 这里应该实现真正的导出逻辑
-    console.log('导出数据:', exportData);
+    // 导出数据
     message.success('导出功能开发中...');
   };
 
@@ -727,7 +727,7 @@ const Users: React.FC = () => {
       else if (currentTab === 'blacklist') tabFilter = user.status === 'blacklist';
 
       // 文本搜索
-      const searchFilter = !searchText || 
+      const searchFilter = !searchText ||
         user.username.toLowerCase().includes(searchText.toLowerCase()) ||
         user.realname.toLowerCase().includes(searchText.toLowerCase()) ||
         user.email.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -738,7 +738,7 @@ const Users: React.FC = () => {
       const roleFilter = !filters.role || user.role === filters.role;
       const statusFilter = !filters.status || user.status === filters.status;
       const verifiedFilter = filters.isVerified === undefined || user.isVerified === filters.isVerified;
-      
+
       // 日期筛选
       let dateFilter = true;
       if (filters.dateRange && filters.dateRange.length === 2) {
@@ -768,14 +768,14 @@ const Users: React.FC = () => {
           </Button>
         </Space>
       </div>
-      
+
       {/* 统计卡片 */}
       <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col span={4}>
           <Card size="small">
-            <Statistic 
-              title="总用户数" 
-              value={stats.total} 
+            <Statistic
+              title="总用户数"
+              value={stats.total}
               suffix="人"
               valueStyle={{ color: '#1890ff' }}
             />
@@ -783,9 +783,9 @@ const Users: React.FC = () => {
         </Col>
         <Col span={4}>
           <Card size="small">
-            <Statistic 
-              title="管理员" 
-              value={stats.admin} 
+            <Statistic
+              title="管理员"
+              value={stats.admin}
               suffix="人"
               valueStyle={{ color: '#722ed1' }}
             />
@@ -793,9 +793,9 @@ const Users: React.FC = () => {
         </Col>
         <Col span={4}>
           <Card size="small">
-            <Statistic 
-              title="护工" 
-              value={stats.nurse} 
+            <Statistic
+              title="护工"
+              value={stats.nurse}
               suffix="人"
               valueStyle={{ color: '#52c41a' }}
             />
@@ -803,9 +803,9 @@ const Users: React.FC = () => {
         </Col>
         <Col span={4}>
           <Card size="small">
-            <Statistic 
-              title="老人用户" 
-              value={stats.elderly} 
+            <Statistic
+              title="老人用户"
+              value={stats.elderly}
               suffix="人"
               valueStyle={{ color: '#fa8c16' }}
             />
@@ -813,9 +813,9 @@ const Users: React.FC = () => {
         </Col>
         <Col span={4}>
           <Card size="small">
-            <Statistic 
-              title="待审核" 
-              value={stats.pending} 
+            <Statistic
+              title="待审核"
+              value={stats.pending}
               suffix="人"
               valueStyle={{ color: '#faad14' }}
             />
@@ -823,9 +823,9 @@ const Users: React.FC = () => {
         </Col>
         <Col span={4}>
           <Card size="small">
-            <Statistic 
-              title="黑名单" 
-              value={stats.blacklist} 
+            <Statistic
+              title="黑名单"
+              value={stats.blacklist}
               suffix="人"
               valueStyle={{ color: '#f5222d' }}
             />
@@ -938,8 +938,8 @@ const Users: React.FC = () => {
 
       {/* 用户表格 */}
       <Card>
-        <Tabs 
-          activeKey={currentTab} 
+        <Tabs
+          activeKey={currentTab}
           onChange={setCurrentTab}
           items={[
             { key: 'all', label: `全部用户 (${filteredUsers.length})` },
@@ -951,7 +951,7 @@ const Users: React.FC = () => {
             { key: 'blacklist', label: `黑名单 (${stats.blacklist})` }
           ]}
         />
-        
+
         <Table
           columns={columns}
           dataSource={filteredUsers}
@@ -973,13 +973,13 @@ const Users: React.FC = () => {
             pageSize: 15,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) => 
+            showTotal: (total, range) =>
               `显示 ${range[0]}-${range[1]} 条，共 ${total} 条记录`,
             pageSizeOptions: ['10', '15', '20', '50']
           }}
           locale={{
             emptyText: (
-              <Empty 
+              <Empty
                 description="暂无用户数据"
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
@@ -1032,9 +1032,9 @@ const Users: React.FC = () => {
               </Descriptions.Item>
               <Descriptions.Item label="角色" span={1}>
                 <Tag color={selectedUser.role === 'admin' ? 'red' : selectedUser.role === 'nurse' ? 'green' : 'blue'}>
-                  {selectedUser.role === 'admin' ? '管理员' : 
-                   selectedUser.role === 'nurse' ? '护工' :
-                   selectedUser.role === 'elderly' ? '老人用户' : '家属'}
+                  {selectedUser.role === 'admin' ? '管理员' :
+                    selectedUser.role === 'nurse' ? '护工' :
+                      selectedUser.role === 'elderly' ? '老人用户' : '家属'}
                 </Tag>
               </Descriptions.Item>
               <Descriptions.Item label="邮箱" span={1}>
@@ -1046,12 +1046,12 @@ const Users: React.FC = () => {
               <Descriptions.Item label="状态" span={1}>
                 <Tag color={
                   selectedUser.status === 'active' ? 'green' :
-                  selectedUser.status === 'pending' ? 'orange' :
-                  selectedUser.status === 'frozen' ? 'red' : 'red'
+                    selectedUser.status === 'pending' ? 'orange' :
+                      selectedUser.status === 'frozen' ? 'red' : 'red'
                 }>
                   {selectedUser.status === 'active' ? '正常' :
-                   selectedUser.status === 'pending' ? '待审核' :
-                   selectedUser.status === 'frozen' ? '已冻结' : '黑名单'}
+                    selectedUser.status === 'pending' ? '待审核' :
+                      selectedUser.status === 'frozen' ? '已冻结' : '黑名单'}
                 </Tag>
               </Descriptions.Item>
               <Descriptions.Item label="认证状态" span={1}>
@@ -1065,32 +1065,32 @@ const Users: React.FC = () => {
               <Descriptions.Item label="最后登录" span={1}>
                 {selectedUser.lastLogin}
               </Descriptions.Item>
-              
+
               {selectedUser.adminRole && (
                 <Descriptions.Item label="管理员角色" span={2}>
                   <Tag color="purple">
                     {selectedUser.adminRole === 'super_admin' ? '超级管理员' :
-                     selectedUser.adminRole === 'cs_manager' ? '客服主管' :
-                     selectedUser.adminRole === 'reviewer' ? '审核员' :
-                     selectedUser.adminRole === 'finance' ? '财务' : selectedUser.adminRole}
+                      selectedUser.adminRole === 'cs_manager' ? '客服主管' :
+                        selectedUser.adminRole === 'reviewer' ? '审核员' :
+                          selectedUser.adminRole === 'finance' ? '财务' : selectedUser.adminRole}
                   </Tag>
                 </Descriptions.Item>
               )}
-              
+
               {selectedUser.qualificationStatus && (
-              <Descriptions.Item label="护工资质" span={2}>
+                <Descriptions.Item label="护工资质" span={2}>
                   <Tag color={selectedUser.qualificationStatus === 'approved' ? 'green' : selectedUser.qualificationStatus === 'rejected' ? 'red' : 'orange'}>
                     {selectedUser.qualificationStatus === 'approved' ? '已认证' : selectedUser.qualificationStatus === 'rejected' ? '认证失败' : '待认证'}
                   </Tag>
                 </Descriptions.Item>
               )}
-              
+
               {selectedUser.blacklistReason && (
                 <Descriptions.Item label="黑名单原因" span={2}>
                   <Text type="danger">{selectedUser.blacklistReason}</Text>
                 </Descriptions.Item>
               )}
-              
+
               {selectedUser.pagePermissions && selectedUser.pagePermissions.length > 0 && (
                 <Descriptions.Item label="页面权限" span={2}>
                   <div>
@@ -1155,7 +1155,7 @@ const Users: React.FC = () => {
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -1182,7 +1182,7 @@ const Users: React.FC = () => {
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Form.Item
             name="role"
             label="用户角色"
@@ -1195,7 +1195,7 @@ const Users: React.FC = () => {
               <Option value="admin">管理员</Option>
             </Select>
           </Form.Item>
-          
+
           <Form.Item noStyle shouldUpdate={(prev, curr) => prev.role !== curr.role}>
             {({ getFieldValue }) => {
               const isAdminRole = getFieldValue('role') === 'admin';
@@ -1319,7 +1319,7 @@ const Users: React.FC = () => {
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -1343,7 +1343,7 @@ const Users: React.FC = () => {
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Form.Item
             name="role"
             label="用户角色"
@@ -1356,9 +1356,9 @@ const Users: React.FC = () => {
               <Option value="admin">管理员</Option>
             </Select>
           </Form.Item>
-          
+
           <Divider orientation="left">页面权限设置</Divider>
-          
+
           <Form.Item
             name="pagePermissions"
             label="可访问页面"

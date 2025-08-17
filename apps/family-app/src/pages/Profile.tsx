@@ -21,30 +21,30 @@ const Profile: React.FC = () => {
       icon: <UserOutline />,
       title: '消息中心',
       subtitle: '查看系统消息和通知',
-      action: () => console.log('消息中心'),
+      action: () => { },
     },
     {
       icon: <UserOutline />,
       title: '我的收藏',
       subtitle: '收藏的护工和服务',
-      action: () => console.log('我的收藏'),
+      action: () => { },
     },
     {
       icon: <UserOutline />,
       title: '服务评价',
       subtitle: '查看历史评价',
-      action: () => console.log('服务评价'),
+      action: () => { },
     },
     {
       icon: <UserOutline />,
       title: '帮助中心',
       subtitle: '常见问题和客服',
-      action: () => console.log('帮助中心'),
+      action: () => { },
     },
   ];
 
   const handleLogout = () => {
-    console.log('退出登录');
+    // 退出登录
     navigate('/login');
   };
 
@@ -123,21 +123,21 @@ const Profile: React.FC = () => {
       {/* 设置选项 */}
       <Card className={styles.settingsCard}>
         <div className={styles.settingsList}>
-          <div className={styles.settingItem} onClick={() => console.log('关于我们')}>
+          <div className={styles.settingItem} onClick={() => { }}>
             <div className={styles.settingContent}>
               <div className={styles.settingTitle}>关于我们</div>
               <div className={styles.settingDesc}>了解更多信息</div>
             </div>
             <RightOutline className={styles.settingArrow} />
           </div>
-          <div className={styles.settingItem} onClick={() => console.log('隐私政策')}>
+          <div className={styles.settingItem} onClick={() => { }}>
             <div className={styles.settingContent}>
               <div className={styles.settingTitle}>隐私政策</div>
               <div className={styles.settingDesc}>保护您的隐私</div>
             </div>
             <RightOutline className={styles.settingArrow} />
           </div>
-          <div className={styles.settingItem} onClick={() => console.log('用户协议')}>
+          <div className={styles.settingItem} onClick={() => { }}>
             <div className={styles.settingContent}>
               <div className={styles.settingTitle}>用户协议</div>
               <div className={styles.settingDesc}>服务条款</div>

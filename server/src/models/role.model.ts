@@ -9,15 +9,14 @@ export interface IRolePermission extends Document {
 }
 
 const rolePermissionSchema = new Schema({
-  role: { 
-    type: String, 
+  role: {
+    type: String,
     enum: ['admin', 'cs', 'auditor', 'finance'],
-    required: true,
-    unique: true
+    required: true
   },
   permissions: [{
-    module: { 
-      type: String, 
+    module: {
+      type: String,
       enum: ['user', 'order', 'payment', 'nurse', 'content'],
       required: true
     },
@@ -26,7 +25,7 @@ const rolePermissionSchema = new Schema({
       enum: ['create', 'read', 'update', 'delete', 'export']
     }
   }]
-}, { 
+}, {
   timestamps: true,
   collection: 'role_permissions'
 });

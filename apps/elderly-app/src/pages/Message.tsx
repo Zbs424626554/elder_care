@@ -68,23 +68,23 @@ export default function Message() {
       avatar: item.avatar,
       lastMessage: item.lastMessage
         ? {
-            id: item.lastMessage.id,
-            content: item.lastMessage.content,
-            timestamp: new Date(item.lastMessage.timestamp),
-            isRead: item.lastMessage.isRead,
-            type: item.lastMessage.type as
-              | "text"
-              | "image"
-              | "voice"
-              | "system",
-          }
+          id: item.lastMessage.id,
+          content: item.lastMessage.content,
+          timestamp: new Date(item.lastMessage.timestamp),
+          isRead: item.lastMessage.isRead,
+          type: item.lastMessage.type as
+            | "text"
+            | "image"
+            | "voice"
+            | "system",
+        }
         : {
-            id: "",
-            content: "暂无消息",
-            timestamp: new Date(),
-            isRead: true,
-            type: "text" as const,
-          },
+          id: "",
+          content: "暂无消息",
+          timestamp: new Date(),
+          isRead: true,
+          type: "text" as const,
+        },
       unreadCount: item.unreadCount,
       isOnline: item.isOnline,
       role: item.role as "nurse" | "family" | "admin" | "system",
@@ -100,7 +100,7 @@ export default function Message() {
       const currentUser = getCurrentUser();
 
       if (!currentUser || !currentUser.username) {
-        console.log("用户未登录或用户名不存在");
+        // 用户未登录或用户名不存在
         setChatList([]);
         return;
       }
@@ -116,7 +116,7 @@ export default function Message() {
         // console.log(chatContacts);
         setChatList(chatContacts);
       } else {
-        console.log("API返回的数据格式不正确:", response);
+        // API返回的数据格式不正确
         setChatList([]);
       }
     } catch (error) {
@@ -134,7 +134,7 @@ export default function Message() {
     try {
       await WebSocketService.connect(username);
       setIsWebSocketConnected(true);
-      console.log("Message页面WebSocket连接成功");
+      // Message页面WebSocket连接成功
 
       // 监听对话创建/更新事件
       WebSocketService.addEventListener(
@@ -154,14 +154,14 @@ export default function Message() {
 
   // 处理对话创建/更新事件
   const handleConversationUpdate = (data: any) => {
-    console.log("收到对话更新事件:", data);
+    // 收到对话更新事件
     // 延迟刷新，避免频繁更新
     debouncedRefreshChatList();
   };
 
   // 处理新消息事件
   const handleNewMessage = (data: any) => {
-    console.log("收到新消息事件:", data);
+    // 收到新消息事件
     // 延迟刷新聊天列表以更新最后消息
     debouncedRefreshChatList();
   };
@@ -315,7 +315,7 @@ export default function Message() {
 
   // 处理用户选择
   const handleUserSelect = async (user: User) => {
-    console.log("选择了用户:", user);
+    // 选择了用户
 
     const currentUser = getCurrentUser();
     if (!currentUser) {
@@ -360,7 +360,7 @@ export default function Message() {
       // 隐藏加载状态
       Toast.clear();
 
-      console.log("创建对话响应:", response);
+      // 创建对话响应
 
       if (response && response.conversationId) {
         // 关闭用户选择弹窗

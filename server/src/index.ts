@@ -8,11 +8,9 @@ import authRoutes from './routes/auth.routes';
 import emergencyRoutes from './routes/emergency.routes';
 import userRoutes from './routes/users.routes';
 import healthRoutes from './routes/health.routes';
-// import elderHealthRoutes from './routes/elderhealth.routes';
 import ordersRoutes from './routes/orders.routes';
 import approvesRoutes from './routes/approves.routes';
 import uploadRoutes from './routes/upload.routes';
-import elderHealthRoutes from './routes/elderhealth.routes';
 import paymentRoutes from './routes/payment.routes';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -108,13 +106,13 @@ const heartbeatInterval = setInterval(() => {
     if (c.isAlive === false) {
       try {
         c.terminate();
-      } catch {}
+      } catch { }
       return;
     }
     c.isAlive = false;
     try {
       c.ping();
-    } catch {}
+    } catch { }
   });
 }, 30000);
 
@@ -127,7 +125,7 @@ wss.on("connection", (ws: WebSocket, req) => {
     return;
   }
 
-  console.log(`用户 ${username} 已连接WebSocket`);
+  // 用户已连接WebSocket
 
   // 存储用户连接
   userConnections.set(username, {
@@ -163,7 +161,6 @@ wss.on("connection", (ws: WebSocket, req) => {
 
   // 处理断开连接
   ws.on("close", () => {
-    console.log(`用户 ${username} 断开WebSocket连接`);
     userConnections.delete(username);
 
     // 从所有会话中移除用户
@@ -467,7 +464,7 @@ function handleWebSocketMessage(senderUsername: string, message: any) {
       break;
 
     default:
-      console.log(`未知消息类型: ${type}`);
+    // 未知消息类型，忽略
   }
 }
 
@@ -530,7 +527,6 @@ setInterval(() => {
 
   userConnections.forEach((conn, username) => {
     if (now - conn.lastSeen > timeout) {
-      console.log(`清理不活跃连接: ${username}`);
       conn.ws.close();
       userConnections.delete(username);
     }

@@ -51,7 +51,7 @@ const OrderConfirm: React.FC = () => {
         // 这里可以添加更多字段
       };
 
-      console.log('提交订单数据:', fullOrderData);
+      // 提交订单数据
 
       // 显示成功提示
       Toast.show({

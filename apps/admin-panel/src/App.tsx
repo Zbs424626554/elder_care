@@ -33,14 +33,14 @@ const App: React.FC = () => {
   useEffect(() => {
     // 清除特定的会话存储，但保留AuthService需要的状态
     sessionStorage.removeItem('auth_checking');
-    
+
     // 初始化AuthService
     AuthService.initialize();
-    
+
     try {
       // 检查登录状态
       const loggedIn = AuthService.isLoggedIn();
-      
+
       if (loggedIn) {
         const user = AuthService.getCurrentUser();
         if (user) {
@@ -65,18 +65,18 @@ const App: React.FC = () => {
   // 处理登录
   const handleLogin = async (username: string, password: string) => {
     setLoading(true);
-    
+
     try {
-      console.log('App: 尝试登录', { username });
-      
+      // App: 尝试登录
+
       // 使用AuthService进行登录
       await AuthService.login(username, password);
-      
+
       // 获取登录后的用户信息
       const user = AuthService.getCurrentUser();
-      
+
       if (user) {
-        console.log('登录成功，用户信息:', user);
+        // 登录成功，用户信息
         // 归一化角色（admin 视为 admin_super）
         setUserRole(AuthService.getCurrentRole() || '');
         setUserPermissions(user.pagePermissions || []);
@@ -94,11 +94,11 @@ const App: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   // 处理登出
   const handleLogout = async () => {
     setLoading(true);
-    
+
     try {
       await AuthService.logout();
       setIsLoggedIn(false);
@@ -112,7 +112,7 @@ const App: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   // 检查页面访问权限
   // 已移除页面访问拦截，统一放行
   const checkAccess = (_requiredRoles: string[], _path: string) => true;
@@ -138,72 +138,72 @@ const App: React.FC = () => {
     <ConfigProvider locale={zhCN}>
       <ErrorBoundary>
         <BrowserRouter>
-        <Routes>
-          {/* 公共路由 */}
-          <Route path="/login" element={
-            isLoggedIn ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} />
-          } />
-          <Route path="/register" element={<Register />} />
+          <Routes>
+            {/* 公共路由 */}
+            <Route path="/login" element={
+              isLoggedIn ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} />
+            } />
+            <Route path="/register" element={<Register />} />
 
-          {/* 根路径重定向 */}
-          <Route path="/" element={
-            isLoggedIn ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
-          } />
+            {/* 根路径重定向 */}
+            <Route path="/" element={
+              isLoggedIn ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
+            } />
 
-          {/* 管理后台路由 */}
-          <Route path="/dashboard" element={
-            isLoggedIn ? (
-              <Layout onLogout={handleLogout} userRole={userRole} userPermissions={userPermissions} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }>
-            <Route index element={<Dashboard />} />
-            <Route path="users" element={
-              checkAccess(['admin_super', 'admin', 'system_admin'], '/dashboard/users') ? 
-                <Users /> : <NotAuthorized />
-            } />
-            <Route path="approve" element={
-              checkAccess(['admin_super', 'reviewer'], '/dashboard/approve') ? 
-                <Approve /> : <NotAuthorized />
-            } />
-            <Route path="orders" element={
-              checkAccess(['admin_super', 'admin', 'cs_manager', 'finance'], '/dashboard/orders') ? 
-                <Orders /> : <NotAuthorized />
-            } />
-            <Route path="payments" element={
-              checkAccess(['admin_super', 'finance'], '/dashboard/payments') ? 
-                <Payments /> : <NotAuthorized />
-            } />
-            <Route path="services" element={
-              checkAccess(['admin_super', 'admin', 'cs_manager'], '/dashboard/services') ? 
-                <Services /> : <NotAuthorized />
-            } />
-            <Route path="disputes" element={
-              checkAccess(['admin_super', 'cs_manager'], '/dashboard/disputes') ? 
-                <Disputes /> : <NotAuthorized />
-            } />
-            <Route path="reviews-complaints" element={
-              checkAccess(['admin_super', 'cs_manager', 'reviewer'], '/dashboard/reviews-complaints') ? 
-                <ReviewsAndComplaints /> : <NotAuthorized />
-            } />
-            <Route path="data-summary" element={
-              checkAccess(['admin_super', 'finance'], '/dashboard/data-summary') ? 
-                <DataSummary /> : <NotAuthorized />
-            } />
-            <Route path="settings" element={
-              checkAccess(['admin_super', 'system_admin'], '/dashboard/settings') ? 
-                <Settings /> : <NotAuthorized />
-            } />
-            <Route path="permissions" element={
-              checkAccess(['admin_super', 'system_admin'], '/dashboard/permissions') ? 
-                <Permissions /> : <NotAuthorized />
-            } />
-          </Route>
+            {/* 管理后台路由 */}
+            <Route path="/dashboard" element={
+              isLoggedIn ? (
+                <Layout onLogout={handleLogout} userRole={userRole} userPermissions={userPermissions} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }>
+              <Route index element={<Dashboard />} />
+              <Route path="users" element={
+                checkAccess(['admin_super', 'admin', 'system_admin'], '/dashboard/users') ?
+                  <Users /> : <NotAuthorized />
+              } />
+              <Route path="approve" element={
+                checkAccess(['admin_super', 'reviewer'], '/dashboard/approve') ?
+                  <Approve /> : <NotAuthorized />
+              } />
+              <Route path="orders" element={
+                checkAccess(['admin_super', 'admin', 'cs_manager', 'finance'], '/dashboard/orders') ?
+                  <Orders /> : <NotAuthorized />
+              } />
+              <Route path="payments" element={
+                checkAccess(['admin_super', 'finance'], '/dashboard/payments') ?
+                  <Payments /> : <NotAuthorized />
+              } />
+              <Route path="services" element={
+                checkAccess(['admin_super', 'admin', 'cs_manager'], '/dashboard/services') ?
+                  <Services /> : <NotAuthorized />
+              } />
+              <Route path="disputes" element={
+                checkAccess(['admin_super', 'cs_manager'], '/dashboard/disputes') ?
+                  <Disputes /> : <NotAuthorized />
+              } />
+              <Route path="reviews-complaints" element={
+                checkAccess(['admin_super', 'cs_manager', 'reviewer'], '/dashboard/reviews-complaints') ?
+                  <ReviewsAndComplaints /> : <NotAuthorized />
+              } />
+              <Route path="data-summary" element={
+                checkAccess(['admin_super', 'finance'], '/dashboard/data-summary') ?
+                  <DataSummary /> : <NotAuthorized />
+              } />
+              <Route path="settings" element={
+                checkAccess(['admin_super', 'system_admin'], '/dashboard/settings') ?
+                  <Settings /> : <NotAuthorized />
+              } />
+              <Route path="permissions" element={
+                checkAccess(['admin_super', 'system_admin'], '/dashboard/permissions') ?
+                  <Permissions /> : <NotAuthorized />
+              } />
+            </Route>
 
-          {/* 404页面 */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            {/* 404页面 */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </BrowserRouter>
       </ErrorBoundary>
     </ConfigProvider>

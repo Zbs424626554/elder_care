@@ -11,8 +11,7 @@ export interface IServiceType extends Document {
 const serviceTypeSchema = new Schema({
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   basePrice: {
     type: Number,

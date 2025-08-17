@@ -40,8 +40,8 @@ const Layout: React.FC = () => {
     navigate(key);
   };
   useEffect(() => {
-    const user = AuthService.getCurrentUser?.();
-    const uid = (user as any)?.id || (user as any)?._id;
+    const user = AuthService.getCurrentUser();
+    const uid = user?.id || (user as any)?._id;
     if (uid) {
       registerUser(uid);
     }

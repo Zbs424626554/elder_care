@@ -27,7 +27,7 @@ const Warnings: React.FC = () => {
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
-    const uid = (user as any)?.id || (user as any)?._id;
+    const uid = user?.id || (user as any)?._id;
     if (uid) {
       registerUser(uid);
     }
@@ -147,6 +147,30 @@ const Warnings: React.FC = () => {
     }
   }
 
+  function formatLocation(location: any): string {
+    if (!location) return '无';
+
+    try {
+      // 如果是字符串，尝试解析JSON
+      const loc = typeof location === 'string' ? JSON.parse(location) : location;
+
+      if (loc && loc.coordinates && Array.isArray(loc.coordinates) && loc.coordinates.length >= 2) {
+        const [lng, lat] = loc.coordinates;
+        // 检查坐标是否有效
+        if (lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90) {
+          return `经度: ${lng.toFixed(6)}, 纬度: ${lat.toFixed(6)}`;
+        } else {
+          return '坐标无效';
+        }
+      }
+
+      return '定位数据格式错误';
+    } catch (error) {
+      console.error('定位数据解析失败:', error);
+      return '定位数据解析失败';
+    }
+  }
+
   async function fetchAndPlay(id: string) {
     try {
       const resp: any = await request.get(`/emergency/${id}`);
@@ -222,7 +246,7 @@ const Warnings: React.FC = () => {
                 </div>
                 <span className={styles['elderly-name']}>{warning.elderlyName}</span>
                 {warning.location && (
-                  <span className={styles['warning-location']}>📍 {warning.location}</span>
+                  <span className={styles['warning-location']}>📍 {formatLocation(warning.location)}</span>
                 )}
               </div>
             </div>
@@ -288,7 +312,7 @@ const Warnings: React.FC = () => {
             <div className={styles['modal-body']}>
               <div className={styles['modal-item']}>
                 <span className={styles['modal-label']}>定位:</span>
-                <span className={styles['modal-value']}>{selected?.location || '无'}</span>
+                <span className={styles['modal-value']}>{formatLocation(selected?.location)}</span>
               </div>
               <div className={styles['modal-item']}>
                 <span className={styles['modal-label']}>摘要:</span>

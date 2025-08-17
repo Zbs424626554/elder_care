@@ -8,13 +8,13 @@ interface OrderItem {
   nurseId?: string;
   serviceName: string;
   status:
-    | "pending" // 待派发
-    | "assigned" // 已派发
-    | "processing" // 进行中
-    | "started" // 进行中
-    | "completed" // 已完成
-    | "cancelled" // 已取消
-    | "disputed"; // 争议中
+  | "pending" // 待派发
+  | "assigned" // 已派发
+  | "processing" // 进行中
+  | "started" // 进行中
+  | "completed" // 已完成
+  | "cancelled" // 已取消
+  | "disputed"; // 争议中
   orderTime: string;
   hours: number;
   elderlyId?: string;
@@ -130,7 +130,7 @@ const Orders: React.FC = () => {
     try {
       setLoading(true);
       const res = await http.get<{ list: OrderItem[] }>("/elderorder/my");
-      console.log(res.data.list);
+      // 订单数据已获取
       setOrders(res.data.list || []);
     } catch (e) {
       setOrders([]);

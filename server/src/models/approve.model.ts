@@ -31,7 +31,6 @@ const approveSchema = new Schema({
     idcard: {
         type: String,
         required: false,
-        unique: true,
         trim: true
     },
     certificateImage: {

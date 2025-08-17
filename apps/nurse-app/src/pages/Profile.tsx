@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
         navigate('/home/message');
         break;
       default:
-        console.log('功能开发中...');
+      // 功能开发中
     }
   };
 
@@ -91,7 +91,7 @@ const Profile: React.FC = () => {
       {/* Navigation Bar */}
       <div className="nav-bar">
         <div className="nav-title">个人中心</div>
-   
+
       </div>
 
       {/* Profile Header */}

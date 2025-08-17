@@ -34,17 +34,13 @@ const Elderly: React.FC = () => {
   // 获取可绑定的老人列表
   const fetchAvailableElderly = async () => {
     try {
-      console.log('开始获取可绑定的老人列表...');
       const response = await ElderlyService.getAllElderlyUsers();
-      console.log('获取可绑定老人列表响应:', response);
 
       if (response.code === 200 && response.data) {
         // 过滤出未绑定的老人
         const unboundElderly = response.data.list.filter(user => !user.status);
-        console.log('过滤后的未绑定老人:', unboundElderly);
         setAvailableElderly(unboundElderly);
       } else {
-        console.log('获取可绑定老人列表失败，响应码:', response.code, '消息:', response.message);
         // 如果获取失败，设置为空数组
         setAvailableElderly([]);
       }
@@ -59,9 +55,7 @@ const Elderly: React.FC = () => {
   const fetchElderlyList = async () => {
     try {
       setLoading(true);
-      console.log('开始获取老人列表...');
       const response = await ElderlyService.getElderlyList();
-      console.log('获取老人列表响应:', response);
 
       if (response.code === 200 && response.data) {
         const elderlyList = response.data.list.map((user: ElderlyUser) => ({
@@ -79,7 +73,6 @@ const Elderly: React.FC = () => {
           heartRate: '72',
           boundYears: 1,
         }));
-        console.log('处理后的老人列表:', elderlyList);
         setElderly(elderlyList);
       } else {
         console.error('获取老人列表失败，响应码:', response.code, '消息:', response.message);

@@ -7,12 +7,10 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const handleFunctionClick = (type: string) => {
-    console.log('点击功能:', type);
+    // 功能点击处理
   };
 
   const handleQuickAction = (action: string) => {
-    console.log('快捷操作:', action);
-
     // 根据操作类型进行导航
     switch (action) {
       case 'elderly-management':
@@ -35,17 +33,13 @@ const Home: React.FC = () => {
         break;
       case 'emergency-contact':
         // 可以导航到紧急联系页面或显示联系方式
-        console.log('紧急联系功能');
         break;
       case 'emergency-call':
         // 紧急呼叫功能
-        console.log('紧急呼叫功能');
         break;
       case 'health-monitor':
         navigate('/home/health');
         break;
-      default:
-        console.log('未知操作:', action);
     }
   };
 
