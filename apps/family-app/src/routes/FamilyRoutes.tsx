@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthService } from '../services/auth.service';
-import { PrivateRoute } from '../components/PrivateRoute';
-import { Login, Register } from '@smart-aging/packages';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthService } from "../services/auth.service";
+import { PrivateRoute } from "../components/PrivateRoute";
+import { Login, Register } from "@smart-aging/packages";
 
 // 家属端页面
-import Layout from '../pages/Layout';
-import Home from '../pages/Home';
-import Profile from '../pages/Profile';
-import Elderly from '../pages/Elderly';
-import ElderlyDetail from '../pages/ElderlyDetail';
-import HealthReport from '../pages/HealthReport';
-import Health from '../pages/Health';
-import Orders from '../pages/Orders';
-import Warnings from '../pages/Warnings';
-import Nurses from '../pages/Nurses';
-import Payment from '../pages/Payment';
-import Refund from '../pages/Refund';
+import Layout from "../pages/Layout";
+import Home from "../pages/Home";
+import Profile from "../pages/Profile";
+import Elderly from "../pages/Elderly";
+import ElderlyDetail from "../pages/ElderlyDetail";
+import HealthReport from "../pages/HealthReport";
+import Health from "../pages/Health";
+import Orders from "../pages/Orders";
+import Warnings from "../pages/Warnings";
+import Nurses from "../pages/Nurses";
+import Payment from "../pages/Payment";
+import Refund from "../pages/Refund";
+import Message from "../pages/Message";
+import Chat from "../pages/Chat";
 
 // 根路由重定向组件
 const RootRedirect: React.FC = () => {
@@ -29,7 +31,7 @@ const RootRedirect: React.FC = () => {
 
   if (isLoggedIn === null) return null; // loading
   if (!isLoggedIn) return <Navigate to="/login" replace />;
-  if (currentRole === 'family') return <Navigate to="/home" replace />;
+  if (currentRole === "family") return <Navigate to="/home" replace />;
   return <Navigate to="/login" replace />;
 };
 
@@ -47,7 +49,7 @@ const FamilyRoutes: React.FC = () => {
       <Route
         path="/home"
         element={
-          <PrivateRoute requiredRoles={['family']}>
+          <PrivateRoute requiredRoles={["family"]}>
             <Layout />
           </PrivateRoute>
         }
@@ -68,15 +70,31 @@ const FamilyRoutes: React.FC = () => {
       <Route
         path="/elderly"
         element={
-          <PrivateRoute requiredRoles={['family']}>
+          <PrivateRoute requiredRoles={["family"]}>
             <Elderly />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/message"
+        element={
+          <PrivateRoute requiredRoles={["family"]}>
+            <Message />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/chat/:id"
+        element={
+          <PrivateRoute requiredRoles={["family"]}>
+            <Chat />
           </PrivateRoute>
         }
       />
       <Route
         path="/elderly/:id"
         element={
-          <PrivateRoute requiredRoles={['family']}>
+          <PrivateRoute requiredRoles={["family"]}>
             <ElderlyDetail />
           </PrivateRoute>
         }
@@ -84,7 +102,7 @@ const FamilyRoutes: React.FC = () => {
       <Route
         path="/elderly/:id/health-report"
         element={
-          <PrivateRoute requiredRoles={['family']}>
+          <PrivateRoute requiredRoles={["family"]}>
             <HealthReport />
           </PrivateRoute>
         }
@@ -92,7 +110,7 @@ const FamilyRoutes: React.FC = () => {
       <Route
         path="/warnings"
         element={
-          <PrivateRoute requiredRoles={['family']}>
+          <PrivateRoute requiredRoles={["family"]}>
             <Warnings />
           </PrivateRoute>
         }
@@ -104,4 +122,4 @@ const FamilyRoutes: React.FC = () => {
   );
 };
 
-export default FamilyRoutes; 
+export default FamilyRoutes;
